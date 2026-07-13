@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security-audit:
+    name: Secret & dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Secret audit
+        run: bash scripts/secret-audit.sh
+      - name: Dependency audit (high+critical only)
+        run: pnpm --filter web exec npm audit --audit-level=high
+        continue-on-error: true   # surface issues without blocking; fix criticals manually
+
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web exec tsc --noEmit
+
+  rls-isolation:
+    name: RLS isolation tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'   # only on main — requires live Supabase
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Run RLS tests
+        env:
+          NEXT_PUBLIC_SUPABASE_URL:     ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY:    ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TEST_TENANT_A_EMAIL:          ${{ secrets.TEST_TENANT_A_EMAIL }}
+          TEST_TENANT_A_PASSWORD:       ${{ secrets.TEST_TENANT_A_PASSWORD }}
+          TEST_TENANT_B_EMAIL:          ${{ secrets.TEST_TENANT_B_EMAIL }}
+          TEST_TENANT_B_PASSWORD:       ${{ secrets.TEST_TENANT_B_PASSWORD }}
+          APP_URL:                      ${{ secrets.APP_URL }}
+        run: pnpm test:isolation

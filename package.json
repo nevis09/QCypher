@@ -9,7 +9,12 @@
     "lint": "pnpm --filter web lint",
     "test": "pnpm --filter web test",
     "db:migrate": "pnpm --filter @qcypher/db migrate",
-    "db:reset": "pnpm --filter @qcypher/db reset"
+    "db:reset": "pnpm --filter @qcypher/db reset",
+    "test:isolation": "pnpm --filter web test:isolation",
+    "audit:secrets": "bash scripts/secret-audit.sh",
+    "audit:deps": "pnpm --filter web exec npm audit --audit-level=high",
+    "backup:verify": "bash scripts/backup-verify.sh",
+    "load-test": "k6 run load-tests/multi-tenant.js"
   },
   "workspaces": [
     "apps/*",
