@@ -1,0 +1,18 @@
+{
+  "name": "qcypher-micro-crm",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "test": "pnpm --filter web test",
+    "db:migrate": "pnpm --filter @qcypher/db migrate",
+    "db:reset": "pnpm --filter @qcypher/db reset"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
