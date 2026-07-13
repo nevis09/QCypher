@@ -6,9 +6,18 @@ export interface Database {
   public: {
     Tables: {
       tenants: {
-        Row: { id: string; name: string; slug: string; created_at: string }
-        Insert: { id?: string; name: string; slug: string; created_at?: string }
-        Update: { id?: string; name?: string; slug?: string; created_at?: string }
+        Row: {
+          id: string; name: string; slug: string; is_admin: boolean
+          plan: string; status: 'active' | 'suspended' | 'trial'; created_at: string
+        }
+        Insert: {
+          id?: string; name: string; slug: string; is_admin?: boolean
+          plan?: string; status?: 'active' | 'suspended' | 'trial'; created_at?: string
+        }
+        Update: {
+          id?: string; name?: string; slug?: string; is_admin?: boolean
+          plan?: string; status?: 'active' | 'suspended' | 'trial'; created_at?: string
+        }
       }
       contacts: {
         Row: {
@@ -95,6 +104,17 @@ export interface Database {
           status?: 'queued' | 'sent' | 'failed'; provider_id?: string | null
           error?: string | null; sent_at?: string | null
         }
+      }
+      invite_tokens: {
+        Row: {
+          id: string; token: string; tenant_id: string; email: string
+          used_at: string | null; expires_at: string; created_at: string
+        }
+        Insert: {
+          id?: string; token?: string; tenant_id: string; email: string
+          used_at?: string | null; expires_at?: string; created_at?: string
+        }
+        Update: { used_at?: string | null }
       }
     }
     Views: Record<string, never>

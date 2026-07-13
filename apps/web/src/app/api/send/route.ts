@@ -7,6 +7,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit, LIMITS } from '@/lib/rate-limit'
+import { getIp } from '@/lib/get-ip'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM    = process.env.RESEND_FROM_EMAIL ?? 'noreply@example.com'
@@ -17,6 +19,15 @@ const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER ?? ''
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
+
+  // Rate limit
+  const rl = rateLimit(`send:${getIp(request)}`, LIMITS.send)
+  if (!rl.ok) {
+    return NextResponse.json({ error: 'Too many requests' }, {
+      status: 429,
+      headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) },
+    })
+  }
 
   // Auth check
   const { data: { user } } = await supabase.auth.getUser()

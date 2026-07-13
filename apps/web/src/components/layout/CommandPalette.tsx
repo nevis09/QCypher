@@ -2,17 +2,21 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, Users, Calendar, FileText, Settings } from 'lucide-react'
+import { Search, Users, Calendar, FileText, Settings, ShieldCheck } from 'lucide-react'
 
-const commands = [
+const BASE_COMMANDS = [
   { label: 'Contacts', href: '/contacts', icon: Users },
   { label: 'Calendar', href: '/calendar', icon: Calendar },
   { label: 'Templates', href: '/templates', icon: FileText },
   { label: 'Settings', href: '/settings', icon: Settings },
   { label: 'New contact', href: '/contacts/new', icon: Users },
+  { label: 'New template', href: '/templates/new', icon: FileText },
 ]
 
-export function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function CommandPalette({ open, onClose, isAdmin = false }: { open: boolean; onClose: () => void; isAdmin?: boolean }) {
+  const commands = isAdmin
+    ? [...BASE_COMMANDS, { label: 'Admin panel', href: '/admin', icon: ShieldCheck }]
+    : BASE_COMMANDS
   const [query, setQuery] = useState('')
   const router = useRouter()
 

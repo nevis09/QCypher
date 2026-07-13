@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, Calendar, FileText, Settings, LayoutDashboard } from 'lucide-react'
+import { Users, Calendar, FileText, Settings, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
@@ -12,7 +12,7 @@ const nav = [
   { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 
-export function Sidebar() {
+export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname()
 
   return (
@@ -35,6 +35,20 @@ export function Sidebar() {
           {label}
         </Link>
       ))}
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className={cn(
+            'flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors mt-auto',
+            pathname.startsWith('/admin')
+              ? 'bg-accent/10 text-accent'
+              : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]',
+          )}
+        >
+          <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+          Admin
+        </Link>
+      )}
     </aside>
   )
 }
