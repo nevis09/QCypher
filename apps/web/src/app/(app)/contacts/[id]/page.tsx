@@ -1,0 +1,40 @@
+import { notFound } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { ContactDetail } from '@/components/contacts/ContactDetail'
+import type { Metadata } from 'next'
+
+type Props = { params: Promise<{ id: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('contacts')
+    .select('first_name, last_name')
+    .eq('id', id)
+    .single()
+  if (!data) return { title: 'Contact' }
+  return { title: `${data.first_name} ${data.last_name ?? ''}`.trim() }
+}
+
+export default async function ContactPage({ params }: Props) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const [{ data: contact }, { data: interactions }] = await Promise.all([
+    supabase
+      .from('contacts')
+      .select('*')
+      .eq('id', id)
+      .single(),
+    supabase
+      .from('interactions')
+      .select('*')
+      .eq('contact_id', id)
+      .order('occurred_at', { ascending: false }),
+  ])
+
+  if (!contact) notFound()
+
+  return <ContactDetail contact={contact} interactions={interactions ?? []} />
+}

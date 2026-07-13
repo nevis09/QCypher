@@ -1,0 +1,102 @@
+'use client'
+
+import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import type { Tables } from '@/types/database'
+
+type Template = Tables<'templates'>
+
+const VARIABLE_HINT = '{{first_name}}, {{last_name}}, {{company}}, {{phone}}'
+
+export function TemplateForm({ template }: { template?: Template }) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const supabase = createClient()
+
+  const [form, setForm] = useState({
+    name: template?.name ?? '',
+    channel: template?.channel ?? 'email',
+    subject: template?.subject ?? '',
+    body: template?.body ?? '',
+  })
+
+  function set(field: string) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm(prev => ({ ...prev, [field]: e.target.value }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    const payload = {
+      name: form.name.trim(),
+      channel: form.channel as Template['channel'],
+      subject: form.channel === 'email' ? (form.subject.trim() || null) : null,
+      body: form.body.trim(),
+    }
+    startTransition(async () => {
+      if (template) {
+        const { error } = await supabase.from('templates').update(payload).eq('id', template.id)
+        if (error) { setError(error.message); return }
+      } else {
+        const { error } = await supabase.from('templates').insert(payload)
+        if (error) { setError(error.message); return }
+      }
+      router.push('/templates')
+      router.refresh()
+    })
+  }
+
+  async function handleDelete() {
+    if (!template || !confirm('Delete this template?')) return
+    await supabase.from('templates').delete().eq('id', template.id)
+    router.push('/templates')
+    router.refresh()
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium">Name *</label>
+        <input required value={form.name} onChange={set('name')} placeholder="Follow-up after visit" className={input} />
+      </div>
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium">Channel</label>
+        <select value={form.channel} onChange={set('channel')} className={input}>
+          <option value="email">Email</option>
+          <option value="sms">SMS</option>
+        </select>
+      </div>
+      {form.channel === 'email' && (
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium">Subject</label>
+          <input value={form.subject} onChange={set('subject')} placeholder="Following up on your quote" className={input} />
+        </div>
+      )}
+      <div className="space-y-1.5">
+        <label className="text-sm font-medium">Body *</label>
+        <textarea required value={form.body} onChange={set('body')} rows={6} className={`${input} resize-none`}
+          placeholder={`Hi {{first_name}}, thanks for…`} />
+        <p className="text-xs text-[hsl(var(--muted-foreground))]">Available variables: {VARIABLE_HINT}</p>
+      </div>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      <div className="flex items-center gap-3 pt-1">
+        <button type="submit" disabled={isPending} className="bg-accent text-white text-sm font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
+          {isPending ? 'Saving…' : template ? 'Save changes' : 'Create template'}
+        </button>
+        <button type="button" onClick={() => router.back()} className="text-sm text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
+          Cancel
+        </button>
+        {template && (
+          <button type="button" onClick={handleDelete} className="ml-auto text-sm text-red-500 hover:text-red-600 px-4 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+            Delete
+          </button>
+        )}
+      </div>
+    </form>
+  )
+}
+
+const input = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-sm bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]'
