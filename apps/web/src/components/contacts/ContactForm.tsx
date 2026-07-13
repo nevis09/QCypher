@@ -70,7 +70,7 @@ export function ContactForm({ contact }: { contact?: Contact }) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="First name *">
           <input required value={form.first_name} onChange={set('first_name')} className={input} />
         </Field>

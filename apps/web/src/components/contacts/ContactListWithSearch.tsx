@@ -33,8 +33,8 @@ export function ContactListWithSearch({ contacts }: { contacts: Contact[] }) {
 
   return (
     <div className="space-y-4">
-      {/* Search + filter bar */}
-      <div className="flex gap-3 items-center">
+      {/* Search + filter bar — stacks on mobile */}
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-[hsl(var(--muted-foreground))]" />
           <input
@@ -45,7 +45,7 @@ export function ContactListWithSearch({ contacts }: { contacts: Contact[] }) {
             className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-[hsl(var(--border))] bg-white dark:bg-[hsl(var(--muted))] outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
           />
         </div>
-        <div className="flex gap-1 bg-[hsl(var(--muted))] rounded-xl p-1">
+        <div className="flex gap-1 bg-[hsl(var(--muted))] rounded-xl p-1 overflow-x-auto flex-shrink-0">
           {STATUS_FILTERS.map(f => (
             <button
               key={f.value}

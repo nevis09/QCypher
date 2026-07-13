@@ -31,7 +31,7 @@ export default async function ContactsPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold">Contacts</h1>
           <p className="text-sm text-[hsl(var(--muted-foreground))] mt-0.5">{contacts?.length ?? 0} total</p>

@@ -30,4 +30,23 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+
+  /* iOS safe-area inset support */
+  :root {
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .min-h-screen-safe {
+    min-height: calc(100dvh - env(safe-area-inset-bottom, 0px));
+  }
+  /* Ensure tap targets are at least 44×44pt on mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

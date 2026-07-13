@@ -10,6 +10,7 @@ type Contact = {
   email: string | null
   phone: string | null
   tags: string[] | null
+  status?: string
   created_at: string
 }
 
@@ -32,7 +33,7 @@ export function ContactList({ contacts }: { contacts: Contact[] }) {
         <Link
           key={contact.id}
           href={`/contacts/${contact.id}`}
-          className="flex items-center gap-4 px-5 py-3.5 hover:bg-[hsl(var(--muted))] transition-colors"
+          className="flex items-center gap-4 px-4 py-4 sm:px-5 sm:py-3.5 hover:bg-[hsl(var(--muted))] transition-colors min-h-[60px]"
         >
           <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-sm font-semibold flex-shrink-0">
             {initials(contact)}

@@ -45,11 +45,11 @@ export function CommandPalette({ open, onClose, isAdmin = false }: { open: boole
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end sm:items-start sm:justify-center sm:pt-24 sm:px-4 bg-black/40 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-card overflow-hidden"
+        className="w-full sm:max-w-lg bg-white dark:bg-[hsl(var(--muted))] rounded-t-2xl sm:rounded-2xl shadow-card overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-[hsl(var(--border))]">

@@ -74,8 +74,8 @@ export function EventModal({ date, event, onClose }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-md bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-card" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full sm:max-w-md bg-white dark:bg-[hsl(var(--muted))] rounded-t-2xl sm:rounded-2xl shadow-card" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-[hsl(var(--border))]">
           <h2 className="text-sm font-semibold">{event ? 'Edit event' : 'New event'}</h2>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
