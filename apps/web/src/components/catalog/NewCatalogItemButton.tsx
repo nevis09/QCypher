@@ -1,0 +1,22 @@
+'use client'
+
+import { useState } from 'react'
+import { Plus } from 'lucide-react'
+import { CatalogItemModal } from './CatalogItemModal'
+
+export function NewCatalogItemButton() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[15px] font-bold text-white"
+        style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}
+      >
+        <Plus className="w-4 h-4" />
+        Add item
+      </button>
+      {open && <CatalogItemModal onClose={() => setOpen(false)} />}
+    </>
+  )
+}

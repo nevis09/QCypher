@@ -9,7 +9,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">QCypher CRM</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Sign in to your workspace</p>
+          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-1">Sign in to your workspace</p>
         </div>
         <LoginForm />
       </div>

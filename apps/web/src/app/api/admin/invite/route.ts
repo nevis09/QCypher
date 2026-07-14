@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 2. Send invite — Supabase Auth sets a magic link; we stamp app_metadata after
-  const appUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('.supabase.co', '') ?? 'http://localhost:3002'
+  const appUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('.supabase.co', '') ?? 'http://localhost:3011'
   const { data: invite, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email.trim(), {
     redirectTo: `${appUrl}/auth/callback`,
     data: { tenant_id: tenant.id },

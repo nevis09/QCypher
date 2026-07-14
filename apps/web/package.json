@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3011",
     "build": "next build",
-    "start": "next start -p 3002",
+    "start": "next start -p 3011",
     "lint": "next lint",
     "test": "jest --passWithNoTests",
     "test:isolation": "jest --testPathPattern=isolation --passWithNoTests"

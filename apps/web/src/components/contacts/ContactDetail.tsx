@@ -37,7 +37,7 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
   return (
     <div className="max-w-2xl space-y-6">
       {/* Header card */}
-      <div className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6">
+      <div className="bg-[hsl(var(--card))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6">
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl font-bold flex-shrink-0">
             {initials(contact)}
@@ -45,11 +45,11 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-lg font-semibold">{contact.first_name} {contact.last_name}</h1>
-              <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium capitalize', STATUS_COLOR[contact.status])}>
+              <span className={cn('text-[15px] px-2 py-0.5 rounded-full font-medium capitalize', STATUS_COLOR[contact.status])}>
                 {contact.status}
               </span>
             </div>
-            {contact.company && <p className="text-sm text-[hsl(var(--muted-foreground))] mt-0.5">{contact.company}</p>}
+            {contact.company && <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{contact.company}</p>}
           </div>
           <div className="flex gap-2 flex-shrink-0">
             <Link href={`/contacts/${contact.id}/edit`} className="p-2 rounded-xl hover:bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] transition-colors">
@@ -85,13 +85,13 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
           <div className="mt-4 flex items-center gap-2 flex-wrap">
             <Tag className="w-3.5 h-3.5 text-[hsl(var(--muted-foreground))]" />
             {contact.tags.map(tag => (
-              <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent font-medium">{tag}</span>
+              <span key={tag} className="text-[15px] px-2 py-0.5 rounded-full bg-accent/10 text-accent font-medium">{tag}</span>
             ))}
           </div>
         )}
 
         {contact.notes && (
-          <p className="mt-4 text-sm text-[hsl(var(--muted-foreground))] border-t border-[hsl(var(--border))] pt-4">{contact.notes}</p>
+          <p className="mt-4 text-[15px] text-[hsl(var(--muted-foreground))] border-t border-[hsl(var(--border))] pt-4">{contact.notes}</p>
         )}
 
         {/* Quick-send row */}
@@ -103,7 +103,7 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
 
       {/* Interaction timeline */}
       <div className="space-y-4">
-        <h2 className="text-sm font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wide">Timeline</h2>
+        <h2 className="text-[15px] font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wide">Timeline</h2>
         <AddInteractionForm contactId={contact.id} />
         <InteractionTimeline interactions={interactions} />
       </div>
@@ -113,7 +113,7 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
 
 function InfoRow({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-[hsl(var(--foreground))]">
+    <div className="flex items-center gap-2 text-[15px] text-[hsl(var(--foreground))]">
       <span className="text-[hsl(var(--muted-foreground))] flex-shrink-0">{icon}</span>
       {children}
     </div>

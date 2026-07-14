@@ -30,11 +30,11 @@ export function AdminDashboard({ tenants }: { tenants: Tenant[] }) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold">QCypher Admin</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-0.5">{clients.length} client workspace{clients.length !== 1 ? 's' : ''}</p>
+          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{clients.length} client workspace{clients.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => setShowInvite(true)}
-          className="flex items-center gap-2 bg-accent text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
+          className="flex items-center gap-2 bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
         >
           <Plus className="w-4 h-4" />
           Invite client
@@ -42,10 +42,10 @@ export function AdminDashboard({ tenants }: { tenants: Tenant[] }) {
       </div>
 
       {/* Tenant table */}
-      <div className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden divide-y divide-[hsl(var(--border))]">
+      <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden divide-y divide-[hsl(var(--border))]">
         {clients.length === 0 && (
           <div className="p-12 text-center">
-            <p className="text-sm text-[hsl(var(--muted-foreground))]">No client tenants yet. Invite your first client.</p>
+            <p className="text-[15px] text-[hsl(var(--muted-foreground))]">No client tenants yet. Invite your first client.</p>
           </div>
         )}
         {clients.map(t => <TenantRow key={t.id} tenant={t} />)}
@@ -78,10 +78,10 @@ function TenantRow({ tenant }: { tenant: Tenant }) {
         <Building2 className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium">{tenant.name}</p>
-        <p className="text-xs text-[hsl(var(--muted-foreground))]">/{tenant.slug} · {tenant.plan}</p>
+        <p className="text-[15px] font-medium">{tenant.name}</p>
+        <p className="text-[15px] text-[hsl(var(--muted-foreground))]">/{tenant.slug} · {tenant.plan}</p>
       </div>
-      <span className={cn('flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium capitalize', STATUS_STYLE[tenant.status])}>
+      <span className={cn('flex items-center gap-1 text-[15px] px-2.5 py-1 rounded-full font-medium capitalize', STATUS_STYLE[tenant.status])}>
         <StatusIcon className="w-3 h-3" />
         {tenant.status}
       </span>
@@ -89,7 +89,7 @@ function TenantRow({ tenant }: { tenant: Tenant }) {
         disabled={isPending}
         value={tenant.status}
         onChange={e => setStatus(e.target.value as Tenant['status'])}
-        className="text-xs rounded-lg border border-[hsl(var(--border))] px-2 py-1 bg-transparent outline-none focus:ring-1 focus:ring-[hsl(var(--ring))] disabled:opacity-50"
+        className="text-[15px] rounded-lg border border-[hsl(var(--border))] px-2 py-1 bg-transparent outline-none focus:ring-1 focus:ring-[hsl(var(--ring))] disabled:opacity-50"
       >
         <option value="active">Active</option>
         <option value="trial">Trial</option>
@@ -132,23 +132,23 @@ function InviteModal({ onClose }: { onClose: () => void }) {
     })
   }
 
-  const inputCls = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-sm bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]'
+  const inputCls = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]'
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full sm:max-w-md bg-white dark:bg-[hsl(var(--muted))] rounded-t-2xl sm:rounded-2xl shadow-card" onClick={e => e.stopPropagation()}>
+      <div className="w-full sm:max-w-md bg-[hsl(var(--card))] rounded-t-2xl sm:rounded-2xl shadow-card" onClick={e => e.stopPropagation()}>
         <div className="px-5 py-4 border-b border-[hsl(var(--border))]">
-          <h2 className="text-sm font-semibold">Invite new client</h2>
+          <h2 className="text-[15px] font-semibold">Invite new client</h2>
         </div>
         {success ? (
           <div className="p-8 text-center">
             <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-3" />
-            <p className="text-sm font-medium">Invite sent!</p>
+            <p className="text-[15px] font-medium">Invite sent!</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Business name *</label>
+              <label className="text-[15px] font-medium">Business name *</label>
               <input
                 required value={form.name}
                 onChange={e => {
@@ -160,19 +160,19 @@ function InviteModal({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Workspace slug *</label>
+              <label className="text-[15px] font-medium">Workspace slug *</label>
               <input required value={form.slug} onChange={set('slug')} placeholder="acme-plumbing" className={inputCls} />
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium">Owner email *</label>
+              <label className="text-[15px] font-medium">Owner email *</label>
               <input required type="email" value={form.email} onChange={set('email')} placeholder="owner@example.com" className={inputCls} />
             </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && <p className="text-[15px] text-red-500">{error}</p>}
             <div className="flex gap-3">
-              <button type="submit" disabled={isPending} className="bg-accent text-white text-sm font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
+              <button type="submit" disabled={isPending} className="bg-accent text-white text-[15px] font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
                 {isPending ? 'Sending…' : 'Send invite'}
               </button>
-              <button type="button" onClick={onClose} className="text-sm text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
+              <button type="button" onClick={onClose} className="text-[15px] text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
                 Cancel
               </button>
             </div>

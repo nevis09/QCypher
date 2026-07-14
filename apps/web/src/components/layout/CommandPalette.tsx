@@ -49,7 +49,7 @@ export function CommandPalette({ open, onClose, isAdmin = false }: { open: boole
       onClick={onClose}
     >
       <div
-        className="w-full sm:max-w-lg bg-white dark:bg-[hsl(var(--muted))] rounded-t-2xl sm:rounded-2xl shadow-card overflow-hidden"
+        className="w-full sm:max-w-lg bg-[hsl(var(--card))] rounded-t-2xl sm:rounded-2xl shadow-card overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-[hsl(var(--border))]">
@@ -59,14 +59,14 @@ export function CommandPalette({ open, onClose, isAdmin = false }: { open: boole
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search or jump to…"
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[hsl(var(--muted-foreground))]"
+            className="flex-1 bg-transparent text-[15px] outline-none placeholder:text-[hsl(var(--muted-foreground))]"
           />
         </div>
         <ul className="py-2">
           {filtered.map(({ label, href, icon: Icon }) => (
             <li key={href}>
               <button
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[hsl(var(--muted))] transition-colors text-left"
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-[15px] hover:bg-[hsl(var(--muted))] transition-colors text-left"
                 onClick={() => { router.push(href); onClose() }}
               >
                 <Icon className="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
@@ -75,7 +75,7 @@ export function CommandPalette({ open, onClose, isAdmin = false }: { open: boole
             </li>
           ))}
           {filtered.length === 0 && (
-            <li className="px-4 py-3 text-sm text-[hsl(var(--muted-foreground))]">No results</li>
+            <li className="px-4 py-3 text-[15px] text-[hsl(var(--muted-foreground))]">No results</li>
           )}
         </ul>
       </div>

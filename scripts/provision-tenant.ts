@@ -53,7 +53,7 @@ async function run() {
   // 2. Send invite email to owner
   const { data: invite, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { tenant_id: tenant.id },
-    redirectTo: `${process.env.APP_URL ?? 'http://localhost:3002'}/auth/callback`,
+    redirectTo: `${process.env.APP_URL ?? 'http://localhost:3011'}/auth/callback`,
   })
 
   if (inviteErr) throw inviteErr

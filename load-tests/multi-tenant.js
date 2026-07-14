@@ -17,7 +17,7 @@ import http from 'k6/http'
 import { check, sleep } from 'k6'
 import { Counter, Trend } from 'k6/metrics'
 
-const BASE_URL    = __ENV.BASE_URL    ?? 'http://localhost:3002'
+const BASE_URL    = __ENV.BASE_URL    ?? 'http://localhost:3011'
 const TOKEN_A     = __ENV.TENANT_A_TOKEN ?? ''
 const TOKEN_B     = __ENV.TENANT_B_TOKEN ?? ''
 

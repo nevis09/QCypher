@@ -38,15 +38,15 @@ export function CalendarView({ events }: { events: CalEvent[] }) {
 
   return (
     <>
-      <div className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden">
+      <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden">
         {/* Month nav */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[hsl(var(--border))]">
           <button onClick={() => setMonth(m => subMonths(m, 1))} className="p-1.5 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm font-semibold">{format(month, 'MMMM yyyy')}</span>
+          <span className="text-[15px] font-semibold">{format(month, 'MMMM yyyy')}</span>
           <div className="flex items-center gap-2">
-            <button onClick={() => setMonth(new Date())} className="text-xs text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] px-2 py-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">Today</button>
+            <button onClick={() => setMonth(new Date())} className="text-[15px] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] px-2 py-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">Today</button>
             <button onClick={() => setMonth(m => addMonths(m, 1))} className="p-1.5 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -56,7 +56,7 @@ export function CalendarView({ events }: { events: CalEvent[] }) {
         {/* Day headers */}
         <div className="grid grid-cols-7 border-b border-[hsl(var(--border))]">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-            <div key={d} className="text-center text-xs font-medium text-[hsl(var(--muted-foreground))] py-2">{d}</div>
+            <div key={d} className="text-center text-[15px] font-medium text-[hsl(var(--muted-foreground))] py-2">{d}</div>
           ))}
         </div>
 
@@ -77,7 +77,7 @@ export function CalendarView({ events }: { events: CalEvent[] }) {
                   )}
                 >
                   <span className={cn(
-                    'text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full',
+                    'text-[15px] font-medium w-6 h-6 flex items-center justify-center rounded-full',
                     today ? 'bg-accent text-white' : 'text-[hsl(var(--foreground))]',
                   )}>
                     {format(day, 'd')}
@@ -87,13 +87,13 @@ export function CalendarView({ events }: { events: CalEvent[] }) {
                       <button
                         key={ev.id}
                         onClick={e => { e.stopPropagation(); setModal({ event: ev }) }}
-                        className="w-full text-left text-xs bg-accent/10 text-accent rounded-md px-1.5 py-0.5 truncate hover:bg-accent/20 transition-colors"
+                        className="w-full text-left text-[15px] bg-accent/10 text-accent rounded-md px-1.5 py-0.5 truncate hover:bg-accent/20 transition-colors"
                       >
                         {ev.title}
                       </button>
                     ))}
                     {dayEvents.length > 3 && (
-                      <p className="text-xs text-[hsl(var(--muted-foreground))] pl-1">+{dayEvents.length - 3} more</p>
+                      <p className="text-[15px] text-[hsl(var(--muted-foreground))] pl-1">+{dayEvents.length - 3} more</p>
                     )}
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export function CalendarView({ events }: { events: CalEvent[] }) {
       {/* Add event FAB */}
       <button
         onClick={() => setModal({ date: new Date() })}
-        className="fixed bottom-6 right-6 bg-accent text-white rounded-2xl shadow-card px-4 py-2.5 flex items-center gap-2 text-sm font-medium hover:bg-accent-hover transition-colors"
+        className="fixed bottom-6 right-6 bg-accent text-white rounded-2xl shadow-card px-4 py-2.5 flex items-center gap-2 text-[15px] font-medium hover:bg-accent-hover transition-colors"
       >
         <Plus className="w-4 h-4" />
         New event

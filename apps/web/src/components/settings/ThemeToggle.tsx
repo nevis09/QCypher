@@ -14,7 +14,7 @@ export function ThemeToggle() {
     const next = !dark
     setDark(next)
     document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('theme', next ? 'dark' : 'light')
+    localStorage.setItem('qc-theme', next ? 'dark' : 'light')
   }
 
   return (

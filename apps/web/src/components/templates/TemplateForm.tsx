@@ -7,19 +7,21 @@ import type { Tables } from '@/types/database'
 
 type Template = Tables<'templates'>
 
-const VARIABLE_HINT = '{{first_name}}, {{last_name}}, {{company}}, {{phone}}'
+const VARIABLE_HINT =
+  '{{first_name}}  {{last_name}}  {{company}}  {{phone}}  {{business_name}}  {{appointment_date}}  {{amount_due}}'
 
 export function TemplateForm({ template }: { template?: Template }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
+  const [error,     setError]        = useState<string | null>(null)
   const supabase = createClient()
 
   const [form, setForm] = useState({
-    name: template?.name ?? '',
-    channel: template?.channel ?? 'email',
-    subject: template?.subject ?? '',
-    body: template?.body ?? '',
+    name:         template?.name         ?? '',
+    channel:      template?.channel      ?? 'email',
+    subject:      template?.subject      ?? '',
+    body:         template?.body         ?? '',
+    is_marketing: (template as any)?.is_marketing ?? false,
   })
 
   function set(field: string) {
@@ -31,10 +33,11 @@ export function TemplateForm({ template }: { template?: Template }) {
     e.preventDefault()
     setError(null)
     const payload = {
-      name: form.name.trim(),
-      channel: form.channel as Template['channel'],
-      subject: form.channel === 'email' ? (form.subject.trim() || null) : null,
-      body: form.body.trim(),
+      name:         form.name.trim(),
+      channel:      form.channel as Template['channel'],
+      subject:      form.channel === 'email' ? (form.subject.trim() || null) : null,
+      body:         form.body.trim(),
+      is_marketing: form.is_marketing,
     }
     startTransition(async () => {
       if (template) {
@@ -51,46 +54,76 @@ export function TemplateForm({ template }: { template?: Template }) {
 
   async function handleDelete() {
     if (!template || !confirm('Delete this template?')) return
-    await supabase.from('templates').delete().eq('id', template.id)
+    // Soft delete
+    await supabase
+      .from('templates')
+      .update({ deleted_at: new Date().toISOString() } as any)
+      .eq('id', template.id)
     router.push('/templates')
     router.refresh()
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="bg-[hsl(var(--card))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">Name *</label>
+        <label className="text-[15px] font-medium">Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Follow-up after visit" className={input} />
       </div>
+
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">Channel</label>
+        <label className="text-[15px] font-medium">Channel</label>
         <select value={form.channel} onChange={set('channel')} className={input}>
           <option value="email">Email</option>
           <option value="sms">SMS</option>
         </select>
       </div>
+
       {form.channel === 'email' && (
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Subject</label>
+          <label className="text-[15px] font-medium">Subject</label>
           <input value={form.subject} onChange={set('subject')} placeholder="Following up on your quote" className={input} />
         </div>
       )}
+
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">Body *</label>
+        <label className="text-[15px] font-medium">Body *</label>
         <textarea required value={form.body} onChange={set('body')} rows={6} className={`${input} resize-none`}
-          placeholder={`Hi {{first_name}}, thanks for…`} />
-        <p className="text-xs text-[hsl(var(--muted-foreground))]">Available variables: {VARIABLE_HINT}</p>
+          placeholder="Hi {{first_name}}, thanks for…" />
+        <p className="text-[15px] text-[hsl(var(--muted-foreground))] leading-relaxed">
+          Variables: {VARIABLE_HINT}
+        </p>
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+
+      {/* Marketing toggle — only relevant for SMS */}
+      {form.channel === 'sms' && (
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.is_marketing}
+            onChange={e => setForm(prev => ({ ...prev, is_marketing: e.target.checked }))}
+            className="mt-0.5 w-4 h-4 rounded accent-indigo-600"
+          />
+          <span className="text-[15px]">
+            <strong>Marketing template</strong>
+            <span className="text-[hsl(var(--muted-foreground))]"> — "Reply STOP to unsubscribe." will be appended automatically on every SMS send.</span>
+          </span>
+        </label>
+      )}
+
+      {error && <p className="text-[15px] text-red-500">{error}</p>}
+
       <div className="flex items-center gap-3 pt-1">
-        <button type="submit" disabled={isPending} className="bg-accent text-white text-sm font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
+        <button type="submit" disabled={isPending}
+          className="bg-accent text-white text-[15px] font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
           {isPending ? 'Saving…' : template ? 'Save changes' : 'Create template'}
         </button>
-        <button type="button" onClick={() => router.back()} className="text-sm text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
+        <button type="button" onClick={() => router.back()}
+          className="text-[15px] text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
           Cancel
         </button>
         {template && (
-          <button type="button" onClick={handleDelete} className="ml-auto text-sm text-red-500 hover:text-red-600 px-4 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+          <button type="button" onClick={handleDelete}
+            className="ml-auto text-[15px] text-red-500 hover:text-red-600 px-4 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
             Delete
           </button>
         )}
@@ -99,4 +132,4 @@ export function TemplateForm({ template }: { template?: Template }) {
   )
 }
 
-const input = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-sm bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]'
+const input = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]'

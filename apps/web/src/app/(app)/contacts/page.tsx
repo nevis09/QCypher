@@ -34,11 +34,11 @@ export default async function ContactsPage({
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold">Contacts</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-0.5">{contacts?.length ?? 0} total</p>
+          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{contacts?.length ?? 0} total</p>
         </div>
         <Link
           href="/contacts/new"
-          className="bg-accent text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
+          className="bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
         >
           Add contact
         </Link>

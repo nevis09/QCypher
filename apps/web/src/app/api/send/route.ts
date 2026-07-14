@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { rateLimit, LIMITS } from '@/lib/rate-limit'
 import { getIp } from '@/lib/get-ip'
+import { appendOptOut } from '@/lib/template-interpolate'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM    = process.env.RESEND_FROM_EMAIL ?? 'noreply@example.com'
@@ -33,12 +34,13 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { templateId, contactId, channel, preview } = await request.json() as {
+  const { templateId, contactId, channel, preview: _preview } = await request.json() as {
     templateId: string
     contactId: string
     channel: 'email' | 'sms'
     preview: string
   }
+  let preview = _preview
 
   if (!templateId || !contactId || !channel || !preview) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -57,6 +59,11 @@ export async function POST(request: NextRequest) {
   const recipient = channel === 'email' ? contact.email : contact.phone
   if (!recipient) {
     return NextResponse.json({ error: `Contact has no ${channel} address` }, { status: 422 })
+  }
+
+  // Compliance: append opt-out line for marketing SMS at the send layer
+  if (channel === 'sms' && (template as any).is_marketing) {
+    preview = appendOptOut(preview)
   }
 
   // Insert queued log entry

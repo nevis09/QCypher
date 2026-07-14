@@ -69,7 +69,7 @@ export function ContactForm({ contact }: { contact?: Contact }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-[hsl(var(--muted))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="bg-[hsl(var(--card))] rounded-2xl shadow-soft border border-[hsl(var(--border))] p-6 space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="First name *">
           <input required value={form.first_name} onChange={set('first_name')} className={input} />
@@ -104,12 +104,12 @@ export function ContactForm({ contact }: { contact?: Contact }) {
       <Field label="Notes">
         <textarea value={form.notes} onChange={set('notes')} rows={3} className={`${input} resize-none`} />
       </Field>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-[15px] text-red-500">{error}</p>}
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={isPending} className="bg-accent text-white text-sm font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
+        <button type="submit" disabled={isPending} className="bg-accent text-white text-[15px] font-medium px-5 py-2 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
           {isPending ? 'Saving…' : contact ? 'Save changes' : 'Create contact'}
         </button>
-        <button type="button" onClick={() => router.back()} className="text-sm text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
+        <button type="button" onClick={() => router.back()} className="text-[15px] text-[hsl(var(--muted-foreground))] px-4 py-2 rounded-xl hover:bg-[hsl(var(--muted))] transition-colors">
           Cancel
         </button>
       </div>
@@ -120,10 +120,10 @@ export function ContactForm({ contact }: { contact?: Contact }) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-sm font-medium text-[hsl(var(--foreground))]">{label}</label>
+      <label className="text-[15px] font-medium text-[hsl(var(--foreground))]">{label}</label>
       {children}
     </div>
   )
 }
 
-const input = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-sm bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] transition-shadow'
+const input = 'w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] transition-shadow'

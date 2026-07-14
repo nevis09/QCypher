@@ -14,8 +14,8 @@ const TYPE_META = {
 export function InteractionTimeline({ interactions }: { interactions: Interaction[] }) {
   if (interactions.length === 0) {
     return (
-      <div className="rounded-2xl border border-[hsl(var(--border))] bg-white dark:bg-[hsl(var(--muted))] p-8 text-center">
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">No interactions yet. Log the first one above.</p>
+      <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-8 text-center">
+        <p className="text-[15px] text-[hsl(var(--muted-foreground))]">No interactions yet. Log the first one above.</p>
       </div>
     )
   }
@@ -26,18 +26,18 @@ export function InteractionTimeline({ interactions }: { interactions: Interactio
         const meta = TYPE_META[item.type]
         const Icon = meta.icon
         return (
-          <div key={item.id} className="flex gap-3 bg-white dark:bg-[hsl(var(--muted))] rounded-2xl border border-[hsl(var(--border))] shadow-soft p-4">
+          <div key={item.id} className="flex gap-3 bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] shadow-soft p-4">
             <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${meta.color}`}>
               <Icon className="w-3.5 h-3.5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold">{meta.label}</span>
-                <span className="text-xs text-[hsl(var(--muted-foreground))]">
+                <span className="text-[15px] font-semibold">{meta.label}</span>
+                <span className="text-[15px] text-[hsl(var(--muted-foreground))]">
                   {formatDistanceToNow(new Date(item.occurred_at), { addSuffix: true })}
                 </span>
               </div>
-              <p className="text-sm mt-1 whitespace-pre-wrap">{item.body}</p>
+              <p className="text-[15px] mt-1 whitespace-pre-wrap">{item.body}</p>
             </div>
           </div>
         )
