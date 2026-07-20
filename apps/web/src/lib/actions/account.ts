@@ -29,16 +29,9 @@ export async function updateProfile(data: {
 
   const { error } = await supabase
     .from('users')
-    .update(data)
-    .eq('id', user.id)
+    .upsert({ id: user.id, ...data }, { onConflict: 'id' })
 
-  if (error) {
-    // Row may not exist yet — upsert
-    const { error: upsertErr } = await supabase
-      .from('users')
-      .upsert({ id: user.id, ...data })
-    if (upsertErr) throw upsertErr
-  }
+  if (error) throw error
   revalidatePath('/settings')
 }
 
