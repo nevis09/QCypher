@@ -339,7 +339,14 @@ export function CalendarView({
   calConnected?: boolean
   gcalConnected?: boolean
 }) {
-  const [view,      setView]      = useState<ViewMode>('month')
+  const [view, setViewRaw] = useState<ViewMode>(() => {
+    if (typeof window === 'undefined') return 'month'
+    return (localStorage.getItem('cal_view') as ViewMode) ?? 'month'
+  })
+  function setView(v: ViewMode) {
+    localStorage.setItem('cal_view', v)
+    setViewRaw(v)
+  }
   const [anchor,    setAnchor]    = useState(() => new Date())
   const [modal,     setModal]     = useState<{ date?: Date; event?: CalEvent } | null>(null)
   const [showSheet, setShowSheet] = useState(false)
