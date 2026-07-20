@@ -47,9 +47,9 @@ const FX = {
   borderMed:   'rgba(74,157,181,0.22)',
   glow:        '0 0 18px rgba(74,157,181,0.18)',
   glowStrong:  '0 0 18px rgba(74,157,181,0.22)',
-  gridLine:    'rgba(74,157,181,0.07)',
+  gridLine:    'rgba(74,157,181,0.15)',
   todayRing:   'rgba(74,157,181,0.55)',
-  eventBg:     'rgba(74,157,181,0.10)',
+  eventBg:     'rgba(74,157,181,0.18)',
   eventBorder: '#4a9db5',
   headerGrad:  'linear-gradient(135deg, rgba(42,82,160,0.08) 0%, rgba(74,157,181,0.10) 100%)',
   activePill:  'linear-gradient(135deg, #2a52a0 0%, #4a9db5 100%)',
@@ -245,7 +245,7 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                 <span style={{
                   position: 'absolute', top: -9, right: 8,
                   fontSize: '11px', fontWeight: 700,
-                  color: FX.cyan, opacity: 0.5,
+                  color: '#2a52a0',
                   letterSpacing: '0.04em',
                 }}>
                   {format(new Date(2000, 0, 1, h), 'ha').toLowerCase()}
@@ -284,24 +284,24 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                       className="absolute transition-all"
                       style={{
                         left: 2, right: 2, top, height,
-                        background: 'rgba(0,212,255,0.10)',
-                        borderLeft: `3px solid ${FX.cyan}`,
+                        background: 'rgba(42,82,160,0.18)',
+                        borderLeft: `3px solid #2a52a0`,
                         borderRadius: '6px',
-                        boxShadow: `0 0 12px rgba(0,212,255,0.15), inset 0 0 12px rgba(0,212,255,0.04)`,
+                        boxShadow: `0 0 10px rgba(42,82,160,0.20)`,
                         zIndex: 10,
                         textAlign: 'left',
                         padding: '3px 8px',
                         overflow: 'hidden',
                         backdropFilter: 'blur(4px)',
                       }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.20)')}
-                      onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.10)')}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.30)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.18)')}
                     >
-                      <p style={{ fontSize: '12px', fontWeight: 800, color: FX.cyan, lineHeight: 1.2, letterSpacing: '0.02em' }} className="truncate">
+                      <p style={{ fontSize: '12px', fontWeight: 800, color: '#2a52a0', lineHeight: 1.2, letterSpacing: '0.02em' }} className="truncate">
                         {ev.title}
                       </p>
                       {height > 30 && (
-                        <p style={{ fontSize: '11px', color: 'rgba(0,212,255,0.6)', marginTop: '1px' }}>
+                        <p style={{ fontSize: '11px', color: 'rgba(42,82,160,0.75)', marginTop: '1px' }}>
                           {format(parseISO(ev.starts_at), 'h:mm')}–{format(parseISO(ev.ends_at), 'h:mma')}
                         </p>
                       )}
