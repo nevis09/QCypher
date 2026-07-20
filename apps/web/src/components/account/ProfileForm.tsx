@@ -25,7 +25,7 @@ const SIMPLE_FIELDS: {
   placeholder: string; color: string; bg: string
 }[] = [
   { key: 'business_name', label: 'Business name', icon: Building2, placeholder: 'Your business name', color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
-  { key: 'legal_name',    label: 'Legal name',    icon: User,      placeholder: 'Your full legal name', color: '#6366f1', bg: 'rgba(99,102,241,0.10)' },
+  { key: 'legal_name',    label: 'Legal name',    icon: User,      placeholder: 'Your full legal name', color: '#2a52a0', bg: 'rgba(42,82,160,0.10)' },
   { key: 'phone',         label: 'Phone',         icon: Phone,     placeholder: '+1 (555) 000-0000',    color: '#0ea5e9', bg: 'rgba(14,165,233,0.10)' },
 ]
 
@@ -42,12 +42,19 @@ type NominatimResult = {
   }
 }
 
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10)
+  if (digits.length <= 3) return digits.length ? `(${digits}` : ''
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
 export function ProfileForm({ initial }: Props) {
   const [form, setForm] = useState({
     business_name: initial.business_name ?? '',
     legal_name:    initial.legal_name    ?? '',
     nickname:      initial.nickname      ?? '',
-    phone:         initial.phone         ?? '',
+    phone:         formatPhone(initial.phone ?? ''),
     street:        initial.street        ?? '',
     city:          initial.city          ?? '',
     state:         initial.state         ?? '',
@@ -157,7 +164,10 @@ export function ProfileForm({ initial }: Props) {
                   style={{ color: 'hsl(var(--muted-foreground))' }}>{label}</p>
                 {isEditing ? (
                   <input autoFocus value={form[key]}
-                    onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                    onChange={e => {
+                      const val = key === 'phone' ? formatPhone(e.target.value) : e.target.value
+                      setForm(f => ({ ...f, [key]: val }))
+                    }}
                     placeholder={placeholder}
                     className="w-full bg-transparent text-[15px] outline-none"
                     style={{ color: 'hsl(var(--foreground))' }} />
