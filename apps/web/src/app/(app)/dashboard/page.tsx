@@ -1,55 +1,76 @@
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
-import { Users, TrendingUp, Calendar, FileText, UserPlus, Activity } from 'lucide-react'
+import { Users, Calendar, UserPlus, Activity, ShoppingBag, DollarSign, LayoutGrid, BookOpen, FileText, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
+/* ─── Accent palette (works in both themes) ──────────────────────────── */
+const BLUE = '#2a52a0'
+const TEAL = '#4a9db5'
+
+/* ─── Stat Card ─────────────────────────────────────────────────────── */
 type StatCardProps = {
   label: string; value: string | number; sub?: string
-  icon: React.ElementType; gradient: string; iconColor: string
+  icon: React.ElementType; accent: string; glow: string
 }
-
-function StatCard({ label, value, sub, icon: Icon, gradient, iconColor }: StatCardProps) {
+function StatCard({ label, value, sub, icon: Icon, accent, glow }: StatCardProps) {
   return (
-    <div className="rounded-2xl shadow-card overflow-hidden border border-[hsl(var(--border))]" style={{ background: gradient }}>
-      <div className="p-5 flex items-start gap-4">
-        <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
-          <Icon className="w-5 h-5" style={{ color: iconColor }} strokeWidth={2.5} />
+    <div style={{
+      background: 'hsl(var(--card))',
+      border: `1px solid ${accent}30`,
+      borderRadius: '16px',
+      padding: '20px',
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: `0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px hsl(var(--border))`,
+    }}>
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+        <div style={{
+          width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+          background: `${accent}18`, border: `1px solid ${accent}35`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Icon style={{ width: '18px', height: '18px', color: accent }} strokeWidth={2.5} />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.75)' }}>{label}</p>
-          <p className="text-3xl font-black mt-1 leading-none text-white">{value}</p>
-          {sub && <p className="text-[15px] mt-1.5 font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{sub}</p>}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: `${accent}cc`, marginBottom: '4px' }}>{label}</p>
+          <p style={{ fontSize: '24px', fontWeight: 900, lineHeight: 1, color: 'hsl(var(--foreground))', letterSpacing: '-0.02em' }}>{value}</p>
+          {sub && <p style={{ fontSize: '12px', marginTop: '4px', color: 'hsl(var(--muted-foreground))', fontWeight: 500 }}>{sub}</p>}
         </div>
       </div>
     </div>
   )
 }
 
-function ContactsBarChart({ data }: { data: { month: string; count: number }[] }) {
-  const max = Math.max(...data.map(d => d.count), 1)
+/* ─── Revenue Bar Chart ─────────────────────────────────────────────── */
+function RevenueBarChart({ data }: { data: { month: string; revenue: number }[] }) {
+  const max = Math.max(...data.map(d => d.revenue), 1)
+  const accents = [BLUE, TEAL, '#7b68b0', TEAL, BLUE, '#4a9db5']
   return (
-    <div className="bg-[hsl(var(--card))] rounded-2xl shadow-card border border-[hsl(var(--border))] p-6">
-      <h3 className="text-base font-bold mb-1" style={{ color: 'hsl(var(--foreground))' }}>Contacts Added</h3>
-      <p className="text-[15px] font-medium mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>Last 6 months</p>
-      <div className="flex items-end gap-2.5 h-36">
-        {data.map(({ month, count }, i) => {
-          const colors = ['#6366f1','#8b5cf6','#ec4899','#f97316','#10b981','#0ea5e9']
-          const col = colors[i % colors.length]
+    <div style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '16px', padding: '24px', height: '100%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${TEAL}88, transparent)` }} />
+      <div style={{ marginBottom: '20px' }}>
+        <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: TEAL, marginBottom: '4px' }}>Monthly Revenue</p>
+        <p style={{ fontSize: '16px', fontWeight: 800, color: 'hsl(var(--foreground))' }}>Paid Orders</p>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '120px' }}>
+        {data.map(({ month, revenue }, i) => {
+          const col = accents[i % accents.length]
+          const pct = Math.max((revenue / max) * 100, revenue > 0 ? 8 : 3)
           return (
-            <div key={month} className="flex-1 flex flex-col items-center gap-1.5">
-              <span className="text-[15px] font-bold" style={{ color: 'hsl(var(--foreground))' }}>{count || ''}</span>
-              <div
-                className="w-full rounded-t-lg transition-all"
-                style={{
-                  height: `${Math.max((count / max) * 100, count > 0 ? 8 : 4)}%`,
-                  background: col,
-                  opacity: count === 0 ? 0.18 : 1,
-                  minHeight: '4px',
-                }}
-              />
-              <span className="text-[15px] font-semibold" style={{ color: 'hsl(var(--muted-foreground))' }}>{month}</span>
+            <div key={month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '15px', fontWeight: 700, color: revenue > 0 ? 'hsl(var(--foreground))' : 'transparent' }}>
+                {revenue > 0 ? (revenue >= 1000 ? `$${(revenue/1000).toFixed(1)}k` : `$${revenue}`) : ''}
+              </span>
+              <div style={{
+                width: '100%', borderRadius: '6px 6px 3px 3px',
+                height: `${pct}%`, minHeight: '4px',
+                background: revenue > 0 ? `linear-gradient(180deg, ${col}, ${col}88)` : 'hsl(var(--muted))',
+                boxShadow: revenue > 0 ? `0 0 10px ${col}44` : 'none',
+              }} />
+              <span style={{ fontSize: '15px', fontWeight: 600, color: 'hsl(var(--muted-foreground))', letterSpacing: '0.05em' }}>{month}</span>
             </div>
           )
         })}
@@ -58,23 +79,24 @@ function ContactsBarChart({ data }: { data: { month: string; count: number }[] }
   )
 }
 
-function PipelineDonut({ lead, active, inactive }: { lead: number; active: number; inactive: number }) {
+/* ─── Contact Status Donut ──────────────────────────────────────────── */
+function ContactStatusChart({ lead, active, inactive }: { lead: number; active: number; inactive: number }) {
   const total = lead + active + inactive || 1
   const segments = [
-    { label: 'Leads',    value: lead,     color: '#f59e0b', bg: '#fffbeb', text: '#92400e' },
-    { label: 'Active',   value: active,   color: '#10b981', bg: '#ecfdf5', text: '#065f46' },
-    { label: 'Inactive', value: inactive, color: '#6366f1', bg: '#eef2ff', text: '#3730a3' },
+    { label: 'Leads',    value: lead,     color: '#f59e0b' },
+    { label: 'Active',   value: active,   color: '#10b981' },
+    { label: 'Inactive', value: inactive, color: BLUE },
   ]
   let offset = 0
   const r = 40, circ = 2 * Math.PI * r
-
   return (
-    <div className="bg-[hsl(var(--card))] rounded-2xl shadow-card border border-[hsl(var(--border))] p-6">
-      <h3 className="text-base font-bold mb-1" style={{ color: 'hsl(var(--foreground))' }}>Contact Status</h3>
-      <p className="text-[15px] font-medium mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>Breakdown by stage</p>
-      <div className="flex items-center gap-5">
-        <svg viewBox="0 0 100 100" className="w-24 h-24 flex-shrink-0 -rotate-90">
-          <circle cx="50" cy="50" r={r} fill="none" stroke="#f1f5f9" strokeWidth="14" />
+    <div style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '16px', padding: '24px', height: '100%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${BLUE}88, transparent)` }} />
+      <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: TEAL, marginBottom: '4px' }}>Contact Status</p>
+      <p style={{ fontSize: '16px', fontWeight: 800, color: 'hsl(var(--foreground))', marginBottom: '16px' }}>Breakdown</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <svg viewBox="0 0 100 100" style={{ width: '80px', height: '80px', flexShrink: 0, transform: 'rotate(-90deg)' }}>
+          <circle cx="50" cy="50" r={r} fill="none" stroke="hsl(var(--muted))" strokeWidth="14" />
           {segments.map(seg => {
             const pct = seg.value / total
             const dash = pct * circ
@@ -85,20 +107,21 @@ function PipelineDonut({ lead, active, inactive }: { lead: number; active: numbe
                 strokeDasharray={`${dash} ${gap}`}
                 strokeDashoffset={-offset * circ}
                 strokeLinecap="round"
+                style={{ filter: `drop-shadow(0 0 3px ${seg.color}66)` }}
               />
             )
             offset += pct
             return el
           })}
         </svg>
-        <div className="flex-1 space-y-2">
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {segments.map(s => (
-            <div key={s.label} className="flex items-center justify-between rounded-xl px-3 py-2" style={{ background: s.bg }}>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: s.color }} />
-                <span className="text-[15px] font-semibold" style={{ color: s.text }}>{s.label}</span>
+            <div key={s.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: `${s.color}10`, border: `1px solid ${s.color}28`, borderRadius: '10px', padding: '7px 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                <span style={{ fontSize: '15px', fontWeight: 700, color: s.color }}>{s.label}</span>
               </div>
-              <span className="text-[15px] font-black" style={{ color: s.text }}>{s.value}</span>
+              <span style={{ fontSize: '15px', fontWeight: 900, color: 'hsl(var(--foreground))' }}>{s.value}</span>
             </div>
           ))}
         </div>
@@ -107,42 +130,88 @@ function PipelineDonut({ lead, active, inactive }: { lead: number; active: numbe
   )
 }
 
-function RecentContactRow({ c }: { c: { id: string; first_name: string; last_name: string | null; email: string | null; status: string; created_at: string } }) {
+/* ─── Recent Contact Row ─────────────────────────────────────────────── */
+function RecentContactRow({ c }: { c: { id: string; first_name: string; last_name: string | null; email: string | null; status: string } }) {
   const initials = `${c.first_name[0]}${c.last_name?.[0] ?? ''}`.toUpperCase()
-  const badge: Record<string, { bg: string; color: string; label: string }> = {
-    lead:     { bg: 'var(--badge-lead-bg)',     color: 'var(--badge-lead-text)',     label: 'Lead'     },
-    active:   { bg: 'var(--badge-active-bg)',   color: 'var(--badge-active-text)',   label: 'Active'   },
-    inactive: { bg: 'var(--badge-indigo-bg)',   color: 'var(--badge-indigo-text)',   label: 'Inactive' },
+  const badge: Record<string, { color: string; label: string }> = {
+    lead:     { color: '#f59e0b', label: 'Lead'     },
+    active:   { color: '#10b981', label: 'Active'   },
+    inactive: { color: BLUE,      label: 'Inactive' },
   }
-  const b = badge[c.status] ?? { bg: 'var(--badge-inactive-bg)', color: 'var(--badge-inactive-text)', label: c.status }
+  const b = badge[c.status] ?? { color: 'hsl(var(--muted-foreground))', label: c.status }
   return (
-    <Link href={`/contacts/${c.id}`} className="flex items-center gap-3 py-3 hover:bg-[hsl(var(--muted))] -mx-2 px-2 rounded-xl transition-colors">
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[15px] font-black text-white flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+    <Link href={`/contacts/${c.id}`}
+      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 8px', borderRadius: '12px', textDecoration: 'none', transition: 'background .15s' }}
+      className="hover:bg-[hsl(var(--muted))]">
+      <div style={{ width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 900, color: '#fff', background: `linear-gradient(135deg,${BLUE},${TEAL})` }}>
         {initials}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-bold truncate" style={{ color: 'hsl(var(--foreground))' }}>{c.first_name} {c.last_name}</p>
-        {c.email && <p className="text-[15px] font-medium truncate" style={{ color: 'hsl(var(--muted-foreground))' }}>{c.email}</p>}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '13px', fontWeight: 700, color: 'hsl(var(--foreground))', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.first_name} {c.last_name}</p>
+        {c.email && <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.email}</p>}
       </div>
-      <span className="text-[15px] font-bold px-2.5 py-1 rounded-full" style={{ background: b.bg, color: b.color }}>{b.label}</span>
+      <span style={{ fontSize: '15px', fontWeight: 700, padding: '3px 9px', borderRadius: '99px', background: `${b.color}15`, color: b.color, border: `1px solid ${b.color}35`, flexShrink: 0, letterSpacing: '0.05em' }}>{b.label}</span>
     </Link>
   )
 }
 
-function QuickAction({ href, icon: Icon, label, bg, iconColor, textColor }: {
-  href: string; icon: React.ElementType; label: string; bg: string; iconColor: string; textColor: string
-}) {
+/* ─── Recent Order Row ───────────────────────────────────────────────── */
+function RecentOrderRow({ o }: { o: { id: string; total_amount: number; payment_status: string; created_at: string; contact: { first_name: string; last_name: string | null } | null } }) {
+  const STATUS: Record<string, string> = { paid: '#10b981', pending: '#f59e0b', draft: 'hsl(var(--muted-foreground))', refunded: BLUE }
+  const col = STATUS[o.payment_status] ?? STATUS.draft
+  const name = o.contact ? `${o.contact.first_name} ${o.contact.last_name ?? ''}`.trim() : 'No contact'
+  return (
+    <Link href={`/orders/${o.id}`}
+      style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 8px', borderRadius: '12px', textDecoration: 'none', transition: 'background .15s' }}
+      className="hover:bg-[hsl(var(--muted))]">
+      <div style={{ width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.28)' }}>
+        <ShoppingBag style={{ width: '15px', height: '15px', color: '#10b981' }} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '13px', fontWeight: 700, color: 'hsl(var(--foreground))', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</p>
+        <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))' }}>{new Date(o.created_at).toLocaleDateString()}</p>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px', flexShrink: 0 }}>
+        <span style={{ fontSize: '13px', fontWeight: 900, color: 'hsl(var(--foreground))' }}>${Number(o.total_amount).toFixed(2)}</span>
+        <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '99px', background: `${col}15`, color: col, border: `1px solid ${col}35`, letterSpacing: '0.05em', textTransform: 'capitalize' }}>{o.payment_status}</span>
+      </div>
+    </Link>
+  )
+}
+
+/* ─── Quick Action ───────────────────────────────────────────────────── */
+function QuickAction({ href, icon: Icon, label, color }: { href: string; icon: React.ElementType; label: string; color: string }) {
   return (
     <Link href={href}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.02] hover:shadow-card"
-      style={{ background: bg }}>
-      <Icon className="w-4 h-4 flex-shrink-0" style={{ color: iconColor }} strokeWidth={2.5} />
-      <span className="text-[15px] font-bold" style={{ color: textColor }}>{label}</span>
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 8px', borderRadius: '14px', textDecoration: 'none', background: `${color}0d`, border: `1px solid ${color}25`, transition: 'all .18s' }}
+      className="hover:scale-[1.04]">
+      <div style={{ width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${color}18`, border: `1px solid ${color}30` }}>
+        <Icon style={{ width: '18px', height: '18px', color }} strokeWidth={2.5} />
+      </div>
+      <span style={{ fontSize: '12px', fontWeight: 700, color: 'hsl(var(--foreground))', textAlign: 'center', letterSpacing: '0.01em' }}>{label}</span>
     </Link>
   )
 }
 
+/* ─── Panel wrapper ─────────────────────────────────────────────────── */
+function Panel({ title, href, linkLabel, children }: { title: string; href?: string; linkLabel?: string; children: React.ReactNode }) {
+  return (
+    <div style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '16px', padding: '22px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${TEAL}66, transparent)` }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <p style={{ fontSize: '15px', fontWeight: 800, color: 'hsl(var(--foreground))', letterSpacing: '-0.01em' }}>{title}</p>
+        {href && (
+          <Link href={href} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '15px', fontWeight: 700, color: TEAL, textDecoration: 'none' }}>
+            {linkLabel} <ArrowUpRight style={{ width: '13px', height: '13px' }} />
+          </Link>
+        )}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+/* ─── Page ───────────────────────────────────────────────────────────── */
 export default async function DashboardPage() {
   const supabase = await createClient()
   const now = new Date()
@@ -153,109 +222,103 @@ export default async function DashboardPage() {
     { count: newThisMonth },
     { data: byStatus },
     { data: recentContacts },
-    { count: totalTemplates },
     { count: upcomingEvents },
-    { data: monthlyRaw },
+    { data: paidOrders },
+    { data: recentOrders },
+    { count: openDeals },
+    { data: monthlyOrders },
   ] = await Promise.all([
     supabase.from('contacts').select('*', { count: 'exact', head: true }),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth),
     supabase.from('contacts').select('status'),
-    supabase.from('contacts').select('id, first_name, last_name, email, status, created_at').order('created_at', { ascending: false }).limit(5),
-    supabase.from('templates').select('*', { count: 'exact', head: true }),
+    supabase.from('contacts').select('id, first_name, last_name, email, status').order('created_at', { ascending: false }).limit(5),
     supabase.from('events').select('*', { count: 'exact', head: true }).gte('starts_at', now.toISOString()),
-    supabase.from('contacts').select('created_at').order('created_at', { ascending: true }),
+    supabase.from('orders').select('total_amount').eq('payment_status', 'paid').gte('created_at', startOfMonth),
+    supabase.from('orders').select('id, total_amount, payment_status, created_at, contact:contacts(first_name, last_name)').order('created_at', { ascending: false }).limit(5),
+    supabase.from('pipeline_deals').select('*', { count: 'exact', head: true }).then(r => r).catch(() => ({ count: 0, data: null, error: null })),
+    supabase.from('orders').select('total_amount, created_at').eq('payment_status', 'paid'),
   ])
 
+  const revenueThisMonth = (paidOrders ?? []).reduce((s, o) => s + (Number(o.total_amount) || 0), 0)
   const statusCounts = { lead: 0, active: 0, inactive: 0 }
-  for (const row of byStatus ?? []) {
+  for (const row of (byStatus ?? []) as { status: string }[]) {
     if (row.status in statusCounts) statusCounts[row.status as keyof typeof statusCounts]++
   }
-
-  const months: { month: string; count: number }[] = []
+  const months: { month: string; revenue: number }[] = []
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
     const label = d.toLocaleString('default', { month: 'short' })
     const y = d.getFullYear(), m = d.getMonth()
-    const count = (monthlyRaw ?? []).filter(r => {
-      const rd = new Date(r.created_at)
-      return rd.getFullYear() === y && rd.getMonth() === m
-    }).length
-    months.push({ month: label, count })
+    const revenue = ((monthlyOrders ?? []) as { total_amount: number; created_at: string }[])
+      .filter(r => { const rd = new Date(r.created_at); return rd.getFullYear() === y && rd.getMonth() === m })
+      .reduce((s, r) => s + (Number(r.total_amount) || 0), 0)
+    months.push({ month: label, revenue })
   }
+  const fmtRevenue = revenueThisMonth >= 1000 ? `$${(revenueThisMonth/1000).toFixed(1)}k` : `$${revenueThisMonth.toFixed(0)}`
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>
+        <p style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: TEAL, marginBottom: '4px' }}>
+          QCypher CRM
+        </p>
+        <h1 style={{ fontSize: '26px', fontWeight: 900, color: 'hsl(var(--foreground))', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
           Good {hour()}
         </h1>
-        <p className="text-[15px] font-medium mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
-          Here's what's happening with your business today
+        <p style={{ fontSize: '15px', color: 'hsl(var(--muted-foreground))', marginTop: '4px' }}>
+          Here&apos;s your business at a glance
         </p>
       </div>
 
-      {/* Stat grid — each card has its own gradient */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Contacts" value={totalContacts ?? 0}
-          sub={`+${newThisMonth ?? 0} this month`}
-          icon={Users} iconColor="#fff"
-          gradient="linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
-        />
-        <StatCard
-          label="Active Clients" value={statusCounts.active}
-          sub="in pipeline"
-          icon={TrendingUp} iconColor="#fff"
-          gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
-        />
-        <StatCard
-          label="Upcoming Events" value={upcomingEvents ?? 0}
-          sub="on calendar"
-          icon={Calendar} iconColor="#fff"
-          gradient="linear-gradient(135deg, #f97316 0%, #ea580c 100%)"
-        />
-        <StatCard
-          label="Templates" value={totalTemplates ?? 0}
-          sub="quick-replies ready"
-          icon={FileText} iconColor="#fff"
-          gradient="linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)"
-        />
+      {/* Stat grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }} className="lg:grid-cols-4">
+        <StatCard label="Total Contacts" value={totalContacts ?? 0} sub={`+${newThisMonth ?? 0} this month`} icon={Users} accent={BLUE} glow={`${BLUE}44`} />
+        <StatCard label="Revenue (Month)" value={fmtRevenue} sub="paid orders" icon={DollarSign} accent="#10b981" glow="rgba(16,185,129,0.35)" />
+        <StatCard label="Pipeline Deals" value={openDeals ?? 0} sub="open deals" icon={LayoutGrid} accent="#f97316" glow="rgba(249,115,22,0.35)" />
+        <StatCard label="Upcoming Events" value={upcomingEvents ?? 0} sub="on calendar" icon={Calendar} accent={TEAL} glow={`${TEAL}44`} />
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
-          <ContactsBarChart data={months} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }} className="lg:grid-cols-3">
+        <div className="lg:col-span-2" style={{ minHeight: '220px' }}>
+          <RevenueBarChart data={months} />
         </div>
-        <PipelineDonut lead={statusCounts.lead} active={statusCounts.active} inactive={statusCounts.inactive} />
+        <ContactStatusChart lead={statusCounts.lead} active={statusCounts.active} inactive={statusCounts.inactive} />
       </div>
 
-      {/* Recent contacts + quick actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[hsl(var(--card))] rounded-2xl shadow-card border border-[hsl(var(--border))] p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold" style={{ color: 'hsl(var(--foreground))' }}>Recent Contacts</h3>
-            <Link href="/contacts" className="text-[15px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline">View all →</Link>
-          </div>
-          {(recentContacts ?? []).length === 0 ? (
-            <p className="text-[15px] text-center py-6" style={{ color: 'hsl(var(--muted-foreground))' }}>No contacts yet.</p>
-          ) : (
-            <div className="divide-y divide-[hsl(var(--border))]">
-              {(recentContacts ?? []).map(c => <RecentContactRow key={c.id} c={c} />)}
-            </div>
-          )}
-        </div>
-
-        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-card border border-[hsl(var(--border))] p-6">
-          <h3 className="text-base font-bold mb-4" style={{ color: 'hsl(var(--foreground))' }}>Quick Actions</h3>
-          <div className="space-y-2.5">
-            <QuickAction href="/contacts/new"  icon={UserPlus}  label="Add Contact"    bg="#eef2ff" iconColor="#6366f1" textColor="#3730a3" />
-            <QuickAction href="/pipeline"       icon={Activity}  label="View Pipeline"  bg="#ecfdf5" iconColor="#10b981" textColor="#065f46" />
-            <QuickAction href="/templates/new"  icon={FileText}  label="New Template"   bg="#f5f3ff" iconColor="#a855f7" textColor="#5b21b6" />
-            <QuickAction href="/calendar"        icon={Calendar}  label="Schedule Event" bg="#fff7ed" iconColor="#f97316" textColor="#9a3412" />
-          </div>
-        </div>
+      {/* Recent lists */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }} className="lg:grid-cols-2">
+        <Panel title="Recent Contacts" href="/contacts" linkLabel="View all">
+          {(recentContacts ?? []).length === 0
+            ? <p style={{ fontSize: '15px', textAlign: 'center', padding: '24px 0', color: 'hsl(var(--muted-foreground))' }}>No contacts yet.</p>
+            : (recentContacts as { id: string; first_name: string; last_name: string | null; email: string | null; status: string }[]).map(c => (
+                <RecentContactRow key={c.id} c={c} />
+              ))
+          }
+        </Panel>
+        <Panel title="Recent Orders" href="/orders" linkLabel="View all">
+          {(recentOrders ?? []).length === 0
+            ? <p style={{ fontSize: '15px', textAlign: 'center', padding: '24px 0', color: 'hsl(var(--muted-foreground))' }}>No orders yet.</p>
+            : (recentOrders as { id: string; total_amount: number; payment_status: string; created_at: string; contact: { first_name: string; last_name: string | null } | null }[]).map(o => (
+                <RecentOrderRow key={o.id} o={o} />
+              ))
+          }
+        </Panel>
       </div>
+
+      {/* Quick actions */}
+      <Panel title="Quick Actions">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }} className="sm:grid-cols-6">
+          <QuickAction href="/contacts/new"  icon={UserPlus}    label="Add Contact"   color={BLUE} />
+          <QuickAction href="/orders"        icon={ShoppingBag} label="New Order"     color="#10b981" />
+          <QuickAction href="/pipeline"      icon={Activity}    label="Pipeline"      color="#f97316" />
+          <QuickAction href="/templates/new" icon={FileText}    label="New Template"  color="#a855f7" />
+          <QuickAction href="/calendar"      icon={Calendar}    label="Calendar"      color={TEAL} />
+          <QuickAction href="/catalog"       icon={BookOpen}    label="Catalog"       color="#ec4899" />
+        </div>
+      </Panel>
     </div>
   )
 }
