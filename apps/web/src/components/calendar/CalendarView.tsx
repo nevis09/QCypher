@@ -124,7 +124,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
       <div className="grid grid-cols-7" style={{ borderBottom: `1px solid ${FX.border}` }}>
         {['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d => (
           <div key={d} className="text-center py-2.5"
-            style={{ color: FX.cyan, fontSize: '15px', fontWeight: 800, letterSpacing: '0.12em' }}>
+            style={{ color: FX.cyan, fontSize: '11px', fontWeight: 800, letterSpacing: '0.10em' }}>
             {d}
           </div>
         ))}
@@ -150,8 +150,8 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
               >
                 <div className="flex justify-start mb-1">
                   <span style={{
-                    fontSize: '15px', fontWeight: 700,
-                    width: '26px', height: '26px',
+                    fontSize: '12px', fontWeight: 700,
+                    width: '22px', height: '22px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderRadius: '50%',
                     background: today ? FX.cyan : 'transparent',
@@ -168,7 +168,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
                       onClick={e => { e.stopPropagation(); onClickEvent(ev) }}
                       className="w-full text-left truncate transition-all"
                       style={{
-                        fontSize: '15px', fontWeight: 700,
+                        fontSize: '11px', fontWeight: 700,
                         background: FX.eventBg,
                         color: FX.cyan,
                         borderRadius: '4px',
@@ -183,7 +183,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
                     </button>
                   ))}
                   {dayEvs.length > 2 && (
-                    <p style={{ fontSize: '15px', color: FX.violet, fontWeight: 700, paddingLeft: '4px' }}>
+                    <p style={{ fontSize: '11px', color: FX.violet, fontWeight: 700, paddingLeft: '4px' }}>
                       +{dayEvs.length - 2} more
                     </p>
                   )}
@@ -219,11 +219,11 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
           return (
             <div key={day.toISOString()} className="flex-1 text-center py-3"
               style={{ borderLeft: `1px solid ${FX.border}` }}>
-              <p style={{ fontSize: '15px', fontWeight: 800, letterSpacing: '0.12em', color: today ? FX.cyan : 'hsl(var(--muted-foreground))' }}>
+              <p style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.10em', color: today ? FX.cyan : 'hsl(var(--muted-foreground))' }}>
                 {format(day, 'EEE').toUpperCase()}
               </p>
               <p style={{
-                fontSize: '22px', fontWeight: 900, lineHeight: 1.1, marginTop: '2px',
+                fontSize: '18px', fontWeight: 900, lineHeight: 1.1, marginTop: '2px',
                 color: today ? FX.cyan : 'hsl(var(--foreground))',
                 textShadow: 'none',
                 fontVariantNumeric: 'tabular-nums',
@@ -244,7 +244,7 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
               <div key={h} style={{ height: HOUR_H, position: 'relative' }}>
                 <span style={{
                   position: 'absolute', top: -9, right: 8,
-                  fontSize: '15px', fontWeight: 700,
+                  fontSize: '11px', fontWeight: 700,
                   color: FX.cyan, opacity: 0.5,
                   letterSpacing: '0.04em',
                 }}>
@@ -297,11 +297,11 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                       onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.20)')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.10)')}
                     >
-                      <p style={{ fontSize: '15px', fontWeight: 800, color: FX.cyan, lineHeight: 1.2, letterSpacing: '0.02em' }} className="truncate">
+                      <p style={{ fontSize: '12px', fontWeight: 800, color: FX.cyan, lineHeight: 1.2, letterSpacing: '0.02em' }} className="truncate">
                         {ev.title}
                       </p>
                       {height > 30 && (
-                        <p style={{ fontSize: '15px', color: 'rgba(0,212,255,0.6)', marginTop: '1px' }}>
+                        <p style={{ fontSize: '11px', color: 'rgba(0,212,255,0.6)', marginTop: '1px' }}>
                           {format(parseISO(ev.starts_at), 'h:mm')}–{format(parseISO(ev.ends_at), 'h:mma')}
                         </p>
                       )}
@@ -411,7 +411,7 @@ export function CalendarView({
               style={{
                 padding: '5px 12px', borderRadius: '8px', border: `1px solid ${FX.border}`,
                 background: 'transparent', cursor: 'pointer',
-                fontSize: '15px', fontWeight: 700, color: FX.cyan, letterSpacing: '0.04em',
+                fontSize: '12px', fontWeight: 700, color: FX.cyan, letterSpacing: '0.04em',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.1)')}
@@ -434,7 +434,7 @@ export function CalendarView({
           {/* Header label */}
           <span style={{
             flex: 1, textAlign: 'center', minWidth: 0,
-            fontSize: '15px', fontWeight: 800, letterSpacing: '0.04em',
+            fontSize: '13px', fontWeight: 800, letterSpacing: '0.04em',
             color: 'hsl(var(--foreground))',
             textTransform: 'uppercase',
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -452,7 +452,7 @@ export function CalendarView({
                 onClick={() => setView(v.key)}
                 style={{
                   padding: '6px 12px',
-                  fontSize: '15px', fontWeight: 800, letterSpacing: '0.05em',
+                  fontSize: '11px', fontWeight: 800, letterSpacing: '0.05em',
                   cursor: 'pointer', transition: 'all 0.15s',
                   borderRight: i < VIEWS.length - 1 ? `1px solid ${FX.border}` : 'none',
                   background: view === v.key ? FX.activePill : 'transparent',
@@ -500,7 +500,7 @@ export function CalendarView({
           boxShadow: `${FX.glowStrong}, 0 4px 24px rgba(74,157,181,0.35)`,
           width: '48px', height: '48px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '15px', fontWeight: 800, letterSpacing: '0.04em',
+          fontSize: '12px', fontWeight: 800, letterSpacing: '0.04em',
           transition: 'all 0.15s',
         }}
       >
