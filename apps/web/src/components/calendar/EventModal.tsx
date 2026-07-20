@@ -29,7 +29,9 @@ export function EventModal({ date, event, onClose }: {
   const supabase = createClient()
 
   const defaultStart = date ? format(date, "yyyy-MM-dd'T'09:00") : toInputDateTime(event?.starts_at ?? new Date().toISOString())
-  const defaultEnd   = date ? format(date, "yyyy-MM-dd'T'10:00") : toInputDateTime(event?.ends_at ?? new Date().toISOString())
+  const defaultEnd   = date ? format(date, "yyyy-MM-dd'T'10:00") : toInputDateTime(
+    event?.ends_at ?? new Date(new Date().getTime() + 60 * 60 * 1000).toISOString()
+  )
 
   const [form, setForm] = useState({
     title: event?.title ?? '',
@@ -45,6 +47,10 @@ export function EventModal({ date, event, onClose }: {
 
   async function doSave() {
     setError(null)
+    if (new Date(form.ends_at) <= new Date(form.starts_at)) {
+      setError('End time must be after start time.')
+      return
+    }
     startTransition(async () => {
       const { data: { user } } = await supabase.auth.getUser()
       const tenantId = user?.app_metadata?.tenant_id ?? user?.user_metadata?.tenant_id
