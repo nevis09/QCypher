@@ -8,7 +8,6 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { configureExistingNumber } from '@/lib/twilio'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -26,22 +25,13 @@ export async function POST(request: NextRequest) {
   const { data: tenant } = await supabase.from('tenants').select('id').single()
   if (!tenant) return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
 
-  const voiceWebhookUrl = `${process.env.APP_URL}/api/twilio/voice`
+  const { error } = await supabase
+    .from('tenants')
+    .update({ twilio_number: phoneNumber })
+    .eq('id', tenant.id)
 
-  try {
-    await configureExistingNumber(phoneNumber, voiceWebhookUrl)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    const { error } = await supabase
-      .from('tenants')
-      .update({ twilio_number: phoneNumber })
-      .eq('id', tenant.id)
-
-    if (error) throw new Error(error.message)
-
-    return NextResponse.json({ number: phoneNumber })
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to connect number'
-    console.error('[twilio/connect]', msg)
-    return NextResponse.json({ error: msg }, { status: 500 })
-  }
+  const webhookUrl = `${process.env.APP_URL}/api/twilio/voice`
+  return NextResponse.json({ number: phoneNumber, webhookUrl })
 }

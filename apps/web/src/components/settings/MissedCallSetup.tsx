@@ -3,12 +3,15 @@
 import { useState } from 'react'
 import { Phone, Copy, Check, ChevronRight, Loader2 } from 'lucide-react'
 
+const WEBHOOK_URL = 'https://www.qcyphertech.com/api/twilio/voice'
+
 export function MissedCallSetup({ currentNumber }: { currentNumber: string | null }) {
-  const [number,  setNumber]  = useState(currentNumber)
-  const [input,   setInput]   = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error,   setError]   = useState<string | null>(null)
-  const [copied,  setCopied]  = useState(false)
+  const [number,        setNumber]        = useState(currentNumber)
+  const [input,         setInput]         = useState('')
+  const [loading,       setLoading]       = useState(false)
+  const [error,         setError]         = useState<string | null>(null)
+  const [copied,        setCopied]        = useState(false)
+  const [copiedWebhook, setCopiedWebhook] = useState(false)
 
   function normalise(raw: string): string {
     const digits = raw.replace(/\D/g, '')
@@ -46,6 +49,12 @@ export function MissedCallSetup({ currentNumber }: { currentNumber: string | nul
     navigator.clipboard.writeText(number)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  function handleCopyWebhook() {
+    navigator.clipboard.writeText(WEBHOOK_URL)
+    setCopiedWebhook(true)
+    setTimeout(() => setCopiedWebhook(false), 2000)
   }
 
   return (
@@ -119,29 +128,59 @@ export function MissedCallSetup({ currentNumber }: { currentNumber: string | nul
             </div>
 
             {/* Setup instructions */}
-            <p style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'hsl(var(--muted-foreground))', marginBottom: '10px' }}>
-              Setup — takes 2 minutes
+            <p style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'hsl(var(--muted-foreground))', marginBottom: '10px' }}>
+              Two steps to finish setup
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[
-                { n: '1', text: 'On your phone, open Settings → Phone → Call Forwarding (iOS) or Settings → Calls → Additional settings → Call forwarding (Android).' },
-                { n: '2', text: `Enable "Forward when busy" and "Forward when unanswered" — enter ${number} as the destination.` },
-                { n: '3', text: 'Test it: call your business number from another phone and don\'t answer. Within seconds the caller should receive a text.' },
-              ].map(step => (
-                <div key={step.n} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                  <div style={{
-                    width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
-                    background: 'rgba(42,82,160,0.10)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '12px', fontWeight: 800, color: '#2a52a0', marginTop: '1px',
-                  }}>
-                    {step.n}
-                  </div>
-                  <p style={{ fontSize: '14px', color: 'hsl(var(--foreground))', lineHeight: 1.5 }}>
-                    {step.text}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+              {/* Step 1 — Twilio webhook */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
+                  background: 'rgba(42,82,160,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '12px', fontWeight: 800, color: '#2a52a0', marginTop: '1px',
+                }}>1</div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: '14px', color: 'hsl(var(--foreground))', lineHeight: 1.5, marginBottom: '8px' }}>
+                    In your <strong>Twilio console</strong>, open the phone number {number} → set <em>A call comes in</em> → Webhook to:
                   </p>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '9px 12px', borderRadius: '10px',
+                    background: 'hsl(var(--muted))', border: '1px solid hsl(var(--border))',
+                  }}>
+                    <code style={{ flex: 1, fontSize: '12px', color: 'hsl(var(--foreground))', wordBreak: 'break-all' }}>
+                      {WEBHOOK_URL}
+                    </code>
+                    <button
+                      onClick={handleCopyWebhook}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
+                        padding: '5px 10px', borderRadius: '8px', border: '1px solid hsl(var(--border))',
+                        background: 'hsl(var(--card))', cursor: 'pointer',
+                        fontSize: '12px', fontWeight: 600, color: 'hsl(var(--foreground))',
+                      }}
+                    >
+                      {copiedWebhook ? <Check style={{ width: '12px', height: '12px', color: '#10b981' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
+                      {copiedWebhook ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Step 2 — call forwarding */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <div style={{
+                  width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
+                  background: 'rgba(42,82,160,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '12px', fontWeight: 800, color: '#2a52a0', marginTop: '1px',
+                }}>2</div>
+                <p style={{ fontSize: '14px', color: 'hsl(var(--foreground))', lineHeight: 1.5 }}>
+                  Forward your business number to {number} when unanswered (phone Settings → Call Forwarding, or through your carrier).
+                </p>
+              </div>
             </div>
 
             <div style={{
@@ -149,7 +188,7 @@ export function MissedCallSetup({ currentNumber }: { currentNumber: string | nul
               background: 'rgba(42,82,160,0.06)', border: '1px solid rgba(42,82,160,0.14)',
             }}>
               <p style={{ fontSize: '13px', color: '#2a52a0', lineHeight: 1.5 }}>
-                <strong>Tip:</strong> Edit the auto-reply text under <strong>Templates → Missed call follow-up</strong> to personalise the message callers receive.
+                <strong>Tip:</strong> Customise the auto-reply under <strong>Templates → Missed call follow-up</strong>.
               </p>
             </div>
           </>
