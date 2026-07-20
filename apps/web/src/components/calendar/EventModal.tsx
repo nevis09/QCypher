@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
-import { X, Trash2 } from 'lucide-react'
+import { X, Trash2, AlertTriangle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Tables } from '@/types/database'
 
@@ -25,6 +25,7 @@ export function EventModal({ date, event, onClose }: {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [showPastConfirm, setShowPastConfirm] = useState(false)
   const supabase = createClient()
 
   const defaultStart = date ? format(date, "yyyy-MM-dd'T'09:00") : toInputDateTime(event?.starts_at ?? new Date().toISOString())
@@ -37,15 +38,12 @@ export function EventModal({ date, event, onClose }: {
     ends_at: defaultEnd,
   })
 
-  const isPast = new Date(form.starts_at) < new Date()
-
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
+  async function doSave() {
     setError(null)
     startTransition(async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -71,6 +69,15 @@ export function EventModal({ date, event, onClose }: {
     })
   }
 
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault()
+    if (new Date(form.starts_at) < new Date()) {
+      setShowPastConfirm(true)
+      return
+    }
+    doSave()
+  }
+
   async function handleDelete() {
     if (!event) return
     startTransition(async () => {
@@ -81,70 +88,102 @@ export function EventModal({ date, event, onClose }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div
-        className="w-full sm:max-w-md bg-[hsl(var(--card))] rounded-t-2xl sm:rounded-2xl shadow-card flex flex-col"
-        style={{ maxHeight: '92svh' }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header — always visible */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[hsl(var(--border))] flex-shrink-0">
-          <h2 className="text-[15px] font-semibold">{event ? 'Edit event' : 'New event'}</h2>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Scrollable form body */}
-        <form onSubmit={handleSave} className="p-5 space-y-4 overflow-y-auto">
-          <div className="space-y-1.5">
-            <label className="text-[15px] font-medium">Title *</label>
-            <input required value={form.title} onChange={set('title')} className={input} placeholder="Team call…" />
-          </div>
-
-          {/* Stack on mobile, side-by-side on sm+ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-[15px] font-medium">Start</label>
-              <input type="datetime-local" required value={form.starts_at} onChange={set('starts_at')} className={input} />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[15px] font-medium">End</label>
-              <input type="datetime-local" required value={form.ends_at} onChange={set('ends_at')} className={input} />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-[15px] font-medium">Description</label>
-            <textarea value={form.description} onChange={set('description')} rows={3} className={`${input} resize-none`} />
-          </div>
-
-          {isPast && (
-            <div className="flex items-start gap-2 rounded-xl px-3 py-2.5" style={{ background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.35)' }}>
-              <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>⚠️</span>
-              <p className="text-[13px] font-semibold" style={{ color: '#b45309' }}>
-                This event is scheduled in the past. Double-check the date and time before saving.
-              </p>
-            </div>
-          )}
-
-          {error && <p className="text-[13px] text-red-500">{error}</p>}
-
-          <div className="flex items-center gap-3 pt-1 pb-2">
-            <button type="submit" disabled={isPending}
-              className="flex-1 sm:flex-none bg-accent text-white text-[15px] font-medium px-5 py-2.5 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
-              {isPending ? 'Saving…' : event ? 'Save changes' : 'Create event'}
+    <>
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+        <div
+          className="w-full sm:max-w-md bg-[hsl(var(--card))] rounded-t-2xl sm:rounded-2xl shadow-card flex flex-col"
+          style={{ maxHeight: '92svh' }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[hsl(var(--border))] flex-shrink-0">
+            <h2 className="text-[15px] font-semibold">{event ? 'Edit event' : 'New event'}</h2>
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
+              <X className="w-4 h-4" />
             </button>
-            {event && (
-              <button type="button" onClick={handleDelete} disabled={isPending}
-                className="ml-auto flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-[15px] font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors">
-                <Trash2 className="w-4 h-4" /> Delete
-              </button>
-            )}
           </div>
-        </form>
+
+          {/* Form */}
+          <form onSubmit={handleSave} className="p-5 space-y-4 overflow-y-auto">
+            <div className="space-y-1.5">
+              <label className="text-[15px] font-medium">Title *</label>
+              <input required value={form.title} onChange={set('title')} className={input} placeholder="Team call…" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-[15px] font-medium">Start</label>
+                <input type="datetime-local" required value={form.starts_at} onChange={set('starts_at')} className={input} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[15px] font-medium">End</label>
+                <input type="datetime-local" required value={form.ends_at} onChange={set('ends_at')} className={input} />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[15px] font-medium">Description</label>
+              <textarea value={form.description} onChange={set('description')} rows={3} className={`${input} resize-none`} />
+            </div>
+
+            {error && <p className="text-[13px] text-red-500">{error}</p>}
+
+            <div className="flex items-center gap-3 pt-1 pb-2">
+              <button type="submit" disabled={isPending}
+                className="flex-1 sm:flex-none bg-accent text-white text-[15px] font-medium px-5 py-2.5 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50">
+                {isPending ? 'Saving…' : event ? 'Save changes' : 'Create event'}
+              </button>
+              {event && (
+                <button type="button" onClick={handleDelete} disabled={isPending}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-[15px] font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors">
+                  <Trash2 className="w-4 h-4" /> Delete
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+
+      {/* Past-date confirmation popup */}
+      {showPastConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div
+            className="w-full max-w-sm bg-[hsl(var(--card))] rounded-2xl overflow-hidden"
+            style={{ border: '1px solid rgba(234,179,8,0.35)', boxShadow: '0 8px 40px rgba(0,0,0,0.25)' }}
+          >
+            <div className="px-5 pt-5 pb-4 flex flex-col items-center text-center gap-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                style={{ background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.30)' }}>
+                <AlertTriangle className="w-6 h-6" style={{ color: '#b45309' }} />
+              </div>
+              <div>
+                <p className="text-[16px] font-bold" style={{ color: 'hsl(var(--foreground))' }}>Past date detected</p>
+                <p className="text-[13px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                  This event starts in the past. Are you sure you want to save it?
+                </p>
+              </div>
+            </div>
+            <div className="flex border-t" style={{ borderColor: 'hsl(var(--border))' }}>
+              <button
+                onClick={() => setShowPastConfirm(false)}
+                className="flex-1 py-3 text-[14px] font-semibold transition-colors hover:bg-[hsl(var(--muted))]"
+                style={{ color: 'hsl(var(--muted-foreground))', borderRight: '1px solid hsl(var(--border))' }}
+              >
+                Go back
+              </button>
+              <button
+                onClick={() => { setShowPastConfirm(false); doSave() }}
+                disabled={isPending}
+                className="flex-1 py-3 text-[14px] font-bold transition-colors hover:bg-[hsl(var(--muted))]"
+                style={{ color: '#b45309' }}
+              >
+                Save anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
