@@ -37,6 +37,8 @@ export function EventModal({ date, event, onClose }: {
     ends_at: defaultEnd,
   })
 
+  const isPast = new Date(form.starts_at) < new Date()
+
   function set(field: string) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm(prev => ({ ...prev, [field]: e.target.value }))
@@ -117,7 +119,16 @@ export function EventModal({ date, event, onClose }: {
             <textarea value={form.description} onChange={set('description')} rows={3} className={`${input} resize-none`} />
           </div>
 
-          {error && <p className="text-[15px] text-red-500">{error}</p>}
+          {isPast && (
+            <div className="flex items-start gap-2 rounded-xl px-3 py-2.5" style={{ background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.35)' }}>
+              <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>⚠️</span>
+              <p className="text-[13px] font-semibold" style={{ color: '#b45309' }}>
+                This event is scheduled in the past. Double-check the date and time before saving.
+              </p>
+            </div>
+          )}
+
+          {error && <p className="text-[13px] text-red-500">{error}</p>}
 
           <div className="flex items-center gap-3 pt-1 pb-2">
             <button type="submit" disabled={isPending}
