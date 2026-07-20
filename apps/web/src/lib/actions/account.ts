@@ -32,8 +32,14 @@ export async function updateProfile(data: {
     .update(data)
     .eq('id', user.id)
 
-  if (error) throw error
-  revalidatePath('/account')
+  if (error) {
+    // Row may not exist yet — upsert
+    const { error: upsertErr } = await supabase
+      .from('users')
+      .upsert({ id: user.id, ...data })
+    if (upsertErr) throw upsertErr
+  }
+  revalidatePath('/settings')
 }
 
 export async function changePassword(password: string) {
