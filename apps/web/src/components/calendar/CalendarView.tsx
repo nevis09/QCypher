@@ -40,19 +40,19 @@ const HOURS     = Array.from({ length: DAY_END - DAY_START }, (_, i) => DAY_STAR
 
 // Futuristic palette — works on top of the app theme
 const FX = {
-  cyan:        '#4a9db5',
-  violet:      '#2a52a0',
-  pink:        '#ec4899',
-  border:      'rgba(74,157,181,0.14)',
-  borderMed:   'rgba(74,157,181,0.22)',
-  glow:        '0 0 18px rgba(74,157,181,0.18)',
-  glowStrong:  '0 0 18px rgba(74,157,181,0.22)',
-  gridLine:    'rgba(74,157,181,0.15)',
-  todayRing:   'rgba(74,157,181,0.55)',
-  eventBg:     'rgba(74,157,181,0.18)',
-  eventBorder: '#4a9db5',
-  headerGrad:  'linear-gradient(135deg, rgba(42,82,160,0.08) 0%, rgba(74,157,181,0.10) 100%)',
-  activePill:  'linear-gradient(135deg, #2a52a0 0%, #4a9db5 100%)',
+  cyan:        '#2a52a0',
+  violet:      '#1a3070',
+  pink:        '#2a52a0',
+  border:      'rgba(42,82,160,0.18)',
+  borderMed:   'rgba(42,82,160,0.30)',
+  glow:        '0 0 18px rgba(42,82,160,0.18)',
+  glowStrong:  '0 0 18px rgba(42,82,160,0.28)',
+  gridLine:    'rgba(42,82,160,0.14)',
+  todayRing:   'rgba(42,82,160,0.55)',
+  eventBg:     'rgba(42,82,160,0.16)',
+  eventBorder: '#2a52a0',
+  headerGrad:  'linear-gradient(135deg, rgba(26,48,112,0.08) 0%, rgba(42,82,160,0.12) 100%)',
+  activePill:  'linear-gradient(135deg, #1a3070 0%, #2a52a0 100%)',
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -145,7 +145,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
                   opacity: inMonth ? 1 : 0.25,
                   background: 'transparent',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.04)')}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.04)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 <div className="flex justify-start mb-1">
@@ -176,7 +176,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
                         borderLeft: `2px solid ${FX.cyan}`,
                         letterSpacing: '0.01em',
                       }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.18)')}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.18)')}
                       onMouseLeave={e => (e.currentTarget.style.background = FX.eventBg)}
                     >
                       {ev.title}
@@ -262,7 +262,7 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
               <div key={di} className="flex-1 relative"
                 style={{
                   borderLeft: `1px solid ${today ? FX.borderMed : FX.border}`,
-                  background: today ? 'rgba(0,212,255,0.02)' : 'transparent',
+                  background: today ? 'rgba(42,82,160,0.04)' : 'transparent',
                 }}>
                 {/* Hour rows */}
                 {HOURS.map(h => (
@@ -270,7 +270,7 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                     onClick={() => onClickSlot(day, h)}
                     className="cursor-pointer transition-all"
                     style={{ height: HOUR_H, borderBottom: `1px solid ${FX.gridLine}` }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.05)')}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.06)')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   />
                 ))}
@@ -402,7 +402,7 @@ export function CalendarView({
                 padding: '6px', borderRadius: '8px', border: `1px solid ${FX.border}`,
                 background: 'transparent', cursor: 'pointer', color: FX.cyan, transition: 'all 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.1)')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.10)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <ChevronLeft size={14} />
@@ -414,7 +414,7 @@ export function CalendarView({
                 fontSize: '12px', fontWeight: 700, color: FX.cyan, letterSpacing: '0.04em',
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.1)')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.10)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               TODAY
@@ -424,7 +424,7 @@ export function CalendarView({
                 padding: '6px', borderRadius: '8px', border: `1px solid ${FX.border}`,
                 background: 'transparent', cursor: 'pointer', color: FX.cyan, transition: 'all 0.15s',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,212,255,0.1)')}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.10)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               <ChevronRight size={14} />
@@ -458,7 +458,7 @@ export function CalendarView({
                   background: view === v.key ? FX.activePill : 'transparent',
                   color: view === v.key ? '#fff' : FX.cyan,
                   textShadow: view === v.key ? '0 0 8px rgba(255,255,255,0.4)' : 'none',
-                  boxShadow: view === v.key ? '0 0 16px rgba(0,212,255,0.3)' : 'none',
+                  boxShadow: view === v.key ? '0 0 16px rgba(42,82,160,0.30)' : 'none',
                 }}
               >
                 {v.label.toUpperCase()}
