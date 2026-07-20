@@ -6,8 +6,8 @@
  *   - Contacts page (/contacts): stale-while-revalidate for offline read
  */
 
-const SHELL_CACHE  = 'qcypher-shell-v1'
-const PAGES_CACHE  = 'qcypher-pages-v1'
+const SHELL_CACHE  = 'qcypher-shell-v2'
+const PAGES_CACHE  = 'qcypher-pages-v2'
 
 const SHELL_ASSETS = [
   '/',
@@ -48,7 +48,8 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  // Static assets: cache-first
+  // Static assets: network-first so new deploys always get fresh chunks;
+  // fall back to cache only when offline.
   if (
     url.pathname.startsWith('/_next/static/') ||
     url.pathname.startsWith('/_next/image/') ||
@@ -57,11 +58,13 @@ self.addEventListener('fetch', event => {
   ) {
     event.respondWith(
       caches.open(SHELL_CACHE).then(async cache => {
-        const cached = await cache.match(request)
-        if (cached) return cached
-        const fresh = await fetch(request)
-        cache.put(request, fresh.clone())
-        return fresh
+        try {
+          const fresh = await fetch(request)
+          cache.put(request, fresh.clone())
+          return fresh
+        } catch {
+          return cache.match(request)
+        }
       })
     )
     return
