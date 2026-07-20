@@ -33,15 +33,14 @@ export async function GET(req: NextRequest) {
     }),
   })
 
-  if (!tokenRes.ok) {
-    return NextResponse.redirect(`${process.env.APP_URL}/calendar?gcal_error=token_exchange`)
+  const tokenBody = await tokenRes.json()
+  if (!tokenRes.ok || !tokenBody.access_token) {
+    console.error('[google-cal/callback] token exchange failed', JSON.stringify(tokenBody))
+    const reason = tokenBody.error ?? 'token_exchange'
+    return NextResponse.redirect(`${process.env.APP_URL}/calendar?gcal_error=${encodeURIComponent(reason)}`)
   }
 
-  const { access_token, refresh_token, expires_in } = await tokenRes.json()
-
-  if (!access_token) {
-    return NextResponse.redirect(`${process.env.APP_URL}/calendar?gcal_error=token_exchange`)
-  }
+  const { access_token, refresh_token, expires_in } = tokenBody
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
