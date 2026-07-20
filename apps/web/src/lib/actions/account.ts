@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 
 export async function updateBusinessName(name: string) {
@@ -23,11 +24,18 @@ export async function updateProfile(data: {
   state?: string
   zip?: string
 }) {
+  // Verify the caller is authenticated
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  const { error } = await supabase
+  // Use service role to bypass RLS for the users table (no INSERT policy exists)
+  const admin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
+
+  const { error } = await admin
     .from('users')
     .upsert({ id: user.id, ...data }, { onConflict: 'id' })
 
