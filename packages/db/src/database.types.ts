@@ -76,15 +76,20 @@ export interface Database {
       templates: {
         Row: {
           id: string; tenant_id: string; name: string; channel: 'sms' | 'email'
-          subject: string | null; body: string; created_at: string; updated_at: string
+          subject: string | null; body: string; category: string
+          is_marketing: boolean; deleted_at: string | null
+          created_at: string; updated_at: string
         }
         Insert: {
           id?: string; tenant_id: string; name: string; channel: 'sms' | 'email'
-          subject?: string | null; body: string; created_at?: string; updated_at?: string
+          subject?: string | null; body: string; category?: string
+          is_marketing?: boolean; deleted_at?: string | null
+          created_at?: string; updated_at?: string
         }
         Update: {
-          id?: string; tenant_id?: string; name?: string; channel?: 'sms' | 'email'
-          subject?: string | null; body?: string; created_at?: string; updated_at?: string
+          name?: string; channel?: 'sms' | 'email'; subject?: string | null
+          body?: string; category?: string; is_marketing?: boolean
+          deleted_at?: string | null; updated_at?: string
         }
       }
       send_log: {
@@ -116,9 +121,197 @@ export interface Database {
         }
         Update: { used_at?: string | null }
       }
+      users: {
+        Row: {
+          id: string; tenant_id: string; has_seen_welcome: boolean
+          legal_name: string | null; nickname: string | null; phone: string | null
+          address: string | null; street: string | null; city: string | null
+          state: string | null; zip: string | null
+        }
+        Insert: {
+          id: string; tenant_id: string; has_seen_welcome?: boolean
+          legal_name?: string | null; nickname?: string | null; phone?: string | null
+          address?: string | null; street?: string | null; city?: string | null
+          state?: string | null; zip?: string | null
+        }
+        Update: {
+          has_seen_welcome?: boolean; legal_name?: string | null; nickname?: string | null
+          phone?: string | null; address?: string | null; street?: string | null
+          city?: string | null; state?: string | null; zip?: string | null
+        }
+      }
+      orders: {
+        Row: {
+          id: string; tenant_id: string; customer_id: string | null
+          payment_status: 'draft' | 'pending' | 'paid' | 'refunded'
+          total_amount: number; notes: string | null; created_at: string; updated_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; customer_id?: string | null
+          payment_status?: 'draft' | 'pending' | 'paid' | 'refunded'
+          total_amount?: number; notes?: string | null; created_at?: string; updated_at?: string
+        }
+        Update: {
+          customer_id?: string | null; payment_status?: 'draft' | 'pending' | 'paid' | 'refunded'
+          notes?: string | null; updated_at?: string
+        }
+      }
+      order_line_items: {
+        Row: {
+          id: string; order_id: string; tenant_id: string
+          catalog_item_id: string | null; item_name_snapshot: string
+          description_snapshot: string | null; quantity: number; unit_price: number
+          billing_unit_snapshot: string; rental_status: string | null
+          rental_start_date: string | null; rental_end_date: string | null
+          actual_return_date: string | null; created_at: string
+        }
+        Insert: {
+          id?: string; order_id: string; tenant_id: string
+          catalog_item_id?: string | null; item_name_snapshot: string
+          description_snapshot?: string | null; quantity: number; unit_price: number
+          billing_unit_snapshot?: string; rental_status?: string | null
+          rental_start_date?: string | null; rental_end_date?: string | null
+          actual_return_date?: string | null; created_at?: string
+        }
+        Update: {
+          item_name_snapshot?: string; description_snapshot?: string | null
+          quantity?: number; unit_price?: number; rental_status?: string | null
+          rental_start_date?: string | null; rental_end_date?: string | null
+          actual_return_date?: string | null
+        }
+      }
+      catalog_items: {
+        Row: {
+          id: string; tenant_id: string; name: string; description: string | null
+          item_type: string; base_price: number; billing_unit: string
+          is_active: boolean; taxable: boolean; requires_deposit: boolean
+          deposit_amount: number | null; created_at: string; updated_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; name: string; description?: string | null
+          item_type: string; base_price?: number; billing_unit?: string
+          is_active?: boolean; taxable?: boolean; requires_deposit?: boolean
+          deposit_amount?: number | null; created_at?: string; updated_at?: string
+        }
+        Update: {
+          name?: string; description?: string | null; item_type?: string
+          base_price?: number; billing_unit?: string; is_active?: boolean
+          taxable?: boolean; requires_deposit?: boolean; deposit_amount?: number | null
+        }
+      }
+      interactions: {
+        Row: {
+          id: string; tenant_id: string; contact_id: string
+          type: 'call' | 'email' | 'visit' | 'note'
+          notes: string | null; occurred_at: string; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; contact_id: string
+          type: 'call' | 'email' | 'visit' | 'note'
+          notes?: string | null; occurred_at?: string; created_at?: string
+        }
+        Update: {
+          type?: 'call' | 'email' | 'visit' | 'note'
+          notes?: string | null; occurred_at?: string
+        }
+      }
+      pipeline_stages: {
+        Row: {
+          id: string; tenant_id: string; name: string; position: number
+          color: string; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; name: string; position?: number
+          color?: string; created_at?: string
+        }
+        Update: { name?: string; position?: number; color?: string }
+      }
+      pipeline_deals: {
+        Row: {
+          id: string; tenant_id: string; stage_id: string; contact_id: string | null
+          title: string; value: number | null; notes: string | null
+          position: number; created_at: string; updated_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; stage_id: string; contact_id?: string | null
+          title: string; value?: number | null; notes?: string | null
+          position?: number; created_at?: string; updated_at?: string
+        }
+        Update: {
+          stage_id?: string; contact_id?: string | null; title?: string
+          value?: number | null; notes?: string | null; position?: number; updated_at?: string
+        }
+      }
+      expenses: {
+        Row: {
+          id: string; tenant_id: string; description: string; amount: number
+          category: string | null; occurred_at: string
+          deleted_at: string | null; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; description: string; amount: number
+          category?: string | null; occurred_at?: string
+          deleted_at?: string | null; created_at?: string
+        }
+        Update: {
+          description?: string; amount?: number; category?: string | null
+          occurred_at?: string; deleted_at?: string | null
+        }
+      }
+      imports: {
+        Row: {
+          id: string; tenant_id: string; filename: string
+          imported_count: number; skipped_count: number
+          created_at: string; created_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; filename: string
+          imported_count?: number; skipped_count?: number
+          created_at?: string; created_by?: string | null
+        }
+        Update: { imported_count?: number; skipped_count?: number }
+      }
+      feedback: {
+        Row: {
+          id: string; tenant_id: string; message: string; rating: number | null; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; message: string; rating?: number | null; created_at?: string
+        }
+        Update: { message?: string; rating?: number | null }
+      }
+      rental_extensions: {
+        Row: {
+          id: string; tenant_id: string; order_id: string
+          extended_until: string; reason: string | null; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; order_id: string
+          extended_until: string; reason?: string | null; created_at?: string
+        }
+        Update: { extended_until?: string; reason?: string | null }
+      }
+      job_photos: {
+        Row: {
+          id: string; tenant_id: string; order_id: string
+          storage_path: string; label: string | null
+          uploaded_by: string | null; created_at: string; deleted_at: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; order_id: string
+          storage_path: string; label?: string | null
+          uploaded_by?: string | null; created_at?: string; deleted_at?: string | null
+        }
+        Update: { label?: string | null; deleted_at?: string | null }
+      }
     }
     Views: Record<string, never>
-    Functions: Record<string, never>
+    Functions: {
+      get_tenant_id: {
+        Args: Record<string, never>
+        Returns: string
+      }
+    }
     Enums: {
       contact_status: 'active' | 'inactive' | 'lead'
       interaction_type: 'call' | 'email' | 'visit' | 'note'
