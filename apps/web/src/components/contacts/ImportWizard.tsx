@@ -106,6 +106,31 @@ export function ImportWizard() {
       {/* Step: Upload */}
       {step === 'upload' && (
         <div className="space-y-3">
+          <div className="flex items-center justify-between rounded-xl px-4 py-3"
+            style={{ background: 'hsl(var(--muted))', border: '1px solid hsl(var(--border))' }}>
+            <div>
+              <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>Not sure about the format?</p>
+              <p className="text-xs mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                Download our template — fill it in and upload it below.
+              </p>
+            </div>
+            <a
+              href="/contacts-template.csv"
+              download="qcypher-contacts-template.csv"
+              onClick={e => e.stopPropagation()}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                padding: '7px 14px', borderRadius: '10px', fontSize: '13px',
+                fontWeight: 700, whiteSpace: 'nowrap',
+                border: 'none',
+                background: '#00a87a',
+                color: '#fff',
+                textDecoration: 'none',
+              }}
+            >
+              ↓ Download template
+            </a>
+          </div>
           <div
             onDrop={onDrop}
             onDragOver={e => e.preventDefault()}
@@ -129,32 +154,6 @@ export function ImportWizard() {
               className="hidden"
               onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }}
             />
-          </div>
-          <div className="flex items-center justify-between rounded-xl px-4 py-3"
-            style={{ background: 'hsl(var(--muted))', border: '1px solid hsl(var(--border))' }}>
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'hsl(var(--foreground))' }}>Not sure about the format?</p>
-              <p className="text-xs mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
-                Download our template — fill it in and upload it above.
-              </p>
-            </div>
-            <a
-              href="/contacts-template.csv"
-              download="qcypher-contacts-template.csv"
-              onClick={e => e.stopPropagation()}
-              className="btn btn-ghost btn-sm"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '6px',
-                padding: '7px 14px', borderRadius: '10px', fontSize: '13px',
-                fontWeight: 600, whiteSpace: 'nowrap',
-                border: '1px solid hsl(var(--border))',
-                background: 'hsl(var(--background))',
-                color: 'hsl(var(--foreground))',
-                textDecoration: 'none',
-              }}
-            >
-              ↓ Download template
-            </a>
           </div>
         </div>
       )}
