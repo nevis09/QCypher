@@ -1,0 +1,3 @@
+first_name,last_name,email,phone,company,address,notes,tags,source
+Jane,Smith,jane@example.com,+15555550101,Acme Co,"123 Main St, Richmond VA 23220",VIP customer,"vip,referral",referral
+John,Doe,john@example.com,+15555550102,,,Follow up in Q3,,website
