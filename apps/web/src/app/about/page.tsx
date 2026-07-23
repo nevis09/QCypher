@@ -209,7 +209,6 @@ export default function AboutPage() {
           .btn-sm { font-size: 13px; padding: 0 12px; }
           section { padding: 56px 0; }
           .nav-links { display: none; }
-          .nav-home-link { display: none; }
           .nav-quote-btn { display: none !important; }
         }
       `}</style>
