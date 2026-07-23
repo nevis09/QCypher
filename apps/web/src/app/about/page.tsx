@@ -209,6 +209,7 @@ export default function AboutPage() {
           .btn-sm { font-size: 13px; padding: 0 12px; }
           section { padding: 56px 0; }
           .nav-links { display: none; }
+          .nav-page-link { font-size: 13px !important; margin-right: 2px !important; }
           .nav-quote-btn { display: none !important; }
         }
       `}</style>
@@ -221,7 +222,7 @@ export default function AboutPage() {
             <span className="nav-logo-text">QCypher Technologies</span>
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <Link href="/" className="nav-link nav-home-link">Home</Link>
+            <Link href="/" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Home</Link>
             <div className="nav-cta">
               <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
               <Link href="/#contact" className="btn btn-primary btn-sm nav-quote-btn">Free quote</Link>
