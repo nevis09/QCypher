@@ -221,12 +221,10 @@ export default function AboutPage() {
             <img src="/qcypher-logo.png" alt="QCypher" />
             <span className="nav-logo-text">QCypher Technologies</span>
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <div className="nav-cta">
             <Link href="/" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Home</Link>
-            <div className="nav-cta">
-              <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
-              <Link href="/#contact" className="btn btn-primary btn-sm nav-quote-btn">Free quote</Link>
-            </div>
+            <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
+            <Link href="/#contact" className="btn btn-primary btn-sm nav-quote-btn">Free quote</Link>
           </div>
         </div>
       </header>
