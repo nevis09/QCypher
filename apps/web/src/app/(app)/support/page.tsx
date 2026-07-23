@@ -18,7 +18,7 @@ type Row = {
 
 const HELP_ROWS: Row[] = [
   {
-    href: '/support/faq', icon: HelpCircle, color: '#6366f1', bg: 'rgba(99,102,241,0.12)',
+    href: '/support/faq', icon: HelpCircle, color: '#2a52a0', bg: 'rgba(42,82,160,0.12)',
     title: 'FAQs', desc: 'Billing, contacts, data security, and more',
   },
   {
@@ -87,7 +87,7 @@ export default function SupportPage() {
   return (
     <div className="max-w-lg space-y-7">
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Help & Support</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Help & Support</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Guides, feedback, and legal documents
         </p>
@@ -113,10 +113,10 @@ export default function SupportPage() {
         <Mail style={{ width: '14px', height: '14px', color: 'hsl(var(--muted-foreground))', flexShrink: 0 }} />
         <span className="text-[15px]" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Still stuck?{' '}
-          <a href="mailto:hello@qcyphertech.com"
+          <a href="mailto:info@qcyphertech.com"
             className="font-semibold hover:underline"
-            style={{ color: '#6366f1' }}>
-            hello@qcyphertech.com
+            style={{ color: '#2a52a0' }}>
+            info@qcyphertech.com
           </a>
         </span>
       </div>

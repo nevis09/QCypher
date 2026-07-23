@@ -291,6 +291,17 @@ export interface Database {
         }
         Update: { extended_until?: string; reason?: string | null }
       }
+      service_checklist: {
+        Row: {
+          id: string; tenant_id: string; month: string; service_name: string
+          completed: boolean; completed_at: string | null; completed_by: string | null
+        }
+        Insert: {
+          id?: string; tenant_id: string; month: string; service_name: string
+          completed?: boolean; completed_at?: string | null; completed_by?: string | null
+        }
+        Update: { completed?: boolean; completed_at?: string | null; completed_by?: string | null }
+      }
       job_photos: {
         Row: {
           id: string; tenant_id: string; order_id: string

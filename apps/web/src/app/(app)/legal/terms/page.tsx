@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Account Registration',
-    body: 'You are responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account. You must notify us immediately of any unauthorized use of your account at hello@qcyphertech.com.',
+    body: 'You are responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account. You must notify us immediately of any unauthorized use of your account at info@qcyphertech.com.',
   },
   {
     title: '4. Subscription and Payment',
@@ -48,7 +48,7 @@ const SECTIONS = [
   },
   {
     title: '9. Third-Party Integrations',
-    body: 'The Services may integrate with third-party services (e.g., Google, Twilio, Resend). Your use of those integrations is subject to those providers\' terms and privacy policies. QCypher is not responsible for third-party services.',
+    body: 'The Services may integrate with third-party services (e.g., Google, Telnyx, Resend). Your use of those integrations is subject to those providers\' terms and privacy policies. QCypher is not responsible for third-party services.',
   },
   {
     title: '10. Disclaimer of Warranties',
@@ -76,7 +76,7 @@ const SECTIONS = [
   },
   {
     title: '16. Contact Us',
-    body: 'QCypher Technologies · hello@qcyphertech.com',
+    body: 'QCypher Technologies · info@qcyphertech.com',
   },
 ]
 
@@ -96,7 +96,7 @@ function LegalPage({ title, updatedAt, sections }: {
       <div>
         <p className="text-[15px] font-bold uppercase tracking-widest mb-1"
           style={{ color: 'hsl(var(--muted-foreground))' }}>Legal</p>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>{title}</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>{title}</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Last updated {updatedAt}
         </p>

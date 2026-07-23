@@ -17,11 +17,11 @@ export function WelcomeBanner() {
   return (
     <div className="mx-4 mt-4 md:mx-6 md:mt-5 rounded-2xl border flex items-start gap-4 px-4 py-4"
       style={{
-        background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.08))',
-        borderColor: 'rgba(99,102,241,0.25)',
+        background: 'linear-gradient(135deg, rgba(42,82,160,0.08), rgba(74,157,181,0.08))',
+        borderColor: 'rgba(42,82,160,0.25)',
       }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+        style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
         <Zap className="w-4 h-4 text-white" />
       </div>
       <div className="flex-1 min-w-0">

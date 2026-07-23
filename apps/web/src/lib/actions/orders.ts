@@ -8,6 +8,7 @@ export type Order = {
   tenant_id: string
   customer_id: string | null
   payment_status: 'draft' | 'pending' | 'paid' | 'refunded'
+  job_status: 'en_route' | 'in_progress' | 'completed' | null
   total_amount: number
   notes: string | null
   created_at: string
@@ -90,6 +91,16 @@ export async function updateOrderStatus(id: string, payment_status: Order['payme
     .eq('id', id)
   if (error) throw error
   revalidatePath('/orders')
+  revalidatePath(`/orders/${id}`)
+}
+
+export async function updateJobStatus(id: string, job_status: Order['job_status']) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('orders')
+    .update({ job_status })
+    .eq('id', id)
+  if (error) throw error
   revalidatePath(`/orders/${id}`)
 }
 

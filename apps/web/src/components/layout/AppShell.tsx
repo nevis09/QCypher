@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { TopBar } from './TopBar'
 import { BottomNav } from './BottomNav'
 import { CommandPalette } from './CommandPalette'
+import { NoBottomOverscroll } from './NoBottomOverscroll'
 import { useTheme } from '@/hooks/useTheme'
 import { DEFAULT_SETTINGS, type TenantSettings } from '@/lib/types/settings'
 
@@ -12,38 +13,38 @@ export function AppShell({
   isAdmin = false,
   settings = DEFAULT_SETTINGS,
   userInitial = 'U',
-  welcomeBanner = null,
 }: {
   children:       React.ReactNode
   isAdmin?:       boolean
   settings?:      TenantSettings
   userInitial?:   string
-  welcomeBanner?: React.ReactNode
 }) {
   const [cmdOpen, setCmdOpen] = useState(false)
   const { dark, toggle } = useTheme()
 
   return (
-    <div className="flex flex-col h-screen bg-[hsl(var(--background))] overflow-hidden">
-      <TopBar
-        onOpenCmd={() => setCmdOpen(true)}
-        dark={dark}
-        onToggleDark={toggle}
-        userInitial={userInitial}
-        settings={settings}
-        isAdmin={isAdmin}
-      />
-
-      <div className="flex-1 overflow-y-auto">
-        {welcomeBanner}
-        <div className="p-4 md:p-6 pb-20 md:pb-6">
-          {children}
-        </div>
+    <div className="min-h-screen bg-[hsl(var(--background))]">
+      {/* Fixed top bar */}
+      <div className="fixed top-0 inset-x-0 z-50">
+        <TopBar
+          onOpenCmd={() => setCmdOpen(true)}
+          dark={dark}
+          onToggleDark={toggle}
+          userInitial={userInitial}
+          settings={settings}
+          isAdmin={isAdmin}
+        />
       </div>
+
+      {/* Scrollable page content — offset by header height (60px) + bottom nav (64px mobile) */}
+      <main className="pt-[60px] pb-20 md:pb-6 px-4 md:px-6">
+        {children}
+      </main>
 
       <BottomNav settings={settings} />
 
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} isAdmin={isAdmin} />
+      <NoBottomOverscroll />
     </div>
   )
 }

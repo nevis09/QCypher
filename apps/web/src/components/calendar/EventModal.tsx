@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
-import { X, Trash2, AlertTriangle } from 'lucide-react'
+import { X, Trash2, AlertTriangle, Clock, CalendarDays } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import type { Tables } from '@/types/database'
 
@@ -17,9 +17,10 @@ function toISO(local: string) {
   return new Date(local).toISOString()
 }
 
-export function EventModal({ date, event, onClose }: {
+export function EventModal({ date, event, readOnly, onClose }: {
   date?: Date
   event?: CalEvent
+  readOnly?: boolean
   onClose: () => void
 }) {
   const router = useRouter()
@@ -28,10 +29,13 @@ export function EventModal({ date, event, onClose }: {
   const [showPastConfirm, setShowPastConfirm] = useState(false)
   const supabase = createClient()
 
-  const defaultStart = date ? format(date, "yyyy-MM-dd'T'09:00") : toInputDateTime(event?.starts_at ?? new Date().toISOString())
-  const defaultEnd   = date ? format(date, "yyyy-MM-dd'T'10:00") : toInputDateTime(
-    event?.ends_at ?? new Date(new Date().getTime() + 60 * 60 * 1000).toISOString()
-  )
+  // Use the exact date/time passed in — no hardcoded 09:00 override
+  const defaultStart = date
+    ? format(date, "yyyy-MM-dd'T'HH:mm")
+    : toInputDateTime(event?.starts_at ?? new Date().toISOString())
+  const defaultEnd = date
+    ? format(new Date(date.getTime() + 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm")
+    : toInputDateTime(event?.ends_at ?? new Date(new Date().getTime() + 60 * 60 * 1000).toISOString())
 
   const [form, setForm] = useState({
     title: event?.title ?? '',
@@ -91,6 +95,49 @@ export function EventModal({ date, event, onClose }: {
       router.refresh()
       onClose()
     })
+  }
+
+  // Read-only view for gcal / cal_ events
+  if (readOnly && event) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
+        <div
+          className="w-full sm:max-w-md bg-[hsl(var(--card))] rounded-t-2xl sm:rounded-2xl shadow-card flex flex-col"
+          style={{ maxHeight: '92svh' }}
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[hsl(var(--border))] flex-shrink-0">
+            <h2 className="text-[15px] font-semibold">Event details</h2>
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="p-5 space-y-4 overflow-y-auto">
+            <p className="text-[17px] font-bold" style={{ color: 'hsl(var(--foreground))' }}>{event.title}</p>
+            <div className="flex items-start gap-3">
+              <CalendarDays className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
+              <p className="text-[14px]" style={{ color: 'hsl(var(--foreground))' }}>
+                {format(new Date(event.starts_at), 'EEEE, MMMM d, yyyy')}
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
+              <p className="text-[14px]" style={{ color: 'hsl(var(--foreground))' }}>
+                {format(new Date(event.starts_at), 'h:mm a')} – {format(new Date(event.ends_at), 'h:mm a')}
+              </p>
+            </div>
+            {event.description && (
+              <p className="text-[13px] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                {event.description}
+              </p>
+            )}
+            <p className="text-[11px] font-medium uppercase tracking-widest" style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.6 }}>
+              Synced from Google Calendar
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

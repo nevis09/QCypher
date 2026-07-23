@@ -26,7 +26,7 @@ const FAQS = [
   },
   {
     q: 'How do I send a quick reply via SMS or email?',
-    a: 'From any contact\'s detail page, open the Templates section. Select a template, customize it if needed, and hit Send. SMS routes through Twilio and email through Resend.',
+    a: 'From any contact\'s detail page, open the Templates section. Select a template, customize it if needed, and hit Send. SMS routes through Telnyx and email through Resend.',
   },
   {
     q: 'Can multiple staff members use the same account?',

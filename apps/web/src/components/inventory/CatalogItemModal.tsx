@@ -135,7 +135,7 @@ export function CatalogItemModal({ item, onClose }: Props) {
             </button>
             <button type="submit" disabled={pending}
               className="flex-1 py-2.5 rounded-xl text-[15px] font-bold text-white"
-              style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', opacity: pending ? 0.6 : 1 }}>
+              style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)', opacity: pending ? 0.6 : 1 }}>
               {pending ? 'Saving…' : item ? 'Save changes' : 'Add item'}
             </button>
           </div>

@@ -27,8 +27,8 @@ const GUIDES = [
     steps: [
       'Go to Templates and create a new template. Use {{first_name}} to insert contact variables.',
       'Open any contact\'s detail page and tap the template icon to pick and send.',
-      'SMS sends via Twilio, email via Resend — both are pay-as-you-go with no monthly minimum.',
-      'Check your Twilio and Resend dashboards for delivery status.',
+      'SMS sends via Telnyx, email via Resend — both are pay-as-you-go with no monthly minimum.',
+      'Check your Telnyx and Resend dashboards for delivery status.',
     ],
   },
   {
@@ -47,7 +47,7 @@ export default function HelpCenterPage() {
     <div className="max-w-lg space-y-8">
       <BackLink href="/support" label="Help & Support" />
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Help Center</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Help Center</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Step-by-step guides for the most common workflows
         </p>
@@ -64,7 +64,7 @@ export default function HelpCenterPage() {
               {steps.map((step, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white font-black mt-0.5"
-                    style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', fontSize: '15px' }}>
+                    style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)', fontSize: '15px' }}>
                     {i + 1}
                   </span>
                   <p className="text-[15px] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>{step}</p>

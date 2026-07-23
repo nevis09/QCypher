@@ -37,7 +37,7 @@ export default async function RentalsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Active Rentals</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Active Rentals</h1>
         <p className="text-[15px] mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Track all rentals in progress
         </p>
@@ -79,6 +79,7 @@ function RentalSection({ title, items }: { title: string; items: RentalLine[] })
         </span>
       </div>
       <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr style={{ background: 'hsl(var(--muted))', borderBottom: '1px solid hsl(var(--border))' }}>
@@ -110,7 +111,7 @@ function RentalSection({ title, items }: { title: string; items: RentalLine[] })
                   <td className="px-5 py-3.5">
                     {line.order && (
                       <Link href={`/orders/${line.order.id}`}
-                        className="text-[15px] font-bold text-indigo-600 hover:underline">
+                        className="text-[15px] font-bold text-[#1a3070] hover:underline">
                         View →
                       </Link>
                     )}
@@ -120,6 +121,7 @@ function RentalSection({ title, items }: { title: string; items: RentalLine[] })
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

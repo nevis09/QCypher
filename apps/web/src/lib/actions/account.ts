@@ -4,14 +4,28 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 
-export async function updateBusinessName(name: string) {
-  const supabase = await createClient()
-  const { data: tenant } = await supabase.from('tenants').select('id').single()
-  if (!tenant) throw new Error('Tenant not found')
-  const { error } = await supabase.from('tenants').update({ name }).eq('id', tenant.id)
-  if (error) throw new Error(error.message)
-  revalidatePath('/settings')
-  revalidatePath('/orders')
+export async function updateBusinessName(name: string): Promise<{ error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Not authenticated' }
+
+    const tenantId = (user.app_metadata as Record<string, string> | undefined)?.tenant_id
+    if (!tenantId) return { error: 'No tenant_id in session — please sign out and back in' }
+
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!serviceKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured' }
+
+    const admin = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey)
+    const { error } = await admin.from('tenants').update({ name }).eq('id', tenantId)
+    if (error) return { error: `Business name save failed: ${error.message}` }
+
+    revalidatePath('/settings')
+    revalidatePath('/orders')
+    return {}
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 export async function updateProfile(data: {
@@ -23,24 +37,40 @@ export async function updateProfile(data: {
   city?: string
   state?: string
   zip?: string
-}) {
-  // Verify the caller is authenticated
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+}): Promise<{ error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Not authenticated' }
 
-  // Use service role to bypass RLS for the users table (no INSERT policy exists)
-  const admin = createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!serviceKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured' }
 
-  const { error } = await admin
-    .from('users')
-    .upsert({ id: user.id, ...data }, { onConflict: 'id' })
+    const admin = createServiceClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      serviceKey,
+    )
 
-  if (error) throw error
-  revalidatePath('/settings')
+    const { data: tenantRow } = await supabase.from('tenants').select('id').single()
+
+    const { error } = await admin
+      .from('users')
+      .upsert(
+        {
+          id:        user.id,
+          tenant_id: tenantRow?.id ?? null,
+          ...data,
+        },
+        { onConflict: 'id' },
+      )
+
+    if (error) return { error: `DB error: ${error.message} (code: ${error.code})` }
+
+    revalidatePath('/settings')
+    return {}
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 export async function changePassword(password: string) {
@@ -90,7 +120,7 @@ export async function requestAccountDeactivation() {
       headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from:    RESEND_FROM,
-        to:      ['hello@qcyphertech.com'],
+        to:      ['info@qcyphertech.com'],
         subject: `[QCypher CRM] Account Deactivation Request — ${user.email}`,
         html:    `
           <p>A user has requested account deactivation.</p>
@@ -119,7 +149,7 @@ export async function requestAccountDeactivation() {
           <p>Your account remains active while our team reviews the request. We'll follow up within 1–2 business days to confirm deactivation and provide options for exporting your data.</p>
           <p>If this was a mistake, you don't need to do anything — just reply to this email and we'll disregard the request.</p>
           <br>
-          <p>— The QCypher Team<br>hello@qcyphertech.com</p>
+          <p>— The QCypher Team<br>info@qcyphertech.com</p>
         `,
       }),
     })

@@ -41,7 +41,7 @@ export function CatalogList({ items }: { items: CatalogItem[] }) {
             onClick={() => setFilter(f.key)}
             className="px-4 py-1.5 rounded-xl text-[15px] font-semibold transition-all"
             style={{
-              background: filter === f.key ? '#6366f1' : 'hsl(var(--muted))',
+              background: filter === f.key ? '#2a52a0' : 'hsl(var(--muted))',
               color: filter === f.key ? '#fff' : 'hsl(var(--muted-foreground))',
             }}
           >
@@ -51,6 +51,7 @@ export function CatalogList({ items }: { items: CatalogItem[] }) {
       </div>
 
       <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr style={{ background: 'hsl(var(--muted))', borderBottom: '1px solid hsl(var(--border))' }}>
@@ -75,6 +76,7 @@ export function CatalogList({ items }: { items: CatalogItem[] }) {
             )}
           </tbody>
         </table>
+        </div>
         {visible.length === 0 && (
           <p className="text-center py-10 text-[15px]" style={{ color: 'hsl(var(--muted-foreground))' }}>
             No items in this category
@@ -132,7 +134,7 @@ function CatalogRow({ item, onEdit }: { item: CatalogItem; onEdit: () => void })
         <div className="flex items-center gap-2 justify-end">
           <button onClick={onEdit}
             className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-indigo-50 transition-colors">
-            <Pencil className="w-3.5 h-3.5" style={{ color: '#6366f1' }} />
+            <Pencil className="w-3.5 h-3.5" style={{ color: '#2a52a0' }} />
           </button>
           {item.is_active && (
             <form action={deactivateCatalogItem.bind(null, item.id)}>

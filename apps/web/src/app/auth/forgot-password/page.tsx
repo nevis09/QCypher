@@ -1,18 +1,13 @@
 import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm'
+import { AuthShell } from '@/components/auth/AuthShell'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Reset password — QCypher CRM' }
 
 export default function ForgotPasswordPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[hsl(var(--muted))] px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold tracking-tight">QCypher CRM</h1>
-          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-1">Reset your password</p>
-        </div>
-        <ForgotPasswordForm />
-      </div>
-    </main>
+    <AuthShell subtitle="Reset your password">
+      <ForgotPasswordForm />
+    </AuthShell>
   )
 }

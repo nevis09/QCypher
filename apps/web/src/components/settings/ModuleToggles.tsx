@@ -72,7 +72,7 @@ export function ModuleToggles({ settings }: { settings: TenantSettings }) {
                 flexShrink: 0,
                 width: '44px', height: '24px', borderRadius: '100px',
                 border: 'none', cursor: 'pointer', position: 'relative',
-                background: enabled ? '#6366f1' : 'hsl(var(--muted))',
+                background: enabled ? '#2a52a0' : 'hsl(var(--muted))',
                 transition: 'background 0.2s',
                 outline: 'none',
               }}

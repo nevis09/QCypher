@@ -1,0 +1,299 @@
+'use client'
+
+import { useState, useTransition } from 'react'
+import { UserPlus, X, Clock, Crown, User, ChevronDown } from 'lucide-react'
+import type { TeamMember, PendingInvite } from '@/lib/actions/team'
+import { revokeInvite, updateMemberRole, removeMember } from '@/lib/actions/team'
+
+type Props = {
+  members: TeamMember[]
+  pending: PendingInvite[]
+  currentUserId: string
+}
+
+function Avatar({ email, role }: { email: string; role: string }) {
+  const initials = email.split('@')[0].slice(0, 2).toUpperCase()
+  return (
+    <div style={{
+      width: '40px', height: '40px', borderRadius: '14px', flexShrink: 0,
+      background: role === 'owner'
+        ? 'linear-gradient(135deg,#2a52a0,#4a9db5)'
+        : 'hsl(var(--muted))',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <span style={{ fontSize: '13px', fontWeight: 700, color: role === 'owner' ? '#fff' : 'hsl(var(--muted-foreground))' }}>
+        {initials}
+      </span>
+    </div>
+  )
+}
+
+function RoleBadge({ role }: { role: string }) {
+  const isOwner = role === 'owner'
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '4px',
+      padding: '2px 8px', borderRadius: '99px', fontSize: '12px', fontWeight: 600,
+      background: isOwner ? 'rgba(42,82,160,0.10)' : 'hsl(var(--muted))',
+      color: isOwner ? '#2a52a0' : 'hsl(var(--muted-foreground))',
+    }}>
+      {isOwner ? <Crown style={{ width: '10px', height: '10px' }} /> : <User style={{ width: '10px', height: '10px' }} />}
+      {isOwner ? 'Owner' : 'Member'}
+    </span>
+  )
+}
+
+function fmt(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+export function TeamPanel({ members: initialMembers, pending: initialPending, currentUserId }: Props) {
+  const [members, setMembers] = useState(initialMembers)
+  const [pending, setPending] = useState(initialPending)
+  const [showInvite, setShowInvite] = useState(false)
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState<'member' | 'owner'>('member')
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
+  async function handleInvite(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+
+    const res = await fetch('/api/team/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.trim(), role }),
+    })
+    const json = await res.json()
+
+    if (!res.ok) {
+      setError(json.error ?? 'Something went wrong')
+      return
+    }
+
+    setSuccess(`Invite sent to ${email.trim()}`)
+    setEmail('')
+    setRole('member')
+    setShowInvite(false)
+
+    // Optimistically add to pending list
+    setPending(prev => [{
+      id: json.token,
+      email: email.trim().toLowerCase(),
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date().toISOString(),
+    }, ...prev])
+  }
+
+  function handleRevoke(id: string) {
+    startTransition(async () => {
+      await revokeInvite(id)
+      setPending(prev => prev.filter(p => p.id !== id))
+    })
+  }
+
+  function handleRoleChange(memberId: string, newRole: 'owner' | 'member') {
+    startTransition(async () => {
+      await updateMemberRole(memberId, newRole)
+      setMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: newRole } : m))
+    })
+  }
+
+  function handleRemove(memberId: string) {
+    startTransition(async () => {
+      await removeMember(memberId)
+      setMembers(prev => prev.filter(m => m.id !== memberId))
+    })
+  }
+
+  const card: React.CSSProperties = {
+    borderRadius: '16px',
+    background: 'hsl(var(--card))',
+    border: '1px solid hsl(var(--border))',
+    overflow: 'hidden',
+  }
+
+  return (
+    <div>
+      {/* Members list */}
+      <div style={card}>
+        {members.map((m, i) => (
+          <div key={m.id} style={{
+            display: 'flex', alignItems: 'center', gap: '12px',
+            padding: '12px 16px',
+            borderBottom: i < members.length - 1 ? '1px solid hsl(var(--border))' : undefined,
+          }}>
+            <Avatar email={m.email} role={m.role} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {m.email}
+              </p>
+              <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))', marginTop: '1px' }}>
+                Joined {fmt(m.joined_at)}{m.last_seen ? ` · Last seen ${fmt(m.last_seen)}` : ''}
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {m.id === currentUserId ? (
+                <RoleBadge role={m.role} />
+              ) : (
+                <>
+                  {/* Role selector for non-self members */}
+                  <div style={{ position: 'relative' }}>
+                    <select
+                      value={m.role}
+                      disabled={isPending}
+                      onChange={e => handleRoleChange(m.id, e.target.value as 'owner' | 'member')}
+                      style={{
+                        appearance: 'none', WebkitAppearance: 'none',
+                        padding: '3px 24px 3px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
+                        border: '1px solid hsl(var(--border))',
+                        background: 'hsl(var(--muted))', color: 'hsl(var(--foreground))',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <option value="member">Member</option>
+                      <option value="owner">Owner</option>
+                    </select>
+                    <ChevronDown style={{ position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)', width: '12px', height: '12px', pointerEvents: 'none', color: 'hsl(var(--muted-foreground))' }} />
+                  </div>
+                  <button
+                    onClick={() => handleRemove(m.id)}
+                    disabled={isPending}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}
+                  >
+                    <X style={{ width: '14px', height: '14px', color: 'hsl(var(--muted-foreground))' }} />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+
+        {/* Pending invites */}
+        {pending.map(p => (
+          <div key={p.id} style={{
+            display: 'flex', alignItems: 'center', gap: '12px',
+            padding: '12px 16px',
+            borderTop: '1px solid hsl(var(--border))',
+          }}>
+            <div style={{
+              width: '40px', height: '40px', borderRadius: '14px', flexShrink: 0,
+              background: 'hsl(var(--muted))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Clock style={{ width: '16px', height: '16px', color: 'hsl(var(--muted-foreground))' }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {p.email}
+              </p>
+              <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))', marginTop: '1px' }}>
+                Invite pending · expires {fmt(p.expires_at)}
+              </p>
+            </div>
+            <span style={{
+              padding: '2px 8px', borderRadius: '99px', fontSize: '12px', fontWeight: 600,
+              background: 'rgba(234,179,8,0.10)', color: '#a16207',
+            }}>
+              Pending
+            </span>
+            <button
+              onClick={() => handleRevoke(p.id)}
+              disabled={isPending}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', borderRadius: '6px', display: 'flex' }}
+            >
+              <X style={{ width: '14px', height: '14px', color: 'hsl(var(--muted-foreground))' }} />
+            </button>
+          </div>
+        ))}
+
+        {/* Invite button row */}
+        <div style={{ borderTop: members.length > 0 || pending.length > 0 ? '1px solid hsl(var(--border))' : undefined }}>
+          {!showInvite ? (
+            <button
+              onClick={() => { setShowInvite(true); setSuccess(null) }}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
+                padding: '13px 16px', background: 'none', border: 'none', cursor: 'pointer',
+                color: '#2a52a0', fontSize: '14px', fontWeight: 600,
+              }}
+            >
+              <UserPlus style={{ width: '16px', height: '16px' }} />
+              Invite team member
+            </button>
+          ) : (
+            <form onSubmit={handleInvite} style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <p style={{ fontSize: '13px', fontWeight: 700, color: 'hsl(var(--foreground))' }}>Send invite</p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="email"
+                  placeholder="colleague@email.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  autoFocus
+                  style={{
+                    flex: 1, padding: '8px 12px', borderRadius: '10px', fontSize: '14px',
+                    border: '1px solid hsl(var(--border))',
+                    background: 'hsl(var(--muted))', color: 'hsl(var(--foreground))',
+                    outline: 'none',
+                  }}
+                />
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={role}
+                    onChange={e => setRole(e.target.value as 'member' | 'owner')}
+                    style={{
+                      appearance: 'none', WebkitAppearance: 'none',
+                      padding: '8px 28px 8px 10px', borderRadius: '10px', fontSize: '14px', fontWeight: 500,
+                      border: '1px solid hsl(var(--border))',
+                      background: 'hsl(var(--muted))', color: 'hsl(var(--foreground))',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <option value="member">Member</option>
+                    <option value="owner">Owner</option>
+                  </select>
+                  <ChevronDown style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', width: '13px', height: '13px', pointerEvents: 'none', color: 'hsl(var(--muted-foreground))' }} />
+                </div>
+              </div>
+              {error && <p style={{ fontSize: '13px', color: 'hsl(var(--destructive))' }}>{error}</p>}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="submit"
+                  disabled={isPending || !email.trim()}
+                  style={{
+                    padding: '8px 16px', borderRadius: '10px', fontSize: '14px', fontWeight: 700,
+                    background: 'linear-gradient(135deg,#2a52a0,#4a9db5)', color: '#fff', border: 'none',
+                    cursor: 'pointer', opacity: isPending || !email.trim() ? 0.6 : 1,
+                  }}
+                >
+                  {isPending ? 'Sending…' : 'Send invite'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowInvite(false); setEmail(''); setError(null) }}
+                  style={{
+                    padding: '8px 14px', borderRadius: '10px', fontSize: '14px', fontWeight: 600,
+                    background: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))', border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {success && (
+        <p style={{ fontSize: '13px', color: '#16a34a', marginTop: '8px', paddingLeft: '4px' }}>
+          ✓ {success}
+        </p>
+      )}
+    </div>
+  )
+}

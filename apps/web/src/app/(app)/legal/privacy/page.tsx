@@ -133,7 +133,7 @@ export default function PrivacyPage() {
       <div>
         <p className="text-[15px] font-bold uppercase tracking-widest mb-1"
           style={{ color: 'hsl(var(--muted-foreground))' }}>Legal</p>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Privacy Policy</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Privacy Policy</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Last updated {UPDATED}
         </p>

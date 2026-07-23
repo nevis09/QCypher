@@ -7,20 +7,30 @@ export const metadata: Metadata = { title: 'Pipeline' }
 export default async function PipelinePage() {
   const supabase = await createClient()
 
-  const { data: contacts } = await supabase
-    .from('contacts')
-    .select('id, first_name, last_name, email, phone, company, tags, status, created_at')
-    .order('created_at', { ascending: false })
+  const [{ data: stages }, { data: deals }, { data: contacts }] = await Promise.all([
+    supabase.from('pipeline_stages').select('*').order('position'),
+    supabase.from('pipeline_deals').select('*, contact:contacts(id, first_name, last_name, company)').order('position'),
+    supabase.from('contacts').select('id, first_name, last_name, company').order('first_name'),
+  ])
 
   return (
-    <div className="space-y-5 h-full">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Pipeline</h1>
-          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">Track your contacts through the sales stages</p>
-        </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div>
+        <p style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#4a9db5', marginBottom: '4px' }}>
+          QCypher CRM
+        </p>
+        <h1 style={{ fontSize: '26px', fontWeight: 900, color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+          Pipeline
+        </h1>
+        <p style={{ fontSize: '15px', color: 'hsl(var(--muted-foreground))', marginTop: '3px' }}>
+          Track deals through your sales stages
+        </p>
       </div>
-      <PipelineBoard contacts={contacts ?? []} />
+      <PipelineBoard
+        initialStages={stages ?? []}
+        initialDeals={deals ?? []}
+        contacts={contacts ?? []}
+      />
     </div>
   )
 }

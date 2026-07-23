@@ -24,7 +24,7 @@ export default async function OrdersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Orders</h1>
+          <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Orders</h1>
           <p className="text-[15px] mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
             Track sales, services & rentals
           </p>
@@ -48,6 +48,7 @@ export default async function OrdersPage() {
         </div>
       ) : (
         <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr style={{ background: 'hsl(var(--muted))', borderBottom: '1px solid hsl(var(--border))' }}>
@@ -66,7 +67,7 @@ export default async function OrdersPage() {
                     className="border-b border-[hsl(var(--border))] last:border-0 hover:bg-[hsl(var(--muted))] transition-colors">
                     <td className="px-5 py-3.5">
                       <Link href={`/orders/${o.id}`}
-                        className="text-[15px] font-bold hover:text-indigo-600 transition-colors"
+                        className="text-[15px] font-bold hover:text-[#1a3070] transition-colors"
                         style={{ color: 'hsl(var(--foreground))' }}>
                         #{String(i + 1).padStart(4, '0')}
                       </Link>
@@ -89,6 +90,7 @@ export default async function OrdersPage() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

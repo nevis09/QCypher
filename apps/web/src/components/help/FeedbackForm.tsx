@@ -32,7 +32,7 @@ export function FeedbackForm() {
         Thanks — we read every submission.
       </p>
       <button onClick={() => setState('idle')} className="text-[15px] font-semibold mt-3"
-        style={{ color: '#6366f1' }}>Send another</button>
+        style={{ color: '#2a52a0' }}>Send another</button>
     </div>
   )
 
@@ -70,7 +70,7 @@ export function FeedbackForm() {
         <div className="ml-auto">
           <button type="submit" disabled={state === 'sending'}
             className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-[15px] font-bold text-white disabled:opacity-60 transition-opacity"
-            style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+            style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
             <Send className="w-3.5 h-3.5" />
             {state === 'sending' ? 'Sending…' : 'Send feedback'}
           </button>

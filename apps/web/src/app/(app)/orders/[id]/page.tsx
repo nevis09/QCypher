@@ -2,16 +2,20 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { OrderDetail } from '@/components/orders/OrderDetail'
+import { getJobPhotos } from '@/lib/actions/photos'
 
 export const metadata: Metadata = { title: 'Order' }
 
 export default async function OrderPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()
 
-  const [{ data: order }, { data: lines }, { data: catalogItems }, { data: contacts }, { data: tenant }] = await Promise.all([
+  const { data: { user } } = await supabase.auth.getUser()
+  const tenantId = user?.app_metadata?.tenant_id ?? ''
+
+  const [{ data: order }, { data: lines }, { data: catalogItems }, { data: contacts }, { data: tenant }, photos] = await Promise.all([
     supabase
       .from('orders')
-      .select('*, contact:contacts(id, first_name, last_name, email)')
+      .select('*, contact:contacts(id, first_name, last_name, email, phone)')
       .eq('id', params.id)
       .single(),
     supabase
@@ -32,9 +36,21 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
       .from('tenants')
       .select('name')
       .single(),
+    getJobPhotos(params.id).catch(() => []),
   ])
 
   if (!order) notFound()
 
-  return <OrderDetail order={order} lines={lines ?? []} catalogItems={catalogItems ?? []} contacts={contacts ?? []} businessName={tenant?.name ?? ''} />
+  const t = tenant as { name?: string } | null
+  return (
+    <OrderDetail
+      order={order}
+      lines={lines ?? []}
+      catalogItems={catalogItems ?? []}
+      contacts={contacts ?? []}
+      businessName={t?.name ?? ''}
+      initialPhotos={photos}
+      tenantId={tenantId}
+    />
+  )
 }

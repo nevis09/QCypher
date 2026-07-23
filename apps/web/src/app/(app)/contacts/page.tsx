@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { ContactListWithSearch } from '@/components/contacts/ContactListWithSearch'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { UserPlus, Upload } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Contacts' }
 
@@ -29,20 +30,59 @@ export default async function ContactsPage({
   const { data: contacts, error } = await query
   if (error) throw error
 
+  const total = contacts?.length ?? 0
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+      {/* Page header */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
         <div>
-          <h1 className="text-xl font-semibold">Contacts</h1>
-          <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{contacts?.length ?? 0} total</p>
+          <p style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#4a9db5', marginBottom: '4px' }}>
+            QCypher CRM
+          </p>
+          <h1 style={{ fontSize: '26px', fontWeight: 900, color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            Contacts
+          </h1>
+          <p style={{ fontSize: '15px', color: 'hsl(var(--muted-foreground))', marginTop: '3px' }}>
+            {total} {total === 1 ? 'contact' : 'contacts'} total
+          </p>
         </div>
-        <Link
-          href="/contacts/new"
-          className="bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
-        >
-          Add contact
-        </Link>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link
+            href="/contacts/import"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '9px 16px', borderRadius: '12px', fontSize: '15px', fontWeight: 600,
+              border: '1px solid hsl(var(--border))',
+              background: 'hsl(var(--card))',
+              color: 'hsl(var(--foreground))',
+              textDecoration: 'none',
+              transition: 'background .15s',
+            }}
+          >
+            <Upload style={{ width: '14px', height: '14px' }} />
+            Import CSV
+          </Link>
+          <Link
+            href="/contacts/new"
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '9px 16px', borderRadius: '12px', fontSize: '15px', fontWeight: 700,
+              background: 'linear-gradient(135deg, #1a3070, #4a9db5)',
+              color: '#fff',
+              textDecoration: 'none',
+              boxShadow: '0 2px 10px rgba(74,157,181,0.3)',
+              transition: 'opacity .15s',
+            }}
+          >
+            <UserPlus style={{ width: '14px', height: '14px' }} />
+            Add contact
+          </Link>
+        </div>
       </div>
+
       <ContactListWithSearch contacts={contacts ?? []} />
     </div>
   )

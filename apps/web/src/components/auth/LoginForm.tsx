@@ -5,182 +5,211 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+const TEAL        = '#4a9db5'
+const BTN_BG      = 'linear-gradient(135deg, #1a3070 0%, #2a52a0 60%, #4a9db5 100%)'
+const CARD        = 'rgba(255,255,255,0.05)'
+const BORDER      = 'rgba(74,157,181,0.22)'
+const INPUT_STYLE: React.CSSProperties = {
+  width: '100%',
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(74,157,181,0.28)',
+  borderRadius: '12px',
+  padding: '11px 14px',
+  fontSize: '15px',
+  color: '#e8f0fa',
+  outline: 'none',
+}
+const LABEL_STYLE: React.CSSProperties = {
+  display: 'block',
+  fontSize: '12px',
+  fontWeight: 700,
+  color: 'rgba(148,180,220,0.9)',
+  marginBottom: '7px',
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+}
+const BTN_PRIMARY: React.CSSProperties = {
+  width: '100%',
+  background: BTN_BG,
+  border: 'none',
+  borderRadius: '12px',
+  padding: '13px',
+  fontSize: '15px',
+  fontWeight: 700,
+  color: '#fff',
+  cursor: 'pointer',
+  boxShadow: '0 4px 20px rgba(42,82,160,0.45)',
+}
+const CARD_STYLE: React.CSSProperties = {
+  background: CARD,
+  backdropFilter: 'blur(20px)',
+  WebkitBackdropFilter: 'blur(20px)',
+  border: `1px solid ${BORDER}`,
+  borderRadius: '20px',
+  padding: '32px',
+  boxShadow: '0 8px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+}
+
 type Mode = 'password' | 'magic'
 
 export function LoginForm() {
-  const [mode, setMode] = useState<Mode>('password')
-  const [email, setEmail] = useState('')
+  const [mode, setMode]       = useState<Mode>('password')
+  const [email, setEmail]     = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [sent, setSent]       = useState(false)
+  const [error, setError]     = useState<string | null>(null)
   const supabase = createClient()
-  const router = useRouter()
-
-  async function handlePasswordLogin(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      router.push('/contacts')
-    }
-  }
-
-  async function handleMagicLink(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
-    })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      setSent(true)
-      setLoading(false)
-    }
-  }
+  const router   = useRouter()
 
   async function handleGoogle() {
-    setLoading(true)
-    setError(null)
+    setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${location.origin}/auth/callback` },
     })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    }
+    if (error) { setError(error.message); setLoading(false) }
+  }
+
+  async function handlePasswordLogin(e: React.FormEvent) {
+    e.preventDefault(); setLoading(true); setError(null)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) { setError(error.message); setLoading(false) }
+    else router.push('/dashboard')
+  }
+
+  async function handleMagicLink(e: React.FormEvent) {
+    e.preventDefault(); setLoading(true); setError(null)
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${location.origin}/auth/callback` },
+    })
+    if (error) { setError(error.message); setLoading(false) }
+    else { setSent(true); setLoading(false) }
   }
 
   if (sent) {
     return (
-      <div className="bg-[hsl(var(--card))] rounded-2xl shadow-card p-8 text-center space-y-2">
-        <p className="font-medium">Check your email</p>
-        <p className="text-[15px] text-[hsl(var(--muted-foreground))]">
-          We sent a magic link to <strong>{email}</strong>
+      <div style={{ ...CARD_STYLE, textAlign: 'center' }}>
+        <div style={{
+          width: '56px', height: '56px', borderRadius: '16px', margin: '0 auto 16px',
+          background: BTN_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px',
+        }}>✉️</div>
+        <p style={{ fontWeight: 700, color: '#e8f0fa', fontSize: '17px', marginBottom: '6px' }}>Check your email</p>
+        <p style={{ fontSize: '15px', color: 'rgba(148,180,220,0.75)' }}>
+          We sent a magic link to <strong style={{ color: TEAL }}>{email}</strong>
         </p>
       </div>
     )
   }
 
   return (
-    <div className="bg-[hsl(var(--card))] rounded-2xl shadow-card p-8 space-y-5">
-      {/* Tab toggle */}
-      <div className="flex rounded-xl border border-[hsl(var(--border))] p-1 gap-1">
+    <div style={CARD_STYLE}>
+
+      {/* ── Google (top) ── */}
+      <button
+        type="button"
+        onClick={handleGoogle}
+        disabled={loading}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+          background: 'rgba(255,255,255,0.07)',
+          border: `1px solid ${BORDER}`,
+          borderRadius: '12px',
+          padding: '12px',
+          fontSize: '15px', fontWeight: 600,
+          color: '#e8f0fa',
+          cursor: 'pointer',
+          opacity: loading ? 0.5 : 1,
+          marginBottom: '22px',
+        }}
+      >
+        <GoogleIcon />
+        Continue with Google
+      </button>
+
+      {/* Divider */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '22px' }}>
+        <div style={{ flex: 1, height: '1px', background: BORDER }} />
+        <span style={{ fontSize: '13px', color: 'rgba(148,180,220,0.5)', fontWeight: 500 }}>or sign in with email</span>
+        <div style={{ flex: 1, height: '1px', background: BORDER }} />
+      </div>
+
+      {/* ── Mode toggle ── */}
+      <div style={{
+        display: 'flex', background: 'rgba(0,0,0,0.25)', borderRadius: '12px',
+        padding: '4px', gap: '4px', marginBottom: '24px', border: `1px solid ${BORDER}`,
+      }}>
         {(['password', 'magic'] as Mode[]).map(m => (
           <button
             key={m}
             type="button"
             onClick={() => { setMode(m); setError(null) }}
-            className={`flex-1 rounded-lg py-1.5 text-[15px] font-medium transition-colors ${
-              mode === m
-                ? 'bg-accent text-white'
-                : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'
-            }`}
+            style={{
+              flex: 1, borderRadius: '9px', padding: '9px',
+              fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
+              background: mode === m ? BTN_BG : 'transparent',
+              color: mode === m ? '#fff' : 'rgba(148,180,220,0.65)',
+              boxShadow: mode === m ? '0 2px 12px rgba(42,82,160,0.4)' : 'none',
+            }}
           >
             {m === 'password' ? 'Password' : 'Magic link'}
           </button>
         ))}
       </div>
 
+      {/* ── Password form ── */}
       {mode === 'password' ? (
-        <form onSubmit={handlePasswordLogin} className="space-y-4">
-          <div className="space-y-1.5">
-            <label htmlFor="email" className="text-[15px] font-medium">Email</label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] bg-transparent"
-            />
+        <form onSubmit={handlePasswordLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div>
+            <label htmlFor="email" style={LABEL_STYLE}>Email</label>
+            <input id="email" type="email" required value={email}
+              onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={INPUT_STYLE} />
           </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="text-[15px] font-medium">Password</label>
-              <Link href="/auth/forgot-password" className="text-[15px] text-accent hover:underline">
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '7px' }}>
+              <span style={LABEL_STYLE}>Password</span>
+              <Link href="/auth/forgot-password" style={{ fontSize: '13px', color: TEAL, textDecoration: 'none', fontWeight: 600 }}>
                 Forgot password?
               </Link>
             </div>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] bg-transparent"
-            />
+            <input id="password" type="password" required value={password}
+              onChange={e => setPassword(e.target.value)} placeholder="••••••••" style={INPUT_STYLE} />
           </div>
-          {error && <p className="text-[15px] text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-accent text-white rounded-xl py-2 text-[15px] font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
-          >
+          {error && <p style={{ fontSize: '14px', color: '#f87171', background: 'rgba(248,113,113,0.1)', borderRadius: '10px', padding: '10px 14px' }}>{error}</p>}
+          <button type="submit" disabled={loading} style={{ ...BTN_PRIMARY, opacity: loading ? 0.6 : 1 }}>
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
       ) : (
-        <form onSubmit={handleMagicLink} className="space-y-4">
-          <div className="space-y-1.5">
-            <label htmlFor="email-magic" className="text-[15px] font-medium">Email</label>
-            <input
-              id="email-magic"
-              type="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full rounded-xl border border-[hsl(var(--border))] px-3 py-2 text-[15px] outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] bg-transparent"
-            />
+        <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div>
+            <label htmlFor="email-magic" style={LABEL_STYLE}>Email</label>
+            <input id="email-magic" type="email" required value={email}
+              onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={INPUT_STYLE} />
           </div>
-          {error && <p className="text-[15px] text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-accent text-white rounded-xl py-2 text-[15px] font-medium hover:bg-accent-hover transition-colors disabled:opacity-50"
-          >
+          {error && <p style={{ fontSize: '14px', color: '#f87171', background: 'rgba(248,113,113,0.1)', borderRadius: '10px', padding: '10px 14px' }}>{error}</p>}
+          <button type="submit" disabled={loading} style={{ ...BTN_PRIMARY, opacity: loading ? 0.6 : 1 }}>
             {loading ? 'Sending…' : 'Send magic link'}
           </button>
         </form>
       )}
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-[hsl(var(--border))]" />
-        </div>
-        <div className="relative flex justify-center text-[15px] text-[hsl(var(--muted-foreground))]">
-          <span className="bg-[hsl(var(--card))] px-2">or</span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGoogle}
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 border border-[hsl(var(--border))] rounded-xl py-2 text-[15px] font-medium hover:bg-[hsl(var(--muted))] transition-colors disabled:opacity-50"
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
+      {/* ── Sign up link ── */}
+      <p style={{ textAlign: 'center', marginTop: '22px', fontSize: '14px', color: 'rgba(148,180,220,0.65)' }}>
+        Don&apos;t have an account?{' '}
+        <Link href="/auth/signup" style={{ color: TEAL, fontWeight: 700, textDecoration: 'none' }}>
+          Create one
+        </Link>
+      </p>
     </div>
   )
 }
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
       <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
       <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>

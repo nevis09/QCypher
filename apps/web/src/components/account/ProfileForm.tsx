@@ -104,8 +104,9 @@ export function ProfileForm({ initial }: Props) {
   async function handleSave() {
     setSaving(true); setError(null)
     try {
-      await updateBusinessName(form.business_name)
-      await updateProfile({
+      const bizResult = await updateBusinessName(form.business_name)
+      if (bizResult?.error) { setError(bizResult.error); return }
+      const result = await updateProfile({
         legal_name: form.legal_name,
         phone:      form.phone,
         street:     form.street,
@@ -113,8 +114,12 @@ export function ProfileForm({ initial }: Props) {
         state:      form.state,
         zip:        form.zip,
       })
-      setSaved(true); setEditing(false)
-      setTimeout(() => setSaved(false), 2500)
+      if (result?.error) {
+        setError(result.error)
+      } else {
+        setSaved(true); setEditing(false)
+        setTimeout(() => setSaved(false), 2500)
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save')
     } finally {
@@ -156,26 +161,26 @@ export function ProfileForm({ initial }: Props) {
         padding: '14px 16px',
         borderBottom: '1px solid hsl(var(--border))',
       }}>
-        <p style={{ fontSize: '13px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>
+        <p style={{ fontSize: '15px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>
           {editing ? 'Edit profile' : 'Profile info'}
         </p>
         {editing ? (
           <div style={{ display: 'flex', gap: '8px' }}>
             <button onClick={handleCancel}
               style={{
-                padding: '6px 14px', borderRadius: '10px', border: '1px solid hsl(var(--border))',
+                padding: '7px 16px', borderRadius: '10px', border: '1px solid hsl(var(--border))',
                 background: 'transparent', cursor: 'pointer',
-                fontSize: '13px', fontWeight: 600, color: 'hsl(var(--muted-foreground))',
+                fontSize: '14px', fontWeight: 600, color: 'hsl(var(--muted-foreground))',
               }}>
               Cancel
             </button>
             <button onClick={handleSave} disabled={saving}
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '6px 16px', borderRadius: '10px', border: 'none',
+                padding: '7px 18px', borderRadius: '10px', border: 'none',
                 background: 'linear-gradient(135deg,#2a52a0,#4a9db5)',
                 cursor: saving ? 'wait' : 'pointer',
-                fontSize: '13px', fontWeight: 700, color: '#fff',
+                fontSize: '14px', fontWeight: 700, color: '#fff',
                 opacity: saving ? 0.7 : 1,
               }}>
               {saving
@@ -187,10 +192,10 @@ export function ProfileForm({ initial }: Props) {
           <button onClick={() => setEditing(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: '6px',
-              padding: '6px 14px', borderRadius: '10px',
+              padding: '7px 16px', borderRadius: '10px',
               border: '1px solid hsl(var(--border))',
               background: 'transparent', cursor: 'pointer',
-              fontSize: '13px', fontWeight: 600, color: 'hsl(var(--foreground))',
+              fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))',
             }}>
             {saved
               ? <><Check style={{ width: '13px', height: '13px', color: '#10b981' }} /><span style={{ color: '#10b981' }}>Saved</span></>
@@ -214,7 +219,7 @@ export function ProfileForm({ initial }: Props) {
               <Icon style={{ width: '15px', height: '15px', color }} strokeWidth={2} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '2px' }}>
+              <p style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '3px' }}>
                 {label}
               </p>
               {editing ? (
@@ -254,11 +259,11 @@ export function ProfileForm({ initial }: Props) {
             <Mail style={{ width: '15px', height: '15px', color: '#10b981' }} strokeWidth={2} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '2px' }}>Email</p>
+            <p style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '3px' }}>Email</p>
             <p style={{ fontSize: '14px', color: 'hsl(var(--foreground))' }}>{initial.email}</p>
           </div>
           <span style={{
-            fontSize: '12px', fontWeight: 700, padding: '3px 10px', borderRadius: '20px', flexShrink: 0,
+            fontSize: '14px', fontWeight: 700, padding: '4px 12px', borderRadius: '20px', flexShrink: 0,
             background: 'rgba(16,185,129,0.12)', color: '#059669',
           }}>Verified</span>
         </div>
@@ -273,7 +278,7 @@ export function ProfileForm({ initial }: Props) {
               <MapPin style={{ width: '15px', height: '15px', color: '#f97316' }} strokeWidth={2} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '2px' }}>Address</p>
+              <p style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'hsl(var(--muted-foreground))', marginBottom: '3px' }}>Address</p>
               {!editing && (
                 <p style={{
                   fontSize: '14px',
@@ -321,10 +326,10 @@ export function ProfileForm({ initial }: Props) {
                           background: 'transparent', border: 'none', cursor: 'pointer',
                           borderBottom: i < suggestions.length - 1 ? '1px solid hsl(var(--border))' : 'none',
                         }}>
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: 'hsl(var(--foreground))', display: 'block' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', display: 'block' }}>
                           {[r.address.house_number, r.address.road].filter(Boolean).join(' ') || r.display_name.split(',')[0]}
                         </span>
-                        <span style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))', display: 'block', marginTop: '1px' }}>
+                        <span style={{ fontSize: '14px', color: 'hsl(var(--muted-foreground))', display: 'block', marginTop: '2px' }}>
                           {r.display_name}
                         </span>
                       </button>
@@ -355,7 +360,7 @@ export function ProfileForm({ initial }: Props) {
 
       {error && (
         <div style={{ padding: '10px 16px', borderTop: '1px solid hsl(var(--border))' }}>
-          <p style={{ fontSize: '13px', color: '#dc2626' }}>{error}</p>
+          <p style={{ fontSize: '14px', color: '#dc2626' }}>{error}</p>
         </div>
       )}
     </div>

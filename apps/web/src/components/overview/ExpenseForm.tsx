@@ -115,7 +115,7 @@ export function ExpenseForm({ expense, onDone, onCancel }: Props) {
         </button>
         <button type="submit" disabled={saving}
           className="flex-1 py-2.5 rounded-xl text-[15px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ background: '#6366f1' }}>
+          style={{ background: '#2a52a0' }}>
           {saving ? 'Saving…' : expense ? 'Update' : 'Add Expense'}
         </button>
       </div>

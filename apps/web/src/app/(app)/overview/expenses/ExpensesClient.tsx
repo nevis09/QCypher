@@ -43,12 +43,12 @@ export function ExpensesClient({ expenses: initial }: Props) {
       <div className="flex items-center justify-between px-4 py-4 pt-6" style={{ borderBottom: '1px solid hsl(var(--border))' }}>
         <div className="flex flex-col gap-1">
           <BackLink href="/overview" label="Overview" />
-          <h1 className="text-xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>Expenses</h1>
+          <h1 className="text-xl font-black" style={{ color: 'var(--heading)' }}>Expenses</h1>
         </div>
         {mode === 'list' && (
           <button onClick={() => setMode('create')}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[15px] font-semibold text-white"
-            style={{ background: '#6366f1' }}>
+            style={{ background: '#2a52a0' }}>
             <Plus style={{ width: '14px', height: '14px' }} /> Add
           </button>
         )}
@@ -128,7 +128,7 @@ export function ExpensesClient({ expenses: initial }: Props) {
                   </span>
                   <div className="flex gap-2">
                     <button onClick={() => { setEditing(expense); setMode('edit') }}
-                      className="p-1 rounded-lg hover:opacity-70" style={{ color: '#6366f1' }}>
+                      className="p-1 rounded-lg hover:opacity-70" style={{ color: '#2a52a0' }}>
                       <Pencil style={{ width: '13px', height: '13px' }} />
                     </button>
                     {showConfirm === expense.id ? (

@@ -24,18 +24,18 @@ type NavItem = {
 
 const HOME_ITEM: NavItem = {
   href: '/dashboard', label: 'Home', icon: Home,
-  color: '#6366f1', bg: 'rgba(99,102,241,0.12)', flag: null,
+  color: '#2a52a0', bg: 'rgba(42,82,160,0.12)', flag: null,
 }
 
 const PRIMARY_NAV: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#6366f1', bg: 'rgba(99,102,241,0.12)',  flag: null },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#4a9db5', bg: 'rgba(74,157,181,0.12)',  flag: null },
   { href: '/contacts',  label: 'Contacts',  icon: Users,           color: '#10b981', bg: 'rgba(16,185,129,0.12)', flag: null },
   { href: '/pipeline',  label: 'Pipeline',  icon: GitBranch,       color: '#f97316', bg: 'rgba(249,115,22,0.12)', flag: 'show_pipeline' },
   { href: '/calendar',  label: 'Calendar',  icon: Calendar,        color: '#0ea5e9', bg: 'rgba(14,165,233,0.12)', flag: 'show_calendar' },
 ]
 
 const SECONDARY_NAV: NavItem[] = [
-  { href: '/catalog',   label: 'Catalog',   icon: Package,     color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',   flag: 'show_catalog'   },
+  { href: '/inventory', label: 'Inventory', icon: Package,     color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',   flag: 'show_catalog'   },
   { href: '/orders',    label: 'Orders',    icon: ShoppingBag, color: '#10b981', bg: 'rgba(16,185,129,0.12)',  flag: 'show_orders'    },
   { href: '/templates', label: 'Templates', icon: FileText,    color: '#a855f7', bg: 'rgba(168,85,247,0.12)',  flag: 'show_templates' },
   { href: '/overview',  label: 'Overview',  icon: BarChart2,   color: '#22c55e', bg: 'rgba(34,197,94,0.12)',   flag: 'show_overview'  },
@@ -65,16 +65,14 @@ export function TopBar({
 }) {
   const pathname  = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [exitPrompt, setExitPrompt] = useState(false)
 
   const active = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
   const visiblePrimary   = PRIMARY_NAV.filter(i => i.flag === null || settings[i.flag])
   const visibleSecondary = SECONDARY_NAV.filter(i => i.flag === null || settings[i.flag])
 
-  // Close on route change
   useEffect(() => { setMenuOpen(false) }, [pathname])
-
-  // Lock body scroll when drawer is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -87,30 +85,72 @@ export function TopBar({
         style={{ height: '60px', background: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
       >
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 flex-shrink-0 hover:opacity-90 transition-opacity mr-2">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
-            <span className="text-white font-black" style={{ fontSize: '15px' }}>Q</span>
-          </div>
-          <span className="hidden sm:block font-black text-[15px]" style={{ color: 'hsl(var(--foreground))', letterSpacing: '-0.01em' }}>
+        <button
+          onClick={() => setExitPrompt(true)}
+          className="flex items-center gap-2 flex-shrink-0 hover:opacity-90 transition-opacity mr-2 bg-transparent border-0 cursor-pointer p-0"
+        >
+          <img src="/qcypher-logo.png" alt="QCypher" style={{ height: '38px', width: 'auto', display: 'block', transform: 'translateY(-5px)' }} />
+          <span className="hidden sm:block" style={{ fontFamily: 'var(--font-heading), var(--font-sans)', fontWeight: 900, fontSize: '17px', color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1, marginLeft: '-10px' }}>
             QCypher
           </span>
-        </Link>
+        </button>
+
+        {/* Exit confirmation dialog */}
+        {exitPrompt && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setExitPrompt(false)}
+          >
+            <div
+              className="rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4"
+              style={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-center mb-4">
+                <img src="/qcypher-logo.png" alt="QCypher" style={{ height: '72px', width: 'auto', display: 'block' }} />
+              </div>
+              <h2 className="text-[17px] font-bold mb-1" style={{ color: 'hsl(var(--foreground))' }}>
+                Leave QCypher CRM?
+              </h2>
+              <p className="text-[15px] mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                You&apos;ll be taken to the QCypher homepage. Any unsaved changes will be lost.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setExitPrompt(false)}
+                  className="flex-1 py-2.5 rounded-xl text-[15px] font-semibold transition-colors"
+                  style={{ background: 'hsl(var(--muted))', color: 'hsl(var(--foreground))' }}
+                >
+                  Stay here
+                </button>
+                <Link
+                  href="/"
+                  className="flex-1 py-2.5 rounded-xl text-[15px] font-semibold text-white text-center transition-opacity hover:opacity-90"
+                  style={{ background: 'linear-gradient(135deg,#1a3070,#4a9db5)' }}
+                  onClick={() => setExitPrompt(false)}
+                >
+                  Go to homepage
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Primary nav — desktop */}
-        <nav className="hidden md:flex items-center gap-0.5 flex-1">
+        <nav className="hidden md:flex items-center justify-center gap-1 flex-1">
           {visiblePrimary.map(({ href, label, icon: Icon, color, bg }) => {
             const on = active(href)
             return (
               <Link key={href} href={href}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[15px] transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-[15px] transition-all"
                 style={{
                   fontWeight: on ? 700 : 500,
                   color: on ? color : 'hsl(var(--muted-foreground))',
                   background: on ? bg : 'transparent',
+                  letterSpacing: on ? '0.01em' : '0',
                 }}
               >
-                <Icon style={{ width: '14px', height: '14px', flexShrink: 0, color: on ? color : 'hsl(var(--muted-foreground))' }}
+                <Icon style={{ width: '16px', height: '16px', flexShrink: 0, color: on ? color : 'hsl(var(--muted-foreground))' }}
                   strokeWidth={on ? 2.5 : 1.8} />
                 {label}
               </Link>
@@ -151,7 +191,7 @@ export function TopBar({
           </button>
 
           <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black"
-            style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', fontSize: '15px' }}>
+            style={{ background: 'linear-gradient(135deg,#1a3070,#4a9db5)', fontSize: '15px' }}>
             {userInitial}
           </div>
 
@@ -190,10 +230,7 @@ export function TopBar({
         <div className="flex items-center justify-between px-5 border-b flex-shrink-0"
           style={{ height: '60px', borderColor: 'hsl(var(--border))' }}>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
-              <span className="text-white font-black" style={{ fontSize: '15px' }}>Q</span>
-            </div>
+            <img src="/qcypher-logo.png" alt="QCypher" style={{ height: '42px', width: 'auto' }} />
             <span className="font-black text-[15px]" style={{ color: 'hsl(var(--foreground))' }}>Menu</span>
           </div>
           <button onClick={() => setMenuOpen(false)}
@@ -202,7 +239,7 @@ export function TopBar({
           </button>
         </div>
 
-        {/* Drawer body — scrollable */}
+        {/* Drawer body */}
         <div className="flex-1 overflow-y-auto py-3">
           <div className="px-3">
             <DrawerItem item={HOME_ITEM} active={active('/dashboard')} />

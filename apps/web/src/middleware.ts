@@ -31,13 +31,18 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Public routes
-  if (pathname.startsWith('/auth')) {
+  // Public routes — no auth required
+  if (
+    pathname.startsWith('/auth') ||
+    pathname === '/' ||
+    pathname === '/about' ||
+    pathname.startsWith('/api/telnyx/')
+  ) {
     return supabaseResponse
   }
 
   // Unauthenticated → login
-  if (!user && !pathname.startsWith('/auth')) {
+  if (!user) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 

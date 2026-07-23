@@ -15,7 +15,7 @@ export default async function EditTemplatePage({ params }: Props) {
 
   return (
     <div className="max-w-xl space-y-6">
-      <h1 className="text-xl font-semibold">Edit template</h1>
+      <h1 className="text-xl font-black">Edit template</h1>
       <TemplateForm template={template} />
     </div>
   )

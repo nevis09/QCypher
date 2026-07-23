@@ -77,10 +77,13 @@ function TenantRow({ tenant }: { tenant: Tenant }) {
       <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center flex-shrink-0">
         <Building2 className="w-4 h-4" />
       </div>
-      <div className="flex-1 min-w-0">
+      <button
+        onClick={() => router.push(`/admin/tenants/${tenant.id}`)}
+        className="flex-1 min-w-0 text-left hover:opacity-70 transition-opacity"
+      >
         <p className="text-[15px] font-medium">{tenant.name}</p>
         <p className="text-[15px] text-[hsl(var(--muted-foreground))]">/{tenant.slug} · {tenant.plan}</p>
-      </div>
+      </button>
       <span className={cn('flex items-center gap-1 text-[15px] px-2.5 py-1 rounded-full font-medium capitalize', STATUS_STYLE[tenant.status])}>
         <StatusIcon className="w-3 h-3" />
         {tenant.status}

@@ -10,14 +10,14 @@ export default function AboutPage() {
       <BackLink href="/support" label="Help & Support" />
 
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>About QCypher</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>About QCypher</h1>
       </div>
 
       {/* Identity block */}
       <div className="rounded-2xl border px-5 py-5 flex items-center gap-4"
         style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}>
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+          style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
           <span className="text-white font-black" style={{ fontSize: '22px' }}>Q</span>
         </div>
         <div>
@@ -44,7 +44,7 @@ export default function AboutPage() {
       {/* Pillars */}
       {[
         {
-          icon: Zap, color: '#6366f1', bg: 'rgba(99,102,241,0.12)',
+          icon: Zap, color: '#2a52a0', bg: 'rgba(42,82,160,0.12)',
           title: 'Fast by default',
           body: 'Every screen is designed to be navigated in under three taps. No buried menus, no modal-on-modal flows.',
         },

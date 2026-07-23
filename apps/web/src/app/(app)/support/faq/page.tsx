@@ -9,7 +9,7 @@ export default function FaqPage() {
     <div className="max-w-lg space-y-6">
       <BackLink href="/support" label="Help & Support" />
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>FAQs</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>FAQs</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Common questions about billing, contacts, and data security
         </p>

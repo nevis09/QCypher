@@ -12,11 +12,10 @@ export default async function AccountPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('users')
-    .select('legal_name, nickname, phone, street, city, state, zip')
-    .eq('id', user.id)
-    .single()
+  const [{ data: profile }, { data: tenant }] = await Promise.all([
+    supabase.from('users').select('legal_name, nickname, phone, street, city, state, zip').eq('id', user.id).single(),
+    supabase.from('tenants').select('name').single(),
+  ])
 
   const identities  = user.identities ?? []
   const hasPassword = identities.some(i => i.provider === 'email')
@@ -31,7 +30,7 @@ export default async function AccountPage() {
   return (
     <div className="max-w-lg space-y-6">
       <div>
-        <h1 className="text-2xl font-black" style={{ color: 'hsl(var(--foreground))' }}>Account</h1>
+        <h1 className="text-2xl font-black" style={{ color: 'var(--heading)' }}>Account</h1>
         <p className="text-[15px] mt-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Manage your profile and security settings
         </p>
@@ -48,7 +47,8 @@ export default async function AccountPage() {
               city:       (profile as { city?: string }       | null)?.city       ?? null,
               state:      (profile as { state?: string }      | null)?.state      ?? null,
               zip:        (profile as { zip?: string }        | null)?.zip        ?? null,
-              email:      user.email ?? '',
+              email:         user.email ?? '',
+              business_name: (tenant as { name?: string } | null)?.name ?? null,
             }}
           />
         }

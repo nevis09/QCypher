@@ -9,11 +9,18 @@ import type { Tables } from '@/types/database'
 type Contact = Pick<Tables<'contacts'>, 'id' | 'first_name' | 'last_name' | 'email' | 'phone' | 'tags' | 'status' | 'created_at'>
 
 const STATUS_FILTERS = [
-  { value: 'all',      label: 'All',      color: '#6366f1', bg: '#eef2ff' },
-  { value: 'lead',     label: 'Leads',    color: '#92400e', bg: '#fef3c7' },
-  { value: 'active',   label: 'Active',   color: '#065f46', bg: '#d1fae5' },
-  { value: 'inactive', label: 'Inactive', color: '#3730a3', bg: '#e0e7ff' },
+  { value: 'all',      label: 'All'      },
+  { value: 'lead',     label: 'Leads'    },
+  { value: 'active',   label: 'Active'   },
+  { value: 'inactive', label: 'Inactive' },
 ]
+
+const STATUS_COLORS: Record<string, { color: string; bg: string }> = {
+  all:      { color: '#4a9db5', bg: 'rgba(74,157,181,0.12)' },
+  lead:     { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  active:   { color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  inactive: { color: '#2a52a0', bg: 'rgba(42,82,160,0.12)'  },
+}
 
 export function ContactListWithSearch({ contacts }: { contacts: Contact[] }) {
   const router = useRouter()
@@ -31,35 +38,52 @@ export function ContactListWithSearch({ contacts }: { contacts: Contact[] }) {
   }, [pathname, router, searchParams])
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search input */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsl(var(--muted-foreground))' }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+      {/* Search + filter row */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {/* Search */}
+        <div style={{ position: 'relative' }}>
+          <Search style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '15px', height: '15px', color: 'hsl(var(--muted-foreground))', pointerEvents: 'none' }} />
           <input
             type="search"
             defaultValue={q}
             onChange={e => updateParam('q', e.target.value)}
             placeholder="Search by name, email, phone…"
-            className="w-full pl-10 pr-4 py-2.5 text-[15px] font-medium rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
-            style={{ color: 'hsl(var(--foreground))' }}
+            style={{
+              width: '100%',
+              paddingLeft: '42px', paddingRight: '16px', paddingTop: '10px', paddingBottom: '10px',
+              fontSize: '15px', fontWeight: 500,
+              borderRadius: '12px',
+              border: '1px solid hsl(var(--border))',
+              background: 'hsl(var(--card))',
+              color: 'hsl(var(--foreground))',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
           />
         </div>
 
-        {/* Status filters */}
-        <div className="flex gap-1.5 flex-shrink-0 flex-wrap">
+        {/* Status filter pills */}
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
           {STATUS_FILTERS.map(f => {
-            const isActive = status === f.value
+            const on = status === f.value
+            const { color, bg } = STATUS_COLORS[f.value]
             return (
               <button
                 key={f.value}
                 onClick={() => updateParam('status', f.value)}
-                className="text-[15px] font-black px-3.5 py-2 rounded-xl transition-all border"
                 style={{
-                  background: isActive ? f.bg : 'white',
-                  color: isActive ? f.color : 'hsl(var(--muted-foreground))',
-                  borderColor: isActive ? f.color + '55' : 'hsl(var(--border))',
-                  boxShadow: isActive ? `0 0 0 2px ${f.color}22` : 'none',
+                  padding: '6px 14px',
+                  borderRadius: '99px',
+                  fontSize: '15px',
+                  fontWeight: on ? 700 : 500,
+                  border: `1px solid ${on ? color + '50' : 'hsl(var(--border))'}`,
+                  background: on ? bg : 'transparent',
+                  color: on ? color : 'hsl(var(--muted-foreground))',
+                  cursor: 'pointer',
+                  transition: 'all .15s',
+                  letterSpacing: on ? '0.01em' : '0',
                 }}
               >
                 {f.label}
@@ -68,6 +92,7 @@ export function ContactListWithSearch({ contacts }: { contacts: Contact[] }) {
           })}
         </div>
       </div>
+
       <ContactList contacts={contacts} />
     </div>
   )

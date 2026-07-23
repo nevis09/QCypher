@@ -22,7 +22,7 @@ export default async function AdminPage() {
 
   // Gate: caller's own tenant must have is_admin=true (read through RLS)
   const { data: callerTenant } = await supabase.from('tenants').select('is_admin').single()
-  if (!callerTenant?.is_admin) redirect('/contacts')
+  if (!(callerTenant as { is_admin?: boolean } | null)?.is_admin) redirect('/contacts')
 
   // Fetch all tenants via service_role (admin view crosses RLS boundary by design)
   const admin = adminSupabase()

@@ -10,7 +10,7 @@ const ALL_NAV = [
   { href: '/contacts',  icon: Users,            label: 'Contacts',  color: '#34d399', flag: null },
   { href: '/pipeline',  icon: GitBranch,        label: 'Pipeline',  color: '#fb923c', flag: 'show_pipeline' as const },
   { href: '/calendar',  icon: Calendar,         label: 'Calendar',  color: '#38bdf8', flag: 'show_calendar' as const },
-  { href: '/catalog',   icon: Package,          label: 'Catalog',   color: '#f59e0b', flag: 'show_catalog' as const },
+  { href: '/inventory', icon: Package,          label: 'Inventory', color: '#f59e0b', flag: 'show_catalog' as const },
   { href: '/orders',    icon: ShoppingBag,      label: 'Orders',    color: '#10b981', flag: 'show_orders' as const },
   { href: '/templates', icon: FileText,         label: 'Templates', color: '#c084fc', flag: 'show_templates' as const },
   { href: '/settings',  icon: Settings,         label: 'Settings',  color: '#94a3b8', flag: null },
@@ -34,7 +34,7 @@ export function Sidebar({
       <Link href="/dashboard" className="px-5 pt-6 pb-5 flex items-center gap-3 hover:opacity-90 transition-opacity">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}
+          style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}
         >
           <span className="text-white font-black" style={{ fontSize: '15px' }}>Q</span>
         </div>

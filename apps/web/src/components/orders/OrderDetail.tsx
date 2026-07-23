@@ -4,9 +4,12 @@ import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, Plus, Trash2, RotateCcw, CalendarClock, Printer } from 'lucide-react'
 import {
-  addLineItem, removeLineItem, updateOrderStatus, returnRental, extendRental,
+  addLineItem, removeLineItem, updateOrderStatus, updateJobStatus, returnRental, extendRental,
   type Order, type OrderLineItem,
 } from '@/lib/actions/orders'
+import { JobStatusSmsPrompt } from './JobStatusSmsPrompt'
+import { JobPhotos } from './JobPhotos'
+import type { JobPhoto } from '@/lib/actions/photos'
 import { useRouter } from 'next/navigation'
 
 type CatalogItem = { id: string; name: string; base_price: number; billing_unit: string; item_type: string }
@@ -36,24 +39,34 @@ function isOverdue(line: OrderLineItem): boolean {
 }
 
 export function OrderDetail({
-  order, lines, catalogItems, contacts, businessName,
+  order, lines, catalogItems, contacts, businessName, initialPhotos, tenantId,
 }: {
   order: Order
   lines: OrderLineItem[]
   catalogItems: CatalogItem[]
   contacts: Contact[]
   businessName: string
+  initialPhotos: JobPhoto[]
+  tenantId: string
 }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [showAddLine, setShowAddLine] = useState(false)
   const [extendLine, setExtendLine] = useState<OrderLineItem | null>(null)
+  const [jobStatus, setJobStatus] = useState<Order['job_status']>(order.job_status)
+  const [promptKey, setPromptKey] = useState(0) // remount prompt on each status change
 
   const contact = order.contact as { id: string; first_name: string; last_name: string | null; email: string | null } | null
   const statusStyle = STATUS_COLORS[order.payment_status] ?? STATUS_COLORS.draft
 
   function handleStatusChange(status: Order['payment_status']) {
     startTransition(() => updateOrderStatus(order.id, status))
+  }
+
+  function handleJobStatusChange(status: Order['job_status']) {
+    setJobStatus(status)
+    setPromptKey(k => k + 1)
+    startTransition(() => updateJobStatus(order.id, status))
   }
 
   function handleRemoveLine(lineId: string) {
@@ -89,7 +102,7 @@ export function OrderDetail({
       </div>
 
       {/* Back */}
-      <Link href="/orders" className="inline-flex items-center gap-1.5 text-[15px] font-semibold hover:text-indigo-600 transition-colors no-print"
+      <Link href="/orders" className="inline-flex items-center gap-1.5 text-[15px] font-semibold hover:text-[#1a3070] transition-colors no-print"
         style={{ color: 'hsl(var(--muted-foreground))' }}>
         <ChevronLeft className="w-4 h-4" /> Orders
       </Link>
@@ -103,7 +116,7 @@ export function OrderDetail({
             </h1>
             {contact && (
               <Link href={`/contacts/${contact.id}`}
-                className="text-[15px] font-semibold mt-1 hover:text-indigo-600 transition-colors"
+                className="text-[15px] font-semibold mt-1 hover:text-[#1a3070] transition-colors"
                 style={{ color: 'hsl(var(--muted-foreground))' }}>
                 {contact.first_name} {contact.last_name}
               </Link>
@@ -114,7 +127,7 @@ export function OrderDetail({
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
-            {/* Status picker */}
+            {/* Payment status picker */}
             <select
               value={order.payment_status}
               onChange={e => handleStatusChange(e.target.value as Order['payment_status'])}
@@ -128,6 +141,24 @@ export function OrderDetail({
               <option value="refunded">Refunded</option>
             </select>
 
+            {/* Job status picker */}
+            <select
+              value={jobStatus ?? ''}
+              onChange={e => handleJobStatusChange((e.target.value || null) as Order['job_status'])}
+              disabled={pending}
+              className="text-[15px] font-semibold px-3 py-1.5 rounded-xl border cursor-pointer"
+              style={{
+                borderColor: 'hsl(var(--border))',
+                background: 'hsl(var(--muted))',
+                color: 'hsl(var(--foreground))',
+              }}
+            >
+              <option value="">Job status…</option>
+              <option value="en_route">🚗 En route</option>
+              <option value="in_progress">🔧 In progress</option>
+              <option value="completed">✅ Completed</option>
+            </select>
+
             <button onClick={() => window.print()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[hsl(var(--border))] text-[15px] font-semibold hover:bg-[hsl(var(--muted))] transition-colors"
               style={{ color: 'hsl(var(--muted-foreground))' }}>
@@ -137,13 +168,27 @@ export function OrderDetail({
         </div>
       </div>
 
+      {/* One-tap job status SMS prompt */}
+      {contact?.id && jobStatus && (
+        <div className="no-print">
+          <JobStatusSmsPrompt
+            key={promptKey}
+            status={jobStatus}
+            contactId={contact.id}
+            contactName={`${contact.first_name} ${contact.last_name ?? ''}`.trim()}
+            contactPhone={(contact as any).phone ?? null}
+            businessName={businessName}
+          />
+        </div>
+      )}
+
       {/* Line items */}
       <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
           <h2 className="text-[15px] font-black" style={{ color: 'hsl(var(--foreground))' }}>Line items</h2>
           <button onClick={() => setShowAddLine(true)}
             className="no-print flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[15px] font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>
+            style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
             <Plus className="w-3.5 h-3.5" /> Add item
           </button>
         </div>
@@ -153,6 +198,7 @@ export function OrderDetail({
             No items yet — add one above
           </p>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr style={{ background: 'hsl(var(--muted))', borderBottom: '1px solid hsl(var(--border))' }}>
@@ -210,7 +256,7 @@ export function OrderDetail({
                           <>
                             <button onClick={() => setExtendLine(line)} title="Extend rental"
                               className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-violet-50 transition-colors">
-                              <CalendarClock className="w-3.5 h-3.5" style={{ color: '#7c3aed' }} />
+                              <CalendarClock className="w-3.5 h-3.5" style={{ color: '#4a9db5' }} />
                             </button>
                             <button onClick={() => handleReturn(line.id)} title="Mark returned"
                               className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-green-50 transition-colors">
@@ -229,6 +275,7 @@ export function OrderDetail({
               })}
             </tbody>
           </table>
+          </div>
         )}
 
         {/* Total */}
@@ -240,6 +287,15 @@ export function OrderDetail({
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Job Photos — hidden on print */}
+      <div className="no-print">
+        <JobPhotos
+          orderId={order.id}
+          initialPhotos={initialPhotos}
+          tenantId={tenantId}
+        />
       </div>
 
       {/* Modals — hidden on print */}
@@ -386,7 +442,7 @@ function AddLineModal({ orderId, catalogItems, onClose }: {
               style={{ color: 'hsl(var(--muted-foreground))' }}>Cancel</button>
             <button type="submit" disabled={pending}
               className="flex-1 py-2.5 rounded-xl text-[15px] font-bold text-white"
-              style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', opacity: pending ? 0.6 : 1 }}>
+              style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)', opacity: pending ? 0.6 : 1 }}>
               {pending ? 'Adding…' : 'Add item'}
             </button>
           </div>
@@ -451,7 +507,7 @@ function ExtendRentalModal({ line, orderId, onClose }: {
               style={{ color: 'hsl(var(--muted-foreground))' }}>Cancel</button>
             <button type="submit" disabled={pending}
               className="flex-1 py-2.5 rounded-xl text-[15px] font-bold text-white"
-              style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', opacity: pending ? 0.6 : 1 }}>
+              style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)', opacity: pending ? 0.6 : 1 }}>
               {pending ? 'Extending…' : 'Extend'}
             </button>
           </div>

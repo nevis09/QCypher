@@ -106,7 +106,45 @@ function evPos(ev: CalEvent) {
   const endMin   = getHours(e) * 60 + getMinutes(e)
   const top    = Math.max(0, (startMin - DAY_START * 60) / 60) * HOUR_H
   const height = Math.max((endMin - startMin) / 60 * HOUR_H, 24)
-  return { top, height }
+  return { top, height, startMin, endMin }
+}
+
+// Assign each event a column index so overlapping events sit side-by-side
+function layoutEvents(evs: CalEvent[]) {
+  const sorted = [...evs].sort((a, b) =>
+    parseISO(a.starts_at).getTime() - parseISO(b.starts_at).getTime()
+  )
+  const cols: number[][] = [] // cols[i] = end minute of last event in column i
+  const result: { ev: CalEvent; col: number; totalCols: number }[] = []
+
+  sorted.forEach(ev => {
+    const { startMin, endMin } = evPos(ev)
+    let placed = false
+    for (let i = 0; i < cols.length; i++) {
+      if (cols[i] <= startMin) {
+        cols[i] = endMin
+        result.push({ ev, col: i, totalCols: 0 })
+        placed = true
+        break
+      }
+    }
+    if (!placed) {
+      cols.push(endMin)
+      result.push({ ev, col: cols.length - 1, totalCols: 0 })
+    }
+  })
+
+  // Determine totalCols for each event: max columns active during its time span
+  result.forEach(item => {
+    const { startMin, endMin } = evPos(item.ev)
+    const concurrent = result.filter(other => {
+      const o = evPos(other.ev)
+      return o.startMin < endMin && o.endMin > startMin
+    })
+    item.totalCols = Math.max(...concurrent.map(c => c.col)) + 1
+  })
+
+  return result
 }
 
 // ── Month view ────────────────────────────────────────────────────────────────
@@ -201,7 +239,7 @@ function MonthView({ anchor, events, onClickDay, onClickEvent }: {
 function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
   days: Date[]
   events: CalEvent[]
-  onClickSlot: (d: Date, hour: number) => void
+  onClickSlot: (d: Date, hour: number, minute: number) => void
   onClickEvent: (ev: CalEvent) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -242,6 +280,7 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
           <div style={{ width: 52, flexShrink: 0, position: 'relative' }}>
             {HOURS.map(h => (
               <div key={h} style={{ height: HOUR_H, position: 'relative' }}>
+                {/* Hour label */}
                 <span style={{
                   position: 'absolute', top: -9, right: 8,
                   fontSize: '11px', fontWeight: 700,
@@ -249,6 +288,15 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                   letterSpacing: '0.04em',
                 }}>
                   {format(new Date(2000, 0, 1, h), 'ha').toLowerCase()}
+                </span>
+                {/* :30 label */}
+                <span style={{
+                  position: 'absolute', top: HOUR_H / 2 - 7, right: 8,
+                  fontSize: '9px', fontWeight: 600,
+                  color: 'rgba(42,82,160,0.45)',
+                  letterSpacing: '0.03em',
+                }}>
+                  :30
                 </span>
               </div>
             ))}
@@ -264,26 +312,45 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                   borderLeft: `1px solid ${today ? FX.borderMed : FX.border}`,
                   background: today ? 'rgba(42,82,160,0.04)' : 'transparent',
                 }}>
-                {/* Hour rows */}
+                {/* Hour rows — each split into two 30-min half-blocks */}
                 {HOURS.map(h => (
-                  <div key={h}
-                    onClick={() => onClickSlot(day, h)}
-                    className="cursor-pointer transition-all"
-                    style={{ height: HOUR_H, borderBottom: `1px solid ${FX.gridLine}` }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.06)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  />
+                  <div key={h} style={{ height: HOUR_H, borderBottom: `1px solid ${FX.borderMed}` }}>
+                    {/* :00 half */}
+                    <div
+                      onClick={() => onClickSlot(day, h, 0)}
+                      className="cursor-pointer transition-all"
+                      style={{ height: HOUR_H / 2 }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.06)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    />
+                    {/* :30 half — dashed separator line */}
+                    <div
+                      onClick={() => onClickSlot(day, h, 30)}
+                      className="cursor-pointer transition-all"
+                      style={{
+                        height: HOUR_H / 2,
+                        borderTop: '1px dashed rgba(42,82,160,0.20)',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(42,82,160,0.06)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    />
+                  </div>
                 ))}
 
                 {/* Events */}
-                {dayEvs.map(ev => {
+                {(() => {
+                  const layout = layoutEvents(dayEvs)
+                  return layout.map(({ ev, col, totalCols }) => {
                   const { top, height } = evPos(ev)
+                  const pct = 100 / totalCols
                   return (
                     <button key={ev.id}
                       onClick={e => { e.stopPropagation(); onClickEvent(ev) }}
                       className="absolute transition-all"
                       style={{
-                        left: 2, right: 2, top, height,
+                        left: `calc(${col * pct}% + 2px)`,
+                        width: `calc(${pct}% - 4px)`,
+                        top, height,
                         background: 'rgba(42,82,160,0.18)',
                         borderLeft: `3px solid #2a52a0`,
                         borderRadius: '6px',
@@ -307,7 +374,8 @@ function TimeGrid({ days, events, onClickSlot, onClickEvent }: {
                       )}
                     </button>
                   )
-                })}
+                  })
+                })()}
               </div>
             )
           })}
@@ -348,7 +416,7 @@ export function CalendarView({
     setViewRaw(v)
   }
   const [anchor,    setAnchor]    = useState(() => new Date())
-  const [modal,     setModal]     = useState<{ date?: Date; event?: CalEvent } | null>(null)
+  const [modal,     setModal]     = useState<{ date?: Date; event?: CalEvent; readOnly?: boolean } | null>(null)
   const [showSheet, setShowSheet] = useState(false)
 
   // Merge manual events + Cal.com bookings + Google Calendar events
@@ -378,9 +446,9 @@ export function CalendarView({
 
   const days = getDays(view, anchor)
 
-  function openSlot(date: Date, hour?: number) {
+  function openSlot(date: Date, hour?: number, minute = 0) {
     const d = hour !== undefined
-      ? new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour)
+      ? new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute)
       : date
     setModal({ date: d })
   }
@@ -481,7 +549,8 @@ export function CalendarView({
             events={allEvents}
             onClickDay={openSlot}
             onClickEvent={ev => {
-              if (!ev.id.startsWith('cal_') && !ev.id.startsWith('gcal_')) setModal({ event: ev })
+              const ro = ev.id.startsWith('cal_') || ev.id.startsWith('gcal_')
+              setModal({ event: ev, readOnly: ro })
             }}
           />
         ) : (
@@ -490,7 +559,8 @@ export function CalendarView({
             events={allEvents}
             onClickSlot={openSlot}
             onClickEvent={ev => {
-              if (!ev.id.startsWith('cal_') && !ev.id.startsWith('gcal_')) setModal({ event: ev })
+              const ro = ev.id.startsWith('cal_') || ev.id.startsWith('gcal_')
+              setModal({ event: ev, readOnly: ro })
             }}
           />
         )}
@@ -523,7 +593,7 @@ export function CalendarView({
         />
       )}
 
-      {modal && <EventModal date={modal.date} event={modal.event} onClose={() => setModal(null)} />}
+      {modal && <EventModal date={modal.date} event={modal.event} readOnly={modal.readOnly} onClose={() => setModal(null)} />}
     </>
   )
 }

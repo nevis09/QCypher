@@ -15,7 +15,7 @@ export default async function EditContactPage({ params }: Props) {
 
   return (
     <div className="max-w-xl space-y-6">
-      <h1 className="text-xl font-semibold">Edit contact</h1>
+      <h1 className="text-xl font-black">Edit contact</h1>
       <ContactForm contact={contact} />
     </div>
   )

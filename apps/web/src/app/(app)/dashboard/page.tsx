@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { Users, Calendar, UserPlus, Activity, ShoppingBag, DollarSign, LayoutGrid, BookOpen, FileText, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
+import { WelcomeBanner } from '@/components/layout/WelcomeBanner'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
@@ -217,6 +218,12 @@ export default async function DashboardPage() {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = user
+    ? await supabase.from('users').select('has_seen_welcome').eq('id', user.id).single()
+    : { data: null }
+  const showWelcome = (profile as { has_seen_welcome?: boolean } | null)?.has_seen_welcome === false
+
   const [
     { count: totalContacts },
     { count: newThisMonth },
@@ -259,13 +266,15 @@ export default async function DashboardPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
+      {showWelcome && <WelcomeBanner />}
+
       {/* Header */}
       <div>
         <p style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: TEAL, marginBottom: '4px' }}>
           QCypher CRM
         </p>
-        <h1 style={{ fontSize: '26px', fontWeight: 900, color: 'hsl(var(--foreground))', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-          Good {hour()}
+        <h1 style={{ fontSize: '26px', fontWeight: 900, color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+          Welcome back
         </h1>
         <p style={{ fontSize: '15px', color: 'hsl(var(--muted-foreground))', marginTop: '4px' }}>
           Here&apos;s your business at a glance
@@ -316,16 +325,10 @@ export default async function DashboardPage() {
           <QuickAction href="/pipeline"      icon={Activity}    label="Pipeline"      color="#f97316" />
           <QuickAction href="/templates/new" icon={FileText}    label="New Template"  color="#a855f7" />
           <QuickAction href="/calendar"      icon={Calendar}    label="Calendar"      color={TEAL} />
-          <QuickAction href="/catalog"       icon={BookOpen}    label="Catalog"       color="#ec4899" />
+          <QuickAction href="/inventory"     icon={BookOpen}    label="Inventory"     color="#ec4899" />
         </div>
       </Panel>
     </div>
   )
 }
 
-function hour() {
-  const h = new Date().getHours()
-  if (h < 12) return 'morning'
-  if (h < 17) return 'afternoon'
-  return 'evening'
-}

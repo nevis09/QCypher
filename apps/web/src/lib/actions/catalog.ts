@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 export type CatalogItem = {
@@ -19,11 +20,25 @@ export type CatalogItem = {
   updated_at: string
 }
 
-export async function getCatalogItems() {
+// Verifies the caller is authenticated and resolves their tenant_id from the DB.
+// Using the admin client for tenant_id ensures we always get the current value
+// even when the user's JWT was issued before app_metadata.tenant_id was set.
+async function getAuthedTenant() {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const tenant_id = await getTenantId(user.id, user.app_metadata)
+  const admin = createAdminClient()
+  return { admin, user, tenant_id }
+}
+
+export async function getCatalogItems() {
+  const { admin, tenant_id } = await getAuthedTenant()
+  const { data, error } = await admin
     .from('catalog_items')
     .select('*')
+    .eq('tenant_id', tenant_id)
     .order('name')
   if (error) throw error
   return data as CatalogItem[]
@@ -39,15 +54,15 @@ export async function createCatalogItem(input: {
   requires_deposit?: boolean
   deposit_amount?: number
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
-  const tenant_id = user.app_metadata?.tenant_id
-  if (!tenant_id) throw new Error('No tenant')
-
-  const { error } = await supabase.from('catalog_items').insert({ ...input, tenant_id })
-  if (error) throw new Error(error.message ?? 'Failed to create item')
-  revalidatePath('/catalog')
+  try {
+    const { admin, tenant_id } = await getAuthedTenant()
+    const { error } = await admin.from('catalog_items').insert({ ...input, tenant_id })
+    if (error) throw new Error(error.message ?? 'Failed to create item')
+    revalidatePath('/inventory')
+  } catch (e) {
+    console.error('[createCatalogItem]', e)
+    throw e
+  }
 }
 
 export async function updateCatalogItem(id: string, input: Partial<{
@@ -61,13 +76,19 @@ export async function updateCatalogItem(id: string, input: Partial<{
   requires_deposit: boolean
   deposit_amount: number
 }>) {
-  const supabase = await createClient()
-  const { error } = await supabase
-    .from('catalog_items')
-    .update(input)
-    .eq('id', id)
-  if (error) throw new Error(error.message ?? 'Failed to update item')
-  revalidatePath('/catalog')
+  try {
+    const { admin, tenant_id } = await getAuthedTenant()
+    const { error } = await admin
+      .from('catalog_items')
+      .update(input)
+      .eq('id', id)
+      .eq('tenant_id', tenant_id)
+    if (error) throw new Error(error.message ?? 'Failed to update item')
+    revalidatePath('/inventory')
+  } catch (e) {
+    console.error('[updateCatalogItem]', e)
+    throw e
+  }
 }
 
 export async function deactivateCatalogItem(id: string) {

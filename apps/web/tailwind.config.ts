@@ -7,9 +7,9 @@ const config: Config = {
     extend: {
       colors: {
         accent: {
-          DEFAULT: '#6366f1',
-          hover: '#4f46e5',
-          subtle: '#eef2ff',
+          DEFAULT: '#4a9db5',
+          hover: '#2a52a0',
+          subtle: 'rgba(74,157,181,0.10)',
         },
       },
       borderRadius: {

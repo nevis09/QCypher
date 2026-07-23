@@ -1,6 +1,6 @@
 /**
  * POST /api/send
- * Sends a quick-reply template via Resend (email) or Twilio (SMS).
+ * Sends a quick-reply template via Resend (email) or Telnyx (SMS).
  * Runs server-side only — API keys are never exposed to the client.
  * Logs every send attempt to send_log for audit trail.
  */
@@ -14,9 +14,8 @@ import { appendOptOut } from '@/lib/template-interpolate'
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM    = process.env.RESEND_FROM_EMAIL ?? 'noreply@example.com'
 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID ?? ''
-const TWILIO_AUTH_TOKEN  = process.env.TWILIO_AUTH_TOKEN ?? ''
-const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER ?? ''
+const TELNYX_API_KEY    = process.env.TELNYX_API_KEY ?? ''
+const TELNYX_FROM_NUMBER = process.env.TELNYX_FROM_NUMBER ?? ''
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -102,25 +101,32 @@ export async function POST(request: NextRequest) {
       if (!res.ok) throw new Error(data.message ?? 'Resend error')
       providerId = data.id
     } else {
-      if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) throw new Error('Twilio credentials not configured')
-      const params = new URLSearchParams({ From: TWILIO_FROM_NUMBER, To: recipient, Body: preview })
-      const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+      if (!TELNYX_API_KEY) throw new Error('Telnyx credentials not configured')
+      const res = await fetch('https://api.telnyx.com/v2/messages', {
         method: 'POST',
         headers: {
-          'Authorization': `Basic ${Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString('base64')}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${TELNYX_API_KEY}`,
+          'Content-Type': 'application/json',
         },
-        body: params.toString(),
+        body: JSON.stringify({ from: TELNYX_FROM_NUMBER, to: recipient, text: preview }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message ?? 'Twilio error')
-      providerId = data.sid
+      if (!res.ok) throw new Error(data.errors?.[0]?.detail ?? 'Telnyx error')
+      providerId = data.data?.id
     }
 
     // Update log to sent
     if (logId) {
       await supabase.from('send_log').update({ status: 'sent', provider_id: providerId, sent_at: new Date().toISOString() }).eq('id', logId)
     }
+
+    // Auto-log to interactions timeline so every sent message appears on contact history
+    await supabase.from('interactions').insert({
+      contact_id:  contactId,
+      type:        'note',
+      body:        `${channel === 'sms' ? 'SMS' : 'Email'} sent: "${template.name ?? template.subject ?? 'message'}" — ${preview.slice(0, 100)}${preview.length > 100 ? '…' : ''}`,
+      occurred_at: new Date().toISOString(),
+    })
 
     return NextResponse.json({ ok: true, providerId })
   } catch (err) {

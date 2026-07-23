@@ -4,6 +4,20 @@ import { useState } from 'react'
 import { changePassword, requestAccountDeactivation } from '@/lib/actions/account'
 import { Mail, Chrome, Monitor, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react'
 
+const FG      = 'hsl(var(--foreground))'
+const MUTED   = 'hsl(var(--muted-foreground))'
+const BORDER  = 'hsl(var(--border))'
+const CARD    = 'hsl(var(--card))'
+const MUTED_BG = 'hsl(var(--muted))'
+
+const LABEL_STYLE = {
+  fontSize: '14px', fontWeight: 600 as const,
+  letterSpacing: '0.04em', textTransform: 'uppercase' as const,
+  color: MUTED, marginBottom: '3px',
+}
+const ROW_PRIMARY   = { fontSize: '15px', fontWeight: 600 as const, color: FG }
+const ROW_SECONDARY = { fontSize: '14px', color: MUTED, marginTop: '2px' }
+
 type Props = {
   email:       string
   hasPassword: boolean
@@ -41,24 +55,22 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
   }
 
   async function handleDeactivate() {
-    setDeactivating(true)
-    setDeactivateErr('')
+    setDeactivating(true); setDeactivateErr('')
     try {
       await requestAccountDeactivation()
       setDeactivated(true)
     } catch {
-      setDeactivateErr('Something went wrong. Please email hello@qcyphertech.com directly.')
+      setDeactivateErr('Something went wrong. Please email info@qcyphertech.com directly.')
     } finally {
       setDeactivating(false)
     }
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
-      {/* Login methods */}
-      <div className="rounded-2xl border overflow-hidden"
-        style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}>
+      {/* ── Login methods + current session ── */}
+      <div style={{ borderRadius: '16px', border: `1px solid ${BORDER}`, background: CARD, overflow: 'hidden' }}>
 
         {hasGoogle && (
           <>
@@ -67,71 +79,77 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
           </>
         )}
         {hasPassword && (
-          <LoginRow icon={Mail} label="Email" email={email} color="#6366f1" bg="rgba(99,102,241,0.10)" />
+          <LoginRow icon={Mail} label="Email" email={email} color="#2a52a0" bg="rgba(42,82,160,0.10)" />
         )}
 
         <Divider />
 
         {/* Current session */}
-        <div className="flex items-center gap-4 px-5 py-4">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'hsl(var(--muted))' }}>
-            <Monitor style={{ width: '15px', height: '15px', color: 'hsl(var(--muted-foreground))' }} strokeWidth={2} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 20px' }}>
+          <div style={{
+            width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+            background: MUTED_BG, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Monitor style={{ width: '15px', height: '15px', color: MUTED }} strokeWidth={2} />
           </div>
-          <div className="flex-1">
-            <p className="text-[15px] font-bold uppercase tracking-widest"
-              style={{ color: 'hsl(var(--muted-foreground))' }}>Current session</p>
-            <p className="text-[15px] font-medium mt-0.5" style={{ color: 'hsl(var(--foreground))' }}>
-              Signed in via this browser · {signedInAt}
-            </p>
+          <div style={{ flex: 1 }}>
+            <p style={LABEL_STYLE}>Current session</p>
+            <p style={ROW_PRIMARY}>Signed in via this browser · {signedInAt}</p>
           </div>
         </div>
       </div>
 
-      {/* Change password */}
+      {/* ── Change password ── */}
       {hasPassword && (
-        <div className="rounded-2xl border overflow-hidden"
-          style={{ borderColor: 'hsl(var(--border))', background: 'hsl(var(--card))' }}>
-          <button onClick={() => { setPwOpen(o => !o); setPwMsg(null) }}
-            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-[hsl(var(--muted))] transition-colors text-left">
-            <div className="flex-1">
-              <p className="text-[15px] font-bold" style={{ color: 'hsl(var(--foreground))' }}>Change password</p>
-              <p className="text-[15px] mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
-                Update your login password
-              </p>
+        <div style={{ borderRadius: '16px', border: `1px solid ${BORDER}`, background: CARD, overflow: 'hidden' }}>
+          <button
+            onClick={() => { setPwOpen(o => !o); setPwMsg(null) }}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', gap: '14px',
+              padding: '14px 20px', background: 'transparent', border: 'none',
+              cursor: 'pointer', textAlign: 'left',
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <p style={ROW_PRIMARY}>Change password</p>
+              <p style={ROW_SECONDARY}>Update your login password</p>
             </div>
             <ChevronRight style={{
-              width: '16px', height: '16px', color: 'hsl(var(--muted-foreground))',
+              width: '16px', height: '16px', color: MUTED, flexShrink: 0,
               transform: pwOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s',
             }} />
           </button>
 
           {pwOpen && (
-            <form onSubmit={submitPw} className="border-t px-5 pb-5 pt-4 space-y-3"
-              style={{ borderColor: 'hsl(var(--border))' }}>
+            <form onSubmit={submitPw} style={{
+              borderTop: `1px solid ${BORDER}`, padding: '16px 20px 20px',
+              display: 'flex', flexDirection: 'column', gap: '12px',
+            }}>
               {(['next', 'confirm'] as const).map(key => (
                 <div key={key}>
-                  <label className="text-[15px] font-bold uppercase tracking-widest block mb-1.5"
-                    style={{ color: 'hsl(var(--muted-foreground))' }}>
+                  <label style={LABEL_STYLE}>
                     {key === 'next' ? 'New password' : 'Confirm password'}
                   </label>
-                  <div className="relative">
-                    <input type={showPw ? 'text' : 'password'}
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showPw ? 'text' : 'password'}
                       value={pw[key]}
                       onChange={e => setPw(p => ({ ...p, [key]: e.target.value }))}
                       required minLength={8}
-                      className="w-full px-3 py-2.5 rounded-xl border text-[15px] outline-none pr-10"
                       style={{
-                        background:   'hsl(var(--muted))',
-                        borderColor:  'hsl(var(--border))',
-                        color:        'hsl(var(--foreground))',
-                      }} />
+                        width: '100%', padding: '10px 36px 10px 12px', borderRadius: '12px',
+                        border: `1px solid ${BORDER}`, fontSize: '15px', outline: 'none',
+                        background: MUTED_BG, color: FG, boxSizing: 'border-box',
+                      }}
+                    />
                     {key === 'next' && (
-                      <button type="button" onClick={() => setShowPw(s => !s)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <button type="button" onClick={() => setShowPw(s => !s)} style={{
+                        position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                        background: 'transparent', border: 'none', cursor: 'pointer', padding: 0,
+                      }}>
                         {showPw
-                          ? <EyeOff style={{ width: '14px', height: '14px', color: 'hsl(var(--muted-foreground))' }} />
-                          : <Eye    style={{ width: '14px', height: '14px', color: 'hsl(var(--muted-foreground))' }} />}
+                          ? <EyeOff style={{ width: '15px', height: '15px', color: MUTED }} />
+                          : <Eye    style={{ width: '15px', height: '15px', color: MUTED }} />}
                       </button>
                     )}
                   </div>
@@ -139,20 +157,25 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
               ))}
 
               {pwMsg && (
-                <p className="text-[15px] font-semibold" style={{ color: pwMsg.ok ? '#10b981' : '#ef4444' }}>
+                <p style={{ fontSize: '14px', fontWeight: 600, color: pwMsg.ok ? '#10b981' : '#ef4444' }}>
                   {pwMsg.text}
                 </p>
               )}
 
-              <div className="flex gap-2 pt-1">
-                <button type="button" onClick={() => setPwOpen(false)}
-                  className="px-4 py-2 rounded-xl text-[15px] font-semibold transition-colors hover:bg-[hsl(var(--muted))]"
-                  style={{ color: 'hsl(var(--muted-foreground))' }}>
+              <div style={{ display: 'flex', gap: '8px', paddingTop: '4px' }}>
+                <button type="button" onClick={() => setPwOpen(false)} style={{
+                  padding: '7px 16px', borderRadius: '10px', border: `1px solid ${BORDER}`,
+                  background: 'transparent', cursor: 'pointer',
+                  fontSize: '14px', fontWeight: 600, color: MUTED,
+                }}>
                   Cancel
                 </button>
-                <button type="submit" disabled={pwSaving}
-                  className="px-4 py-2 rounded-xl text-[15px] font-bold text-white disabled:opacity-60 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}>
+                <button type="submit" disabled={pwSaving} style={{
+                  padding: '7px 18px', borderRadius: '10px', border: 'none',
+                  background: 'linear-gradient(135deg,#2a52a0,#4a9db5)',
+                  cursor: pwSaving ? 'wait' : 'pointer',
+                  fontSize: '14px', fontWeight: 700, color: '#fff', opacity: pwSaving ? 0.7 : 1,
+                }}>
                   {pwSaving ? 'Updating…' : 'Update password'}
                 </button>
               </div>
@@ -161,35 +184,45 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
         </div>
       )}
 
-      {/* Deactivate account */}
-      <div className="rounded-2xl border overflow-hidden"
-        style={{ borderColor: deactivateOpen ? 'rgba(239,68,68,0.4)' : 'hsl(var(--border))', background: 'hsl(var(--card))' }}>
-
-        <button onClick={() => setDeactivateOpen(o => !o)}
-          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-[hsl(var(--muted))] transition-colors text-left">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(239,68,68,0.10)' }}>
+      {/* ── Deactivate account ── */}
+      <div style={{
+        borderRadius: '16px', overflow: 'hidden', background: CARD,
+        border: `1px solid ${deactivateOpen ? 'rgba(239,68,68,0.4)' : BORDER}`,
+      }}>
+        <button onClick={() => setDeactivateOpen(o => !o)} style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: '14px',
+          padding: '14px 20px', background: 'transparent', border: 'none',
+          cursor: 'pointer', textAlign: 'left',
+        }}>
+          <div style={{
+            width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+            background: 'rgba(239,68,68,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
             <AlertTriangle style={{ width: '15px', height: '15px', color: '#ef4444' }} strokeWidth={2} />
           </div>
-          <div className="flex-1">
-            <p className="text-[15px] font-bold" style={{ color: '#ef4444' }}>Deactivate account</p>
-            <p className="text-[15px] mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>
-              Submit a request to close your workspace
-            </p>
+          <div style={{ flex: 1 }}>
+            <p style={{ ...ROW_PRIMARY, color: '#ef4444' }}>Deactivate account</p>
+            <p style={ROW_SECONDARY}>Submit a request to close your workspace</p>
           </div>
           <ChevronRight style={{
-            width: '16px', height: '16px', color: 'hsl(var(--muted-foreground))',
+            width: '16px', height: '16px', color: MUTED, flexShrink: 0,
             transform: deactivateOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s',
           }} />
         </button>
 
         {deactivateOpen && (
-          <div className="border-t px-5 pb-5 pt-4 space-y-4" style={{ borderColor: 'rgba(239,68,68,0.2)' }}>
+          <div style={{
+            borderTop: '1px solid rgba(239,68,68,0.2)',
+            padding: '16px 20px 20px',
+            display: 'flex', flexDirection: 'column', gap: '16px',
+          }}>
             {deactivated ? (
-              <div className="rounded-xl px-4 py-4 space-y-1"
-                style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <p className="text-[15px] font-bold" style={{ color: '#ef4444' }}>Request received</p>
-                <p className="text-[15px] leading-relaxed" style={{ color: 'hsl(var(--muted-foreground))' }}>
+              <div style={{
+                borderRadius: '12px', padding: '14px 16px',
+                background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)',
+              }}>
+                <p style={{ fontSize: '15px', fontWeight: 700, color: '#ef4444', marginBottom: '4px' }}>Request received</p>
+                <p style={{ fontSize: '14px', color: MUTED, lineHeight: 1.6 }}>
                   We've sent a confirmation to your email and notified the QCypher team. Your account
                   remains active until our team processes the request — typically within 1–2 business days.
                   Reply to the confirmation email if this was a mistake.
@@ -197,38 +230,45 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
               </div>
             ) : (
               <>
-                <div className="rounded-xl px-4 py-3 space-y-1"
-                  style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' }}>
-                  <p className="text-[15px] font-bold" style={{ color: '#ef4444' }}>Before you go</p>
-                  <ul className="space-y-1 mt-1">
+                <div style={{
+                  borderRadius: '12px', padding: '14px 16px',
+                  background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)',
+                }}>
+                  <p style={{ fontSize: '15px', fontWeight: 700, color: '#ef4444', marginBottom: '8px' }}>Before you go</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {[
                       'Your account will not be deactivated immediately — a request is sent to the QCypher team.',
                       'You\'ll receive a confirmation email and we\'ll follow up within 1–2 business days.',
                       'Export any data you need before the team processes your request.',
                     ].map(line => (
-                      <li key={line} className="text-[15px] leading-relaxed flex gap-2"
-                        style={{ color: 'hsl(var(--muted-foreground))' }}>
-                        <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
-                          style={{ background: 'hsl(var(--muted-foreground))' }} />
-                        {line}
-                      </li>
+                      <div key={line} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                        <span style={{
+                          marginTop: '7px', width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0,
+                          background: MUTED,
+                        }} />
+                        <p style={{ fontSize: '14px', color: MUTED, lineHeight: 1.6 }}>{line}</p>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
 
                 {deactivateErr && (
-                  <p className="text-[15px] font-semibold" style={{ color: '#ef4444' }}>{deactivateErr}</p>
+                  <p style={{ fontSize: '14px', fontWeight: 600, color: '#ef4444' }}>{deactivateErr}</p>
                 )}
 
-                <div className="flex gap-2">
-                  <button onClick={() => setDeactivateOpen(false)}
-                    className="px-4 py-2 rounded-xl text-[15px] font-semibold transition-colors hover:bg-[hsl(var(--muted))]"
-                    style={{ color: 'hsl(var(--muted-foreground))' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => setDeactivateOpen(false)} style={{
+                    padding: '7px 16px', borderRadius: '10px', border: `1px solid ${BORDER}`,
+                    background: 'transparent', cursor: 'pointer',
+                    fontSize: '14px', fontWeight: 600, color: MUTED,
+                  }}>
                     Cancel
                   </button>
-                  <button onClick={handleDeactivate} disabled={deactivating}
-                    className="px-4 py-2 rounded-xl text-[15px] font-bold text-white disabled:opacity-60 transition-opacity"
-                    style={{ background: '#ef4444' }}>
+                  <button onClick={handleDeactivate} disabled={deactivating} style={{
+                    padding: '7px 18px', borderRadius: '10px', border: 'none',
+                    background: '#ef4444', cursor: deactivating ? 'wait' : 'pointer',
+                    fontSize: '14px', fontWeight: 700, color: '#fff', opacity: deactivating ? 0.7 : 1,
+                  }}>
                     {deactivating ? 'Submitting…' : 'Submit deactivation request'}
                   </button>
                 </div>
@@ -245,22 +285,27 @@ function LoginRow({ icon: Icon, label, email, color, bg }: {
   icon: React.ElementType; label: string; email: string; color: string; bg: string
 }) {
   return (
-    <div className="flex items-center gap-4 px-5 py-4">
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: bg }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '14px 20px' }}>
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+        background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
         <Icon style={{ width: '15px', height: '15px', color }} strokeWidth={2} />
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-bold uppercase tracking-widest"
-          style={{ color: 'hsl(var(--muted-foreground))' }}>{label} login</p>
-        <p className="text-[15px] font-medium truncate mt-0.5" style={{ color: 'hsl(var(--foreground))' }}>{email}</p>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={LABEL_STYLE}>{label} login</p>
+        <p style={{ fontSize: '15px', fontWeight: 500, color: FG, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {email}
+        </p>
       </div>
-      <span className="text-[15px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
-        style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981' }}>Active</span>
+      <span style={{
+        fontSize: '14px', fontWeight: 700, padding: '4px 12px', borderRadius: '20px', flexShrink: 0,
+        background: 'rgba(16,185,129,0.12)', color: '#10b981',
+      }}>Active</span>
     </div>
   )
 }
 
 function Divider() {
-  return <div className="h-px mx-5" style={{ background: 'hsl(var(--border))' }} />
+  return <div style={{ height: '1px', margin: '0 20px', background: 'hsl(var(--border))' }} />
 }

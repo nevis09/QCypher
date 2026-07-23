@@ -18,9 +18,10 @@ export function TemplateForm({ template }: { template?: Template }) {
 
   const [form, setForm] = useState({
     name:         template?.name         ?? '',
-    channel:      template?.channel      ?? 'email',
+    channel:      template?.channel      ?? 'sms',
     subject:      template?.subject      ?? '',
     body:         template?.body         ?? '',
+    category:     (template as any)?.category     ?? 'General',
     is_marketing: (template as any)?.is_marketing ?? false,
   })
 
@@ -37,6 +38,7 @@ export function TemplateForm({ template }: { template?: Template }) {
       channel:      form.channel as Template['channel'],
       subject:      form.channel === 'email' ? (form.subject.trim() || null) : null,
       body:         form.body.trim(),
+      category:     form.category,
       is_marketing: form.is_marketing,
     }
     startTransition(async () => {
@@ -73,8 +75,20 @@ export function TemplateForm({ template }: { template?: Template }) {
       <div className="space-y-1.5">
         <label className="text-[15px] font-medium">Channel</label>
         <select value={form.channel} onChange={set('channel')} className={input}>
-          <option value="email">Email</option>
-          <option value="sms">SMS</option>
+          <option value="sms">📱 SMS</option>
+          <option value="email">✉️ Email</option>
+        </select>
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="text-[15px] font-medium">Category</label>
+        <select value={form.category} onChange={set('category')} className={input}>
+          <option value="Lead & Inquiry">🎯 Lead &amp; Inquiry</option>
+          <option value="Booking & Scheduling">📅 Booking &amp; Scheduling</option>
+          <option value="Service & Fulfillment">🔧 Service &amp; Fulfillment</option>
+          <option value="Payment">💳 Payment</option>
+          <option value="Follow-Up & Retention">🤝 Follow-Up &amp; Retention</option>
+          <option value="General">💬 General</option>
         </select>
       </div>
 

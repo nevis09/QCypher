@@ -11,7 +11,7 @@ export function NewCatalogItemButton() {
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[15px] font-bold text-white"
-        style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}
+        style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}
       >
         <Plus className="w-4 h-4" />
         Add item

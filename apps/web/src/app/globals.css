@@ -16,37 +16,41 @@
     /* Borders */
     --border: 220 15% 86%;
 
-    /* Accent — indigo */
-    --ring: 239 84% 60%;
-    --accent: 239 84% 60%;
+    /* Accent — landing page teal */
+    --ring: 197 42% 50%;
+    --accent: 197 42% 50%;
 
     /* Sidebar — deep navy */
     --sidebar-bg: #151c2e;
     --sidebar-border: rgba(255,255,255,0.07);
     --sidebar-text: rgba(255,255,255,0.72);
     --sidebar-text-active: #ffffff;
-    --sidebar-active-bg: rgba(99,102,241,0.30);
+    --sidebar-active-bg: rgba(42,82,160,0.30);
     --sidebar-hover-bg: rgba(255,255,255,0.08);
-    --sidebar-dot: #6366f1;
+    --sidebar-dot: #2a52a0;
 
     /* Font */
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Page heading color — dark blue brand */
+    --heading: #2a52a0;
 
     /* Status / badge semantic colors (light mode) */
     --badge-lead-bg:     #fef3c7; --badge-lead-text:     #92400e;
     --badge-active-bg:   #d1fae5; --badge-active-text:   #065f46;
     --badge-inactive-bg: #f1f5f9; --badge-inactive-text: #475569;
-    --badge-indigo-bg:   #eef2ff; --badge-indigo-text:   #3730a3;
-    --badge-violet-bg:   #f5f3ff; --badge-violet-text:   #5b21b6;
+    --badge-indigo-bg:   #e8eef8; --badge-indigo-text:   #1a3070;
+    --badge-violet-bg:   #e8f4f8; --badge-violet-text:   #2a6a8a;
     --badge-sky-bg:      #eff6ff; --badge-sky-text:      #1e40af;
     --badge-amber-bg:    #fff7ed; --badge-amber-text:    #c2410c;
     --badge-red-bg:      #fee2e2; --badge-red-text:      #991b1b;
     --badge-green-bg:    #dcfce7; --badge-green-text:    #166534;
-    --badge-tag-bg:      #eef2ff; --badge-tag-text:      #4338ca;
+    --badge-tag-bg:      #e8eef8; --badge-tag-text:      #1a3070;
   }
 
   /* Dark mode — applied via html.dark class */
   html.dark {
+    --heading: #ffffff;
     --background: 222 28% 10%;
     --card: 222 24% 14%;
     --foreground: 220 20% 94%;
@@ -57,23 +61,31 @@
     --sidebar-border: rgba(255,255,255,0.06);
     --sidebar-text: rgba(255,255,255,0.60);
     --sidebar-text-active: #ffffff;
-    --sidebar-active-bg: rgba(99,102,241,0.25);
+    --sidebar-active-bg: rgba(42,82,160,0.25);
     --sidebar-hover-bg: rgba(255,255,255,0.06);
 
     /* Status / badge semantic colors (dark mode — deeper, less blinding) */
     --badge-lead-bg:     rgba(251,191,36,0.18);  --badge-lead-text:     #fcd34d;
     --badge-active-bg:   rgba(16,185,129,0.18);  --badge-active-text:   #6ee7b7;
     --badge-inactive-bg: rgba(100,116,139,0.18); --badge-inactive-text: #94a3b8;
-    --badge-indigo-bg:   rgba(99,102,241,0.18);  --badge-indigo-text:   #a5b4fc;
-    --badge-violet-bg:   rgba(139,92,246,0.18);  --badge-violet-text:   #c4b5fd;
+    --badge-indigo-bg:   rgba(42,82,160,0.18);  --badge-indigo-text:   #7aaee0;
+    --badge-violet-bg:   rgba(74,157,181,0.18);  --badge-violet-text:   #7ac4d8;
     --badge-sky-bg:      rgba(14,165,233,0.18);  --badge-sky-text:      #7dd3fc;
     --badge-amber-bg:    rgba(245,158,11,0.18);  --badge-amber-text:    #fcd34d;
     --badge-red-bg:      rgba(239,68,68,0.18);   --badge-red-text:      #fca5a5;
     --badge-green-bg:    rgba(34,197,94,0.18);   --badge-green-text:    #86efac;
-    --badge-tag-bg:      rgba(99,102,241,0.20);  --badge-tag-text:      #a5b4fc;
+    --badge-tag-bg:      rgba(42,82,160,0.20);  --badge-tag-text:      #a5b4fc;
   }
 
   * { border-color: hsl(var(--border)); }
+
+  h1 {
+    font-family: var(--font-heading), var(--font-sans);
+    color: var(--heading);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
 
   html { font-size: 17px; }
 
@@ -89,7 +101,7 @@
   }
 
   /* Calibri reads small — scale every size up a full notch */
-  .text-xs   { font-size: 0.9rem;   line-height: 1.5;  }
+  .text-xs   { font-size: 0.9375rem; line-height: 1.5;  }
   .text-sm   { font-size: 1.05rem;  line-height: 1.6;  }
   .text-base { font-size: 1.15rem;  line-height: 1.65; }
   .text-lg   { font-size: 1.3rem;   line-height: 1.5;  }
@@ -108,16 +120,16 @@
   /* Vibrant badge helpers */
   .badge-amber    { @apply bg-amber-100  text-amber-800  font-semibold; }
   .badge-emerald  { @apply bg-emerald-100 text-emerald-800 font-semibold; }
-  .badge-indigo   { @apply bg-indigo-100 text-indigo-800 font-semibold; }
-  .badge-violet   { @apply bg-violet-100 text-violet-800 font-semibold; }
+  .badge-indigo   { background: var(--badge-indigo-bg); color: var(--badge-indigo-text); font-weight: 600; }
+  .badge-violet   { background: var(--badge-violet-bg); color: var(--badge-violet-text); font-weight: 600; }
   .badge-rose     { @apply bg-rose-100   text-rose-800   font-semibold; }
   .badge-sky      { @apply bg-sky-100    text-sky-800    font-semibold; }
 
   /* Dark mode badge variants */
   html.dark .badge-amber    { @apply bg-amber-900/40  text-amber-300; }
   html.dark .badge-emerald  { @apply bg-emerald-900/40 text-emerald-300; }
-  html.dark .badge-indigo   { @apply bg-indigo-900/40 text-indigo-300; }
-  html.dark .badge-violet   { @apply bg-violet-900/40 text-violet-300; }
+  html.dark .badge-indigo   { background: var(--badge-indigo-bg); color: var(--badge-indigo-text); }
+  html.dark .badge-violet   { background: var(--badge-violet-bg); color: var(--badge-violet-text); }
   html.dark .badge-rose     { @apply bg-rose-900/40   text-rose-300; }
   html.dark .badge-sky      { @apply bg-sky-900/40    text-sky-300; }
 }

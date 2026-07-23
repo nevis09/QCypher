@@ -14,7 +14,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq('id', id)
     .single()
   if (!data) return { title: 'Contact' }
-  return { title: `${data.first_name} ${data.last_name ?? ''}`.trim() }
+  const d = data as { first_name?: string; last_name?: string }
+  return { title: `${d.first_name ?? ''} ${d.last_name ?? ''}`.trim() }
 }
 
 export default async function ContactPage({ params }: Props) {

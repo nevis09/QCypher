@@ -1,0 +1,129 @@
+/**
+ * POST /api/admin/report
+ * Assembles real numbers for a tenant, calls Gemini to write 2-3 warm sentences
+ * around those numbers (no invention allowed), then sends via Resend.
+ *
+ * Body: { tenantId: string, recipientEmail: string }
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import { assembleReportData } from '@/lib/actions/admin'
+
+const GEMINI_API_KEY  = process.env.GEMINI_API_KEY ?? ''
+const RESEND_API_KEY  = process.env.RESEND_API_KEY ?? ''
+const RESEND_FROM     = process.env.RESEND_FROM_EMAIL ?? 'hello@qcyphertech.com'
+
+async function assertAdmin() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  const { data: t } = await supabase.from('tenants').select('is_admin').single()
+  if (!(t as { is_admin?: boolean } | null)?.is_admin) return null
+  return user
+}
+
+export async function POST(request: NextRequest) {
+  const user = await assertAdmin()
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const { tenantId, recipientEmail } = await request.json() as {
+    tenantId: string
+    recipientEmail: string
+  }
+  if (!tenantId || !recipientEmail) {
+    return NextResponse.json({ error: 'Missing tenantId or recipientEmail' }, { status: 400 })
+  }
+
+  // ── Step 1: Assemble real numbers — pure code, no AI ──────────────────────
+  const data = await assembleReportData(tenantId)
+
+  // ── Step 2: AI writes sentences around the pre-computed numbers ───────────
+  // The prompt explicitly forbids inventing or estimating any figure.
+  // The AI receives only already-computed facts and produces plain language.
+  const prompt = `You are writing a short monthly summary for a small business owner.
+Use ONLY the exact numbers provided below — do not invent, estimate, or add any figures.
+Write 2-3 warm, plain sentences (no bullet points, no headers, no emojis).
+Do not mention QCypher by name more than once. Do not make promises about the future.
+
+Facts for ${data.month}:
+- Business name: ${data.tenantName}
+- Review request texts sent to customers: ${data.reviewsSent}
+- Missed calls that received an automatic text-back: ${data.missedCallTexts}
+- Online scheduling: ${data.calConnected ? `active (cal.com/${data.calUsername ?? 'connected'})` : 'not connected'}
+
+Write the summary now. Use only these exact numbers.`
+
+  let aiSummary = ''
+
+  if (GEMINI_API_KEY) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.3, maxOutputTokens: 200 },
+          }),
+        },
+      )
+      const json = await res.json()
+      aiSummary = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? ''
+    } catch {
+      aiSummary = ''
+    }
+  }
+
+  // Fallback if Gemini key missing or call failed — pure data summary, no AI
+  if (!aiSummary) {
+    aiSummary = `This ${data.month}, QCypher sent ${data.reviewsSent} review request${data.reviewsSent !== 1 ? 's' : ''} on your behalf and automatically followed up on ${data.missedCallTexts} missed call${data.missedCallTexts !== 1 ? 's' : ''}. Your online scheduler is ${data.calConnected ? 'active and accepting bookings' : 'not yet connected'}.`
+  }
+
+  // ── Step 3: Build email — data table + AI summary ─────────────────────────
+  const emailBody = `Hi ${data.tenantName} team,
+
+Here's your QCypher activity summary for ${data.month}.
+
+${aiSummary}
+
+─────────────────────────
+YOUR ${data.month.toUpperCase()} NUMBERS
+─────────────────────────
+Review request texts sent:   ${data.reviewsSent}
+Missed-call auto text-backs: ${data.missedCallTexts}
+Online scheduler:            ${data.calConnected ? 'Active' : 'Not connected'}
+Security & backups:          Managed by Supabase (daily)
+─────────────────────────
+
+Questions? Reply to this email or call us at (804) 250-5066.
+
+— The QCypher Team
+hello@qcyphertech.com`
+
+  // ── Step 4: Send via Resend ───────────────────────────────────────────────
+  if (!RESEND_API_KEY) {
+    // Return the assembled content without sending (useful for test/preview)
+    return NextResponse.json({ ok: true, preview: true, subject: `Your ${data.month} QCypher Summary`, body: emailBody, data })
+  }
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: RESEND_FROM,
+      to: [recipientEmail],
+      subject: `Your ${data.month} QCypher Summary`,
+      text: emailBody,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json()
+    return NextResponse.json({ error: err.message ?? 'Resend error' }, { status: 500 })
+  }
+
+  const sent = await res.json()
+  return NextResponse.json({ ok: true, providerId: sent.id, data })
+}
