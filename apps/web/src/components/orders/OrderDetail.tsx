@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { ChevronLeft, Plus, Trash2, RotateCcw, CalendarClock, Printer } from 'lucide-react'
+import { ChevronLeft, Plus, Trash2, RotateCcw, CalendarClock, Printer, Lock } from 'lucide-react'
 import {
   addLineItem, removeLineItem, updateOrderStatus, updateJobStatus, returnRental, extendRental,
   type Order, type OrderLineItem,
@@ -10,6 +10,7 @@ import {
 import { JobStatusSmsPrompt } from './JobStatusSmsPrompt'
 import { JobPhotos } from './JobPhotos'
 import type { JobPhoto } from '@/lib/actions/photos'
+import { SendQuoteButton } from './SendQuoteButton'
 import { useRouter } from 'next/navigation'
 
 type CatalogItem = { id: string; name: string; base_price: number; billing_unit: string; item_type: string }
@@ -40,6 +41,7 @@ function isOverdue(line: OrderLineItem): boolean {
 
 export function OrderDetail({
   order, lines, catalogItems, contacts, businessName, initialPhotos, tenantId,
+  signedBy, signedAt,
 }: {
   order: Order
   lines: OrderLineItem[]
@@ -48,6 +50,8 @@ export function OrderDetail({
   businessName: string
   initialPhotos: JobPhoto[]
   tenantId: string
+  signedBy: string | null
+  signedAt: string | null
 }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
@@ -56,8 +60,9 @@ export function OrderDetail({
   const [jobStatus, setJobStatus] = useState<Order['job_status']>(order.job_status)
   const [promptKey, setPromptKey] = useState(0) // remount prompt on each status change
 
-  const contact = order.contact as { id: string; first_name: string; last_name: string | null; email: string | null } | null
+  const contact = order.contact as { id: string; first_name: string; last_name: string | null; email: string | null; phone?: string | null } | null
   const statusStyle = STATUS_COLORS[order.payment_status] ?? STATUS_COLORS.draft
+  const isLocked = !!signedAt
 
   function handleStatusChange(status: Order['payment_status']) {
     startTransition(() => updateOrderStatus(order.id, status))
@@ -83,22 +88,37 @@ export function OrderDetail({
       <style>{`
         @media print {
           .no-print { display: none !important; }
-          .print-header { display: block !important; }
+          .print-only { display: flex !important; }
           body { background: white !important; }
+          @page { margin: 18mm 16mm; }
         }
-        .print-header { display: none; }
+        .print-only { display: none; }
       `}</style>
-      <div className="print-header" style={{ marginBottom: '24px', paddingBottom: '16px', borderBottom: '2px solid #000' }}>
-        {businessName && (
-          <p style={{ fontSize: '22px', fontWeight: 800, margin: 0 }}>{businessName}</p>
-        )}
-        <p style={{ fontSize: '15px', margin: '4px 0 0', color: '#555' }}>
-          Invoice — Order #{order.id.slice(-6).toUpperCase()}
-        </p>
-        <p style={{ fontSize: '15px', margin: '2px 0 0', color: '#555' }}>
-          Date: {new Date(order.created_at).toLocaleDateString()}
-          {contact && ` · ${contact.first_name} ${contact.last_name ?? ''}`}
-        </p>
+
+      {/* Print-only header */}
+      <div className="print-only" style={{ flexDirection: 'column', marginBottom: '32px' }}>
+        {/* Logo row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <img src="/qcypher-logo.png" alt="QCypher" style={{ height: '36px', width: 'auto' }} />
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ fontSize: '11px', color: '#888', margin: 0, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Invoice</p>
+            <p style={{ fontSize: '18px', fontWeight: 800, margin: '2px 0 0', color: '#111', letterSpacing: '-0.02em' }}>
+              #{order.id.slice(-6).toUpperCase()}
+            </p>
+          </div>
+        </div>
+        {/* Divider */}
+        <div style={{ height: '2px', background: 'linear-gradient(90deg, #1a3070 0%, #4f8ef7 100%)', borderRadius: '2px', marginBottom: '20px' }} />
+        {/* Meta row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#555' }}>
+          <div>
+            {businessName && <p style={{ margin: 0, fontWeight: 700, color: '#111', fontSize: '15px' }}>{businessName}</p>}
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ margin: 0 }}>Date: {new Date(order.created_at).toLocaleDateString()}</p>
+            {contact && <p style={{ margin: '2px 0 0' }}>{contact.first_name} {contact.last_name ?? ''}</p>}
+          </div>
+        </div>
       </div>
 
       {/* Back */}
@@ -159,6 +179,17 @@ export function OrderDetail({
               <option value="completed">✅ Completed</option>
             </select>
 
+            <SendQuoteButton
+              orderId={order.id}
+              total={order.total_amount}
+              businessName={businessName}
+              contactEmail={contact?.email ?? null}
+              contactName={contact ? `${contact.first_name} ${contact.last_name ?? ''}`.trim() : null}
+              alreadySigned={isLocked}
+              signedBy={signedBy}
+              signedAt={signedAt}
+            />
+
             <button onClick={() => window.print()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[hsl(var(--border))] text-[15px] font-semibold hover:bg-[hsl(var(--muted))] transition-colors"
               style={{ color: 'hsl(var(--muted-foreground))' }}>
@@ -185,12 +216,21 @@ export function OrderDetail({
       {/* Line items */}
       <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
-          <h2 className="text-[15px] font-black" style={{ color: 'hsl(var(--foreground))' }}>Line items</h2>
-          <button onClick={() => setShowAddLine(true)}
-            className="no-print flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[15px] font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
-            <Plus className="w-3.5 h-3.5" /> Add item
-          </button>
+          <div>
+            <h2 className="text-[15px] font-black" style={{ color: 'hsl(var(--foreground))' }}>Line items</h2>
+            {isLocked && (
+              <p className="text-[13px] mt-0.5 flex items-center gap-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
+                <Lock className="w-3 h-3" /> Locked — quote signed
+              </p>
+            )}
+          </div>
+          {!isLocked && (
+            <button onClick={() => setShowAddLine(true)}
+              className="no-print flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[15px] font-bold text-white"
+              style={{ background: 'linear-gradient(135deg,#2a52a0,#4a9db5)' }}>
+              <Plus className="w-3.5 h-3.5" /> Add item
+            </button>
+          )}
         </div>
 
         {lines.length === 0 ? (
@@ -252,7 +292,7 @@ export function OrderDetail({
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5 justify-end">
-                        {line.rental_status && line.rental_status !== 'returned' && (
+                        {!isLocked && line.rental_status && line.rental_status !== 'returned' && (
                           <>
                             <button onClick={() => setExtendLine(line)} title="Extend rental"
                               className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-violet-50 transition-colors">
@@ -264,10 +304,18 @@ export function OrderDetail({
                             </button>
                           </>
                         )}
-                        <button onClick={() => handleRemoveLine(line.id)} title="Remove"
-                          className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-50 transition-colors">
-                          <Trash2 className="w-3.5 h-3.5" style={{ color: '#dc2626' }} />
-                        </button>
+                        {!isLocked && (
+                          <button onClick={() => handleRemoveLine(line.id)} title="Remove"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-red-50 transition-colors">
+                            <Trash2 className="w-3.5 h-3.5" style={{ color: '#dc2626' }} />
+                          </button>
+                        )}
+                        {isLocked && line.rental_status && line.rental_status !== 'returned' && (
+                          <button onClick={() => handleReturn(line.id)} title="Mark returned"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-green-50 transition-colors">
+                            <RotateCcw className="w-3.5 h-3.5" style={{ color: '#059669' }} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

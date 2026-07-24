@@ -18,7 +18,7 @@ export function BottomNav({ settings = DEFAULT_SETTINGS }: { settings?: TenantSe
   const tabs = ALL_TABS.filter(t => t.flag === null || settings[t.flag])
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 flex md:hidden bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe">
+    <nav className="fixed bottom-0 inset-x-0 z-40 flex md:hidden print:hidden bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe">
       {tabs.map(({ href, icon: Icon, label, color, bg }) => {
         const active = pathname === href || pathname.startsWith(href + '/')
         return (
