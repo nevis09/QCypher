@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Mail, MessageSquare, X, Send, ChevronDown, AlertTriangle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { interpolate, appendOptOut } from '@/lib/template-interpolate'
+import { interpolate } from '@/lib/template-interpolate'
 import type { Tables } from '@/types/database'
 
 type Contact  = Tables<'contacts'>
@@ -11,12 +11,12 @@ type Template = Tables<'templates'>
 
 export function QuickSendButton({
   contact,
-  channel,
   businessName = '',
+  channel = 'email',
 }: {
   contact:       Contact
-  channel:       'email' | 'sms'
   businessName?: string
+  channel?:      'email' | 'sms'
 }) {
   const [open,      setOpen]      = useState(false)
   const [templates, setTemplates] = useState<Template[]>([])
@@ -37,7 +37,7 @@ export function QuickSendButton({
   }, [open, channel])
 
   function buildPreview(t: Template): string {
-    const rendered = interpolate(t.body, {
+    return interpolate(t.body, {
       first_name:       contact.first_name,
       last_name:        contact.last_name,
       company:          contact.company,
@@ -46,10 +46,6 @@ export function QuickSendButton({
       appointment_date: undefined,
       amount_due:       undefined,
     })
-    // Append opt-out at preview time for marketing SMS so staff see it
-    return channel === 'sms' && (t as any).is_marketing
-      ? appendOptOut(rendered)
-      : rendered
   }
 
   function selectTemplate(t: Template) {
@@ -64,16 +60,10 @@ export function QuickSendButton({
     setSending(true)
     setResult(null)
 
-    // Enforce opt-out append server-side too (belt-and-suspenders)
-    let body = preview
-    if (channel === 'sms' && (selected as any).is_marketing) {
-      body = appendOptOut(body)
-    }
-
     const res  = await fetch('/api/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ templateId: selected.id, contactId: contact.id, channel, preview: body }),
+      body: JSON.stringify({ templateId: selected.id, contactId: contact.id, preview, channel }),
     })
     const json = await res.json()
     setSending(false)
@@ -143,15 +133,6 @@ export function QuickSendButton({
                       <ChevronDown className="absolute right-2.5 top-2.5 w-4 h-4 pointer-events-none text-[hsl(var(--muted-foreground))]" />
                     </div>
                   </div>
-
-                  {/* Marketing badge + opt-out notice */}
-                  {selected && (selected as any).is_marketing && channel === 'sms' && (
-                    <div className="flex items-start gap-2 px-3 py-2 rounded-xl text-[15px]"
-                      style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', color: '#b45309' }}>
-                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>Marketing template — "Reply STOP to unsubscribe." will be appended automatically.</span>
-                    </div>
-                  )}
 
                   {/* Unresolved variable warning */}
                   {selected && hasUnresolved && (

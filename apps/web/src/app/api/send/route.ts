@@ -9,13 +9,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { rateLimit, LIMITS } from '@/lib/rate-limit'
 import { getIp } from '@/lib/get-ip'
-import { appendOptOut } from '@/lib/template-interpolate'
+import { sendSms } from '@/lib/telnyx'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM    = process.env.RESEND_FROM_EMAIL ?? 'noreply@example.com'
-
-const TELNYX_API_KEY    = process.env.TELNYX_API_KEY ?? ''
-const TELNYX_FROM_NUMBER = process.env.TELNYX_FROM_NUMBER ?? ''
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -33,15 +30,16 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { templateId, contactId, channel, preview: _preview } = await request.json() as {
+  const { templateId, contactId, preview: _preview, channel: _channel } = await request.json() as {
     templateId: string
     contactId: string
-    channel: 'email' | 'sms'
     preview: string
+    channel?: string
   }
+  const channel = (_channel === 'sms' ? 'sms' : 'email') as 'email' | 'sms'
   let preview = _preview
 
-  if (!templateId || !contactId || !channel || !preview) {
+  if (!templateId || !contactId || !preview) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
@@ -55,27 +53,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Template or contact not found' }, { status: 404 })
   }
 
-  const recipient = channel === 'email' ? contact.email : contact.phone
+  const recipient = channel === 'sms' ? contact.phone : contact.email
   if (!recipient) {
-    return NextResponse.json({ error: `Contact has no ${channel} address` }, { status: 422 })
-  }
-
-  // Compliance: append opt-out line for marketing SMS at the send layer
-  if (channel === 'sms' && (template as any).is_marketing) {
-    preview = appendOptOut(preview)
+    return NextResponse.json({ error: `Contact has no ${channel === 'sms' ? 'phone number' : 'email address'}` }, { status: 422 })
   }
 
   // Insert queued log entry
   const { data: logEntry } = await supabase
     .from('send_log')
     .insert({
-      contact_id: contactId,
+      contact_id:  contactId,
       template_id: templateId,
       channel,
       recipient,
-      subject: channel === 'email' ? template.subject : null,
-      body: preview,
-      status: 'queued',
+      subject:     channel === 'email' ? template.subject : null,
+      body:        preview,
+      status:      'queued',
     })
     .select('id')
     .single()
@@ -85,46 +78,36 @@ export async function POST(request: NextRequest) {
   try {
     let providerId: string | undefined
 
-    if (channel === 'email') {
+    if (channel === 'sms') {
+      const result = await sendSms({ to: recipient, body: preview })
+      if ('error' in result) throw new Error(result.error)
+      providerId = result.id
+    } else {
       if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not configured')
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: RESEND_FROM,
-          to: [recipient],
+          from:    RESEND_FROM,
+          to:      [recipient],
           subject: template.subject ?? '(no subject)',
-          text: preview,
+          text:    preview,
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message ?? 'Resend error')
       providerId = data.id
-    } else {
-      if (!TELNYX_API_KEY) throw new Error('Telnyx credentials not configured')
-      const res = await fetch('https://api.telnyx.com/v2/messages', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${TELNYX_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ from: TELNYX_FROM_NUMBER, to: recipient, text: preview }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.errors?.[0]?.detail ?? 'Telnyx error')
-      providerId = data.data?.id
     }
 
-    // Update log to sent
     if (logId) {
       await supabase.from('send_log').update({ status: 'sent', provider_id: providerId, sent_at: new Date().toISOString() }).eq('id', logId)
     }
 
-    // Auto-log to interactions timeline so every sent message appears on contact history
+    const label = channel === 'sms' ? 'SMS' : 'Email'
     await supabase.from('interactions').insert({
       contact_id:  contactId,
       type:        'note',
-      body:        `${channel === 'sms' ? 'SMS' : 'Email'} sent: "${template.name ?? template.subject ?? 'message'}" — ${preview.slice(0, 100)}${preview.length > 100 ? '…' : ''}`,
+      body:        `${label} sent: "${template.name ?? template.subject ?? 'message'}" — ${preview.slice(0, 100)}${preview.length > 100 ? '…' : ''}`,
       occurred_at: new Date().toISOString(),
     })
 

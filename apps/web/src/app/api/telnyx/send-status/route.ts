@@ -1,91 +1,57 @@
-/**
- * POST /api/telnyx/send-status
- *
- * One-tap job-status SMS. Called by JobStatusSmsPrompt when staff taps "Send".
- * Looks up the matching template by name, interpolates variables, sends via
- * Telnyx, and logs the send.
- *
- * Body: { templateName: string, contactId: string, businessName: string }
- */
-
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { sendSms } from '@/lib/telnyx'
-import { interpolate, appendOptOut } from '@/lib/template-interpolate'
+import { createClient } from '@supabase/supabase-js'
+import { validateTelnyxSignature } from '@/lib/telnyx'
 
-const TELNYX_FROM = process.env.TELNYX_FROM_NUMBER ?? ''
+const db = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { persistSession: false } },
+)
 
-export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(req: NextRequest) {
+  const rawBody = await req.text()
+  const sig     = req.headers.get('telnyx-signature-ed25519') ?? ''
+  const ts      = req.headers.get('telnyx-timestamp') ?? ''
 
-  const { templateName, contactId, businessName } = await request.json() as {
-    templateName: string
-    contactId: string
-    businessName: string
+  if (process.env.TELNYX_PUBLIC_KEY && !validateTelnyxSignature(rawBody, sig, ts)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
   }
 
-  if (!templateName || !contactId) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  let event: Record<string, unknown>
+  try {
+    event = JSON.parse(rawBody)
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { data: template } = await supabase
-    .from('templates')
-    .select('id, body, is_marketing')
-    .eq('channel', 'sms')
-    .ilike('name', templateName)
-    .maybeSingle()
+  const eventType = (event.data as Record<string, unknown>)?.event_type as string ?? ''
+  const payload   = (event.data as Record<string, unknown>)?.payload as Record<string, unknown> ?? {}
 
-  if (!template) {
-    return NextResponse.json({ error: `Template "${templateName}" not found` }, { status: 404 })
+  // Only handle message delivery events
+  if (!eventType.startsWith('message.')) {
+    return NextResponse.json({ ok: true })
   }
 
-  const { data: contact } = await supabase
-    .from('contacts')
-    .select('id, first_name, last_name, phone')
-    .eq('id', contactId)
-    .single()
+  const providerId = payload.id as string
+  if (!providerId) return NextResponse.json({ ok: true })
 
-  if (!contact?.phone) {
-    return NextResponse.json({ error: 'Contact has no phone number' }, { status: 422 })
+  const statusMap: Record<string, string> = {
+    'message.sent':      'sent',
+    'message.delivered': 'delivered',
+    'message.failed':    'failed',
   }
 
-  let body = interpolate(template.body, {
-    first_name:    contact.first_name,
-    last_name:     contact.last_name,
-    business_name: businessName,
-  })
+  const status = statusMap[eventType]
+  if (!status) return NextResponse.json({ ok: true })
 
-  if (template.is_marketing) body = appendOptOut(body)
+  const error = status === 'failed'
+    ? ((payload.errors as Array<{ detail?: string }>)?.[0]?.detail ?? 'Delivery failed')
+    : null
 
-  const result = await sendSms({ from: TELNYX_FROM, to: contact.phone, body })
-  const success = 'id' in result
-
-  await supabase.from('send_log').insert({
-    contact_id:  contactId,
-    template_id: template.id,
-    channel:     'sms',
-    recipient:   contact.phone,
-    body,
-    status:      success ? 'sent' : 'failed',
-    provider_id: success ? result.id : null,
-    error:       success ? null : (result as { error: string }).error,
-    sent_at:     success ? new Date().toISOString() : null,
-  })
-
-  if (success) {
-    await supabase.from('interactions').insert({
-      contact_id:  contactId,
-      type:        'note',
-      body:        `SMS sent: "${templateName}" — ${body.slice(0, 80)}${body.length > 80 ? '…' : ''}`,
-      occurred_at: new Date().toISOString(),
-    })
-  }
-
-  if (!success) {
-    return NextResponse.json({ error: (result as { error: string }).error }, { status: 500 })
-  }
+  await db
+    .from('send_log')
+    .update({ status, error, ...(status === 'delivered' ? { delivered_at: new Date().toISOString() } : {}) })
+    .eq('provider_id', providerId)
 
   return NextResponse.json({ ok: true })
 }
