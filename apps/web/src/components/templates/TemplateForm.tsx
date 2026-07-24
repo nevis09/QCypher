@@ -18,7 +18,7 @@ export function TemplateForm({ template }: { template?: Template }) {
 
   const [form, setForm] = useState({
     name:         template?.name         ?? '',
-    channel:      template?.channel      ?? 'sms',
+    channel:      template?.channel      ?? 'email',
     subject:      template?.subject      ?? '',
     body:         template?.body         ?? '',
     category:     (template as any)?.category     ?? 'General',
@@ -46,7 +46,10 @@ export function TemplateForm({ template }: { template?: Template }) {
         const { error } = await supabase.from('templates').update(payload).eq('id', template.id)
         if (error) { setError(error.message); return }
       } else {
-        const { error } = await supabase.from('templates').insert(payload)
+        const { data: { user } } = await supabase.auth.getUser()
+        const tenantId = user?.app_metadata?.tenant_id
+        if (!tenantId) { setError('Could not determine tenant — please refresh and try again'); return }
+        const { error } = await supabase.from('templates').insert({ ...payload, tenant_id: tenantId })
         if (error) { setError(error.message); return }
       }
       router.push('/templates')
@@ -70,14 +73,6 @@ export function TemplateForm({ template }: { template?: Template }) {
       <div className="space-y-1.5">
         <label className="text-[15px] font-medium">Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Follow-up after visit" className={input} />
-      </div>
-
-      <div className="space-y-1.5">
-        <label className="text-[15px] font-medium">Channel</label>
-        <select value={form.channel} onChange={set('channel')} className={input}>
-          <option value="sms">📱 SMS</option>
-          <option value="email">✉️ Email</option>
-        </select>
       </div>
 
       <div className="space-y-1.5">
@@ -107,22 +102,6 @@ export function TemplateForm({ template }: { template?: Template }) {
           Variables: {VARIABLE_HINT}
         </p>
       </div>
-
-      {/* Marketing toggle — only relevant for SMS */}
-      {form.channel === 'sms' && (
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={form.is_marketing}
-            onChange={e => setForm(prev => ({ ...prev, is_marketing: e.target.checked }))}
-            className="mt-0.5 w-4 h-4 rounded accent-indigo-600"
-          />
-          <span className="text-[15px]">
-            <strong>Marketing template</strong>
-            <span className="text-[hsl(var(--muted-foreground))]"> — "Reply STOP to unsubscribe." will be appended automatically on every SMS send.</span>
-          </span>
-        </label>
-      )}
 
       {error && <p className="text-[15px] text-red-500">{error}</p>}
 
