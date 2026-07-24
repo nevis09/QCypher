@@ -242,7 +242,7 @@ export function OrderDetail({
           <table className="w-full">
             <thead>
               <tr style={{ background: 'hsl(var(--muted))', borderBottom: '1px solid hsl(var(--border))' }}>
-                {['Item', 'Qty', 'Unit price', 'Subtotal', 'Status', ''].map(h => (
+                {['Item', 'Qty', 'Unit price', 'Subtotal', ''].map(h => (
                   <th key={h} className="px-5 py-2.5 text-left text-[15px] font-bold uppercase tracking-wide"
                     style={{ color: 'hsl(var(--muted-foreground))' }}>{h}</th>
                 ))}
@@ -282,13 +282,6 @@ export function OrderDetail({
                     </td>
                     <td className="px-5 py-3.5 text-[15px] font-bold" style={{ color: 'hsl(var(--foreground))' }}>
                       ${(Number(line.quantity) * Number(line.unit_price)).toFixed(2)}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      {rs && (
-                        <span className="text-[15px] font-bold px-2 py-0.5 rounded-full capitalize" style={rs}>
-                          {effectiveStatus}
-                        </span>
-                      )}
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5 justify-end">
