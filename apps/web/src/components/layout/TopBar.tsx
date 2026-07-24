@@ -90,7 +90,7 @@ export function TopBar({
           className="flex items-center gap-2 flex-shrink-0 hover:opacity-90 transition-opacity mr-2 bg-transparent border-0 cursor-pointer p-0"
         >
           <img src="/qcypher-logo.png" alt="QCypher" style={{ height: '38px', width: 'auto', display: 'block', transform: 'translateY(-5px)' }} />
-          <span className="hidden sm:block" style={{ fontFamily: 'var(--font-heading), var(--font-sans)', fontWeight: 900, fontSize: '17px', color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1, marginLeft: '-10px' }}>
+          <span className="hidden sm:block" style={{ fontFamily: 'var(--font-sans)', fontWeight: 900, fontSize: '17px', color: 'var(--heading)', letterSpacing: '-0.03em', lineHeight: 1, marginLeft: '-10px' }}>
             QCypher
           </span>
         </button>

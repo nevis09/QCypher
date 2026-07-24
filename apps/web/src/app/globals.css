@@ -80,7 +80,7 @@
   * { border-color: hsl(var(--border)); }
 
   h1 {
-    font-family: var(--font-heading), var(--font-sans);
+    font-family: var(--font-sans);
     color: var(--heading);
     font-weight: 900;
     letter-spacing: -0.03em;

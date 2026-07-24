@@ -1,14 +1,6 @@
 import type { Metadata, Viewport } from 'next'
-import { Nunito } from 'next/font/google'
 import { ServiceWorkerRegistrar } from '@/components/layout/ServiceWorkerRegistrar'
 import './globals.css'
-
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['900'],
-  variable: '--font-heading',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: { default: 'QCypher Technologies', template: '%s — QCypher Technologies' },
@@ -49,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={nunito.variable}>
+    <html lang="en">
       <body>
         <ServiceWorkerRegistrar />
         {children}
