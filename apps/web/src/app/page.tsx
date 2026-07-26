@@ -359,8 +359,6 @@ export default function HomePage() {
           <div className="section-head center">
             <span className="eyebrow">Packages & Pricing</span>
             <h2>Everything included. Pick your pace.</h2>
-            <p>One setup cost, then a flat monthly fee. No per-user charges, no hidden extras.</p>
-            <p style={{ marginTop: '8px', fontSize: '14px', color: 'var(--mint)', fontWeight: 700 }}>✓ Customer Management Tool included with every monthly plan — start with a 2-week free trial, then $19/mo</p>
             <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything includes a dedicated setup call + 90-day check-in to make sure it's working.</p>
           </div>
 
