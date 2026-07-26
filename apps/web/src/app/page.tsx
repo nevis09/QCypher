@@ -298,7 +298,8 @@ export default function HomePage() {
       <section className="hero">
         <div className="wrap">
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
-          <p className="hero-lead">We set up and manage everything your business needs online — website, bookings, reviews, and more. No tech skills required on your end. And you get a real person guiding you through every step — month one and beyond.</p>
+          <p className="hero-lead">We build a professional website for your business and handle all the setup with you personally. Then we manage everything online while you run the business.</p>
+          <p className="hero-lead" style={{ marginBottom: '20px', fontSize: '15px' }}>You get a real person from day one. Monthly reports explained. No robots, no outsourcing.</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
             <a href="#packages" className="btn btn-primary">See packages & pricing →</a>
             <a href="#contact" className="btn btn-ghost">Get a free quote</a>
@@ -339,8 +340,7 @@ export default function HomePage() {
                 <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.8 3.6 4 .6-2.9 2.8.7 4L9 11l-3.6 2 .7-4L3.2 6.2l4-.6z" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round"/></svg>
               </div>
               <div className="benefit-text">
-                <strong>More 5-Star Reviews</strong>
-                <span>Automated follow-ups that fill your listing</span>
+                <strong>More Reviews — Automated requests</strong>
               </div>
             </div>
             <div className="benefit-item">
@@ -348,8 +348,7 @@ export default function HomePage() {
                 <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="#fff" strokeWidth="1.5"/><line x1="6" y1="3" x2="6" y2="15" stroke="#fff" strokeWidth="1.5"/><line x1="3" y1="6" x2="15" y2="6" stroke="#fff" strokeWidth="1.5"/></svg>
               </div>
               <div className="benefit-text">
-                <strong>Monthly Reports</strong>
-                <span>See what's working, get it explained by someone who knows your business</span>
+                <strong>Monthly Reports — We explain the numbers</strong>
               </div>
             </div>
           </div>
@@ -362,7 +361,8 @@ export default function HomePage() {
           <div className="section-head center">
             <span className="eyebrow">Packages & Pricing</span>
             <h2>Everything included. Pick your pace.</h2>
-            <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything includes a dedicated setup call + 90-day check-in to make sure it's working.</p>
+            <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything starts with hands-on setup + a 90-day check-in. CRM included free with every monthly plan.</p>
+            <p style={{ marginTop: '12px', fontSize: '14px', color: '#5b6072' }}>✓ Customer Management Tool included free with every monthly plan — no hidden fees, no per-user charges</p>
           </div>
 
           <div className="pkg-grid">
@@ -372,7 +372,7 @@ export default function HomePage() {
               <span className="pkg-badge-spacer" />
               <div className="pkg-for">Getting started with protection</div>
               <div className="pkg-name">Starter</div>
-              <p className="pkg-tagline">Get online with hands-on setup. We do the first 48 hours with you.</p>
+              <p className="pkg-tagline">Built with hands-on setup. We walk you through the first week.</p>
               <div className="pkg-price">
                 <span className="amt">$1,250</span><span className="freq"> one-time</span>
                 <span className="mo">+ $49/mo</span>
@@ -383,7 +383,7 @@ export default function HomePage() {
                   <div className="pkg-inherit">Everything in Online Launch, plus:</div>
                   <ul className="pkg-list">
                     <li><span className="chk">✓</span><span><strong>Security &amp; Backup</strong> <em>(daily backups and security monitoring to keep your site safe)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(2-week free trial, then $19/mo)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
                   </ul>
                 </div>
               </details>
@@ -396,7 +396,7 @@ export default function HomePage() {
               <div className="pkg-badge">Most popular</div>
               <div className="pkg-for">Ready for more customers</div>
               <div className="pkg-name">Growth</div>
-              <p className="pkg-tagline">Bring in more calls and bookings. We handle reviews and your monthly check-in.</p>
+              <p className="pkg-tagline">More bookings, automated reviews, monthly reports explained by a real person.</p>
               <div className="pkg-price">
                 <span className="amt">$1,250</span><span className="freq"> one-time</span>
                 <span className="mo">+ $99/mo</span>
@@ -408,7 +408,7 @@ export default function HomePage() {
                   <ul className="pkg-list">
                     <li><span className="chk">✓</span><span><strong>Fast Customer Online Scheduler</strong> <em>(customers book appointments and fill out any needed forms, automatically)</em></span></li>
                     <li><span className="chk">✓</span><span><strong>Generate More Online Reviews</strong> <em>(ongoing Google ranking work plus automatic requests for happy-customer reviews)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(2-week free trial, then $19/mo)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
                   </ul>
                 </div>
               </details>
@@ -421,7 +421,7 @@ export default function HomePage() {
               <span className="pkg-badge-spacer" />
               <div className="pkg-for">Fully hands-off growth</div>
               <div className="pkg-name">All-In</div>
-              <p className="pkg-tagline">Every service, every channel managed. Monthly reports explained, questions answered.</p>
+              <p className="pkg-tagline">Everything managed. Monthly check-ins, reports explained, questions answered.</p>
               <div className="pkg-price">
                 <span className="amt">$1,250</span><span className="freq"> one-time</span>
                 <span className="mo">+ $149/mo</span>
@@ -433,7 +433,7 @@ export default function HomePage() {
                   <ul className="pkg-list">
                     <li><span className="chk">✓</span><span><strong>Sell Online</strong> <em>(a simple online store with secure payments built in)</em></span></li>
                     <li><span className="chk">✓</span><span><strong>Customer Engagement</strong> <em>(email newsletters, text blasts, and 24/7 website chat — all your outreach in one place)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(2-week free trial, then $19/mo)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
                   </ul>
                 </div>
               </details>
@@ -495,7 +495,7 @@ export default function HomePage() {
           </div>
           <div className="crm-card">
             <div>
-              <p className="crm-lead">Skip the $200/month CRM. We built it for your business — and we'll walk you through it. $19/month, questions answered by a real person.</p>
+              <p className="crm-lead">Built In-House CRM — Included Free with Every Monthly Plan. We'll walk you through it, and questions get answered by a real person.</p>
               <div className="crm-price-line">$500 one-time <span>+ $19/mo</span></div>
               <ul className="crm-features">
                 <li><span className="chk">✓</span>Your full customer contact list — always organized</li>
@@ -505,11 +505,22 @@ export default function HomePage() {
                 <li><span className="chk">✓</span>Quick-reply text & email templates</li>
                 <li><span className="chk">✓</span>Works on your phone, tablet, or computer</li>
               </ul>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Included free with Starter, Growth, and All-In plans. Standalone option: $500 one-time + $19/mo</p>
             </div>
             <div className="crm-cta-col">
               <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: CRM"}' className="btn btn-primary">Learn more</button>
-              <p style={{ fontSize: 13, color: 'var(--soft)', textAlign: 'center', maxWidth: 140, lineHeight: 1.4 }}>2-week free trial with every monthly plan, then $19/mo</p>
+              <p style={{ fontSize: 13, color: 'var(--soft)', textAlign: 'center', maxWidth: 140, lineHeight: 1.4 }}>Included free with monthly plans</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW WE WORK */}
+      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+        <div className="wrap">
+          <div className="section-head center">
+            <h2>How We Work</h2>
+            <p style={{ maxWidth: '680px', fontSize: '16px', lineHeight: 1.7, color: '#5b6072', marginTop: '24px' }}>You get a dedicated setup day — we build your site, set up your bookings, handle your Google Business Profile, and walk through everything. Then monthly check-ins to make sure it's working. Questions get answered by Felix or Thomas directly. No ticket queue, no bots.</p>
           </div>
         </div>
       </section>
