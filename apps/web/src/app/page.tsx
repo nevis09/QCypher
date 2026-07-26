@@ -293,10 +293,13 @@ export default function HomePage() {
       <section className="hero">
         <div className="wrap">
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
-          <p className="hero-lead">We set up and manage everything your business needs online — website, bookings, reviews, and more. No tech skills required on your end.</p>
+          <p className="hero-lead">We set up and manage everything your business needs online — website, bookings, reviews, and more. No tech skills required on your end. And you get a real person guiding you through every step — month one and beyond.</p>
           <div className="hero-actions">
             <a href="#packages" className="btn btn-primary">See packages & pricing →</a>
-            <a href="#contact" className="btn btn-ghost">Get a free quote</a>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
+              <a href="#contact" className="btn btn-ghost">Get a free quote</a>
+              <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Talk to Felix or Thomas directly. No sales team.</span>
+            </div>
           </div>
           <div className="trust-row">
             <span><span className="dot" />No long-term contracts</span>
@@ -339,11 +342,11 @@ export default function HomePage() {
             </div>
             <div className="benefit-item">
               <div className="benefit-icon" style={{ background: 'linear-gradient(135deg, #6c3fc5, #4a2a96)' }}>
-                <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 100 12A6 6 0 009 3z" stroke="#fff" strokeWidth="1.5"/><path d="M9 6v3l2 1.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="1" stroke="#fff" strokeWidth="1.5"/><line x1="6" y1="3" x2="6" y2="15" stroke="#fff" strokeWidth="1.5"/><line x1="3" y1="6" x2="15" y2="6" stroke="#fff" strokeWidth="1.5"/></svg>
               </div>
               <div className="benefit-text">
-                <strong>Real Local Support</strong>
-                <span>A real person answers when you call</span>
+                <strong>Monthly Reports</strong>
+                <span>See what's working, get it explained by someone who knows your business</span>
               </div>
             </div>
           </div>
@@ -358,6 +361,7 @@ export default function HomePage() {
             <h2>Everything included. Pick your pace.</h2>
             <p>One setup cost, then a flat monthly fee. No per-user charges, no hidden extras.</p>
             <p style={{ marginTop: '8px', fontSize: '14px', color: 'var(--mint)', fontWeight: 700 }}>✓ Customer Management Tool included with every monthly plan — start with a 2-week free trial, then $19/mo</p>
+            <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything includes a dedicated setup call + 90-day check-in to make sure it's working.</p>
           </div>
 
           <div className="pkg-grid">
@@ -367,7 +371,7 @@ export default function HomePage() {
               <span className="pkg-badge-spacer" />
               <div className="pkg-for">Getting started with protection</div>
               <div className="pkg-name">Starter</div>
-              <p className="pkg-tagline">Get online and keep your site protected month to month.</p>
+              <p className="pkg-tagline">Get online with hands-on setup. We do the first 48 hours with you.</p>
               <div className="pkg-price">
                 <span className="amt">$600</span><span className="freq"> one-time</span>
                 <span className="mo">+ $29/mo</span>
@@ -391,7 +395,7 @@ export default function HomePage() {
               <div className="pkg-badge">Most popular</div>
               <div className="pkg-for">Ready for more customers</div>
               <div className="pkg-name">Growth</div>
-              <p className="pkg-tagline">Bring in more calls, more bookings, and more 5-star reviews.</p>
+              <p className="pkg-tagline">Bring in more calls and bookings. We handle reviews and your monthly check-in.</p>
               <div className="pkg-price">
                 <span className="amt">$700</span><span className="freq"> one-time</span>
                 <span className="mo">+ $79/mo</span>
@@ -416,7 +420,7 @@ export default function HomePage() {
               <span className="pkg-badge-spacer" />
               <div className="pkg-for">Fully hands-off growth</div>
               <div className="pkg-name">All-In</div>
-              <p className="pkg-tagline">Every service, every channel, fully managed. Set it and forget it.</p>
+              <p className="pkg-tagline">Every service, every channel managed. Monthly reports explained, questions answered.</p>
               <div className="pkg-price">
                 <span className="amt">$800</span><span className="freq"> one-time</span>
                 <span className="mo">+ $149/mo</span>
@@ -470,6 +474,17 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* MONTHLY CHECK-IN */}
+      <section style={{ background: '#fff', padding: '72px 0', borderTop: '1px solid rgba(31,60,136,.08)' }}>
+        <div className="wrap">
+          <div className="section-head center">
+            <h2>Monthly Check-In — We Explain the Numbers</h2>
+            <p>Every month, you get a report showing what's happening with your bookings, reviews, and customer engagement. And we'll walk you through it — no jargon, just what it means for your business.</p>
+            <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Sample Report"}' className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
+          </div>
+        </div>
+      </section>
+
       {/* CRM */}
       <section id="crm" className="crm-section">
         <div className="wrap">
@@ -479,7 +494,7 @@ export default function HomePage() {
           </div>
           <div className="crm-card">
             <div>
-              <p className="crm-lead">Skip the $200/month CRM. We built ours specifically for businesses like yours — simple, and $19/month flat.</p>
+              <p className="crm-lead">Skip the $200/month CRM. We built it for your business — and we'll walk you through it. $19/month, questions answered by a real person.</p>
               <div className="crm-price-line">$500 one-time <span>+ $19/mo</span></div>
               <ul className="crm-features">
                 <li><span className="chk">✓</span>Your full customer contact list — always organized</li>
@@ -589,7 +604,8 @@ export default function HomePage() {
             <div className="foot-col">
               <h5>Contact Us</h5>
               <a href="mailto:info@qcyphertech.com">info@qcyphertech.com</a>
-              <a href="tel:+18042505066">(804) 250-5066</a>
+              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--indigo)', marginBottom: '4px' }}>(804) 250-5066</a>
+              <p style={{ fontSize: '13px', color: 'var(--soft)', margin: '0' }}>Ask for Felix or Thomas.</p>
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>

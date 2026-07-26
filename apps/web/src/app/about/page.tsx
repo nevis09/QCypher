@@ -251,7 +251,7 @@ export default function AboutPage() {
                 We kept seeing the same problem: great local businesses — the kind that show up, do the work, and treat customers right — were either invisible online or drowning in tools they didn't need and couldn't afford.
               </p>
               <p>
-                So we built QCypher Technologies to solve exactly that. We handle your website, your online presence, your bookings, your reviews, and your customer management — all under one roof, with real support from real people.
+                So we built QCypher Technologies to solve exactly that. We handle your website, your online presence, your bookings, your reviews, and your customer management — all under one roof, with real support from real people who call you by your name, explain what's happening, and send you a monthly report showing what's working — because your data should make sense to you.
               </p>
               <p>
                 No hidden fees. No locked-in contracts. No tech jargon. Just results.
@@ -273,6 +273,10 @@ export default function AboutPage() {
               <div className="story-stat">
                 <div className="story-stat-num">5★</div>
                 <div className="story-stat-label">Average client satisfaction across all services</div>
+              </div>
+              <div className="story-stat">
+                <div className="story-stat-num">24-48hr</div>
+                <div className="story-stat-label">Response time on calls and emails</div>
               </div>
             </div>
           </div>
@@ -315,6 +319,7 @@ export default function AboutPage() {
               <p className="team-bio">
                 Felix Sam has spent his career inside the world of enterprise cybersecurity — the same complex, expensive world most small businesses can't afford to navigate. As a government contractor across Washington, D.C., Virginia, and Maryland, he has worked with leading consulting and cybersecurity firms, including Accenture, performing security control assessments and compliance reviews under the Risk Management Framework (RMF) to help federal agencies achieve and maintain FISMA authorization. At the management level, his experience extends to advising project teams on data protection strategies and information security best practices. Felix co-founded QCypher to put that enterprise-grade expertise to work for the shops, startups, and small teams who deserve serious security without the enterprise price tag.
               </p>
+              <p style={{ fontSize: '14px', color: 'var(--cyan)', fontWeight: 600, marginTop: '12px' }}>Felix takes the first call with every new client.</p>
             </div>
 
             {/* Cofounder 2 */}
@@ -342,6 +347,7 @@ export default function AboutPage() {
               <p className="team-bio">
                 Thomas Ocloo has built his career at the intersection of cybersecurity and cloud infrastructure across Washington, D.C., Virginia, and Maryland. As a government contractor with organizations including ManTech and KPMG, he has served as a Security Control Assessor and Compliance Analyst — conducting assessments under the Risk Management Framework (RMF), evaluating security postures, and ensuring federal systems meet regulatory compliance requirements. His background also spans vulnerability analysis and cloud architecture across AWS, Azure, and GCP — the same expertise he now brings to bear as the architect behind the infrastructure powering every QCypher tool. Thomas co-founded QCypher to put that federal-grade infrastructure expertise to work for every local business owner who's been priced out of the tools that could actually grow their business.
               </p>
+              <p style={{ fontSize: '14px', color: 'var(--cyan)', fontWeight: 600, marginTop: '12px' }}>Thomas does the 90-day check-in to make sure everything's working.</p>
             </div>
 
           </div>
@@ -370,7 +376,7 @@ export default function AboutPage() {
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 9.5a1 1 0 0 0-1-1h-1.6l-3.1-3.1a3 3 0 0 0-2.1-.9H10a3 3 0 0 0-2.1.9L6.2 7H5a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h.2a2.5 2.5 0 0 0 4.6 0h4.4a2.5 2.5 0 0 0 4.6 0H19a3 3 0 0 0 3-3v-4.5zm-12.3 8a.5.5 0 0 1-1 0v-.5h1zm9 0a.5.5 0 0 1-1 0v-.5h1zM20 14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h1.6l2.3-2.4A1 1 0 0 1 9.6 6h4.8a1 1 0 0 1 .7.3l2.3 2.4H21z"/></svg>
               </div>
               <div className="value-name">Real relationships</div>
-              <p className="value-desc">You get a real person, not a ticket number. We know your business and we show up when you need us.</p>
+              <p className="value-desc">You get a real person, not a ticket number. We know your business, call you by your name, explain your monthly reports, and show up when you need us. Phone calls, not support bots.</p>
             </div>
             <div className="value-card">
               <div className="value-icon">
@@ -433,8 +439,8 @@ export default function AboutPage() {
             <div className="foot-col">
               <h5>Contact Us</h5>
               <a href="mailto:info@qcyphertech.com">info@qcyphertech.com</a>
-              <a href="tel:+18042505066">(804) 250-5066</a>
-              <a href="tel:+13865003693">(386) 500-3693</a>
+              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--indigo)', marginBottom: '4px' }}>(804) 250-5066</a>
+              <p style={{ fontSize: '13px', color: 'var(--soft)', margin: '0' }}>Ask for Felix or Thomas.</p>
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>
