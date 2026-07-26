@@ -294,13 +294,11 @@ export default function HomePage() {
         <div className="wrap">
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
           <p className="hero-lead">We set up and manage everything your business needs online — website, bookings, reviews, and more. No tech skills required on your end. And you get a real person guiding you through every step — month one and beyond.</p>
-          <div className="hero-actions">
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
             <a href="#packages" className="btn btn-primary">See packages & pricing →</a>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
-              <a href="#contact" className="btn btn-ghost">Get a free quote</a>
-              <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Talk to Felix or Thomas directly. No sales team.</span>
-            </div>
+            <a href="#contact" className="btn btn-ghost">Get a free quote</a>
           </div>
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
           <div className="trust-row">
             <span><span className="dot" />No long-term contracts</span>
             <span><span className="dot" />Switch tiers anytime</span>
