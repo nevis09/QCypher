@@ -374,8 +374,8 @@ export default function HomePage() {
               <div className="pkg-name">Starter</div>
               <p className="pkg-tagline">Get online with hands-on setup. We do the first 48 hours with you.</p>
               <div className="pkg-price">
-                <span className="amt">$600</span><span className="freq"> one-time</span>
-                <span className="mo">+ $29/mo</span>
+                <span className="amt">$1,250</span><span className="freq"> one-time</span>
+                <span className="mo">+ $49/mo</span>
               </div>
               <details className="pkg-details" open>
                 <summary>See what&apos;s included</summary>
@@ -398,8 +398,8 @@ export default function HomePage() {
               <div className="pkg-name">Growth</div>
               <p className="pkg-tagline">Bring in more calls and bookings. We handle reviews and your monthly check-in.</p>
               <div className="pkg-price">
-                <span className="amt">$700</span><span className="freq"> one-time</span>
-                <span className="mo">+ $79/mo</span>
+                <span className="amt">$1,250</span><span className="freq"> one-time</span>
+                <span className="mo">+ $99/mo</span>
               </div>
               <details className="pkg-details" open>
                 <summary>See what&apos;s included</summary>
@@ -423,7 +423,7 @@ export default function HomePage() {
               <div className="pkg-name">All-In</div>
               <p className="pkg-tagline">Every service, every channel managed. Monthly reports explained, questions answered.</p>
               <div className="pkg-price">
-                <span className="amt">$800</span><span className="freq"> one-time</span>
+                <span className="amt">$1,250</span><span className="freq"> one-time</span>
                 <span className="mo">+ $149/mo</span>
               </div>
               <details className="pkg-details" open>
