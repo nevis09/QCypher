@@ -1,9 +1,14 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
 
 // Public marketing page — no auth calls, no Supabase imports.
 // Middleware handles logged-in redirect (/ → /dashboard).
 
 export default function HomePage() {
+  const [showReportModal, setShowReportModal] = useState(false)
+
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', background: '#f8f9fc', color: '#171a2b', lineHeight: 1.5 }}>
       <style>{`
@@ -476,7 +481,7 @@ export default function HomePage() {
           <div className="section-head center">
             <h2>Monthly Check-In — We Explain the Numbers</h2>
             <p>Every month, you get a report showing what's happening with your bookings, reviews, and customer engagement. And we'll walk you through it — no jargon, just what it means for your business.</p>
-            <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Sample Report"}' className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
+            <button onClick={() => setShowReportModal(true)} className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
           </div>
         </div>
       </section>
@@ -617,6 +622,67 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* SAMPLE REPORT MODAL */}
+      {showReportModal && (
+        <div onClick={() => setShowReportModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: '20px', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: '40px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <button onClick={() => setShowReportModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#5b6072' }}>×</button>
+
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--ink)', marginBottom: '32px', letterSpacing: '-0.02em' }}>Your Monthly Report — October 2026</h2>
+
+            {/* Summary Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '32px' }}>
+              <div style={{ background: '#f8f9fc', padding: '20px', borderRadius: '12px', border: '1px solid rgba(26,48,112,0.1)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#5b6072', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>New Bookings</div>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: '#1a3070' }}>24</div>
+                <div style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '4px' }}>↑ 18% from last month</div>
+              </div>
+              <div style={{ background: '#f8f9fc', padding: '20px', borderRadius: '12px', border: '1px solid rgba(26,48,112,0.1)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#5b6072', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>New 5-Star Reviews</div>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: '#1a3070' }}>8</div>
+                <div style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '4px' }}>↑ 6 from search</div>
+              </div>
+              <div style={{ background: '#f8f9fc', padding: '20px', borderRadius: '12px', border: '1px solid rgba(26,48,112,0.1)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#5b6072', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>Online Store Revenue</div>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: '#1a3070' }}>$3,240</div>
+                <div style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '4px' }}>↑ 24% from last month</div>
+              </div>
+              <div style={{ background: '#f8f9fc', padding: '20px', borderRadius: '12px', border: '1px solid rgba(26,48,112,0.1)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#5b6072', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>Email Open Rate</div>
+                <div style={{ fontSize: '28px', fontWeight: 900, color: '#1a3070' }}>42%</div>
+                <div style={{ fontSize: '13px', color: '#5b6072', fontWeight: 600, marginTop: '4px' }}>Industry avg: 21%</div>
+              </div>
+            </div>
+
+            {/* Sections */}
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#1a3070', marginBottom: '12px' }}>What's Working</h3>
+              <ul style={{ listStyle: 'none', padding: 0, fontSize: '14px', color: '#5b6072', lineHeight: 1.7 }}>
+                <li style={{ marginBottom: '8px' }}>✓ Google reviews increasing steadily — keep up the follow-up requests</li>
+                <li style={{ marginBottom: '8px' }}>✓ Online store gaining traction — $3K+ revenue this month</li>
+                <li style={{ marginBottom: '8px' }}>✓ Email campaigns performing above industry average</li>
+              </ul>
+            </div>
+
+            <div style={{ marginBottom: '32px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#1a3070', marginBottom: '12px' }}>Opportunities</h3>
+              <ul style={{ listStyle: 'none', padding: 0, fontSize: '14px', color: '#5b6072', lineHeight: 1.7 }}>
+                <li style={{ marginBottom: '8px' }}>→ 4 booked customers haven't completed their first appointment — follow up this week</li>
+                <li style={{ marginBottom: '8px' }}>→ Chat response time could improve (currently 45 min avg) — consider scheduling shifts</li>
+              </ul>
+            </div>
+
+            <div style={{ background: '#eef2ff', padding: '20px', borderRadius: '12px', border: '1px solid rgba(26,48,112,0.15)' }}>
+              <p style={{ fontSize: '14px', color: '#1a3070', fontWeight: 600, margin: 0 }}>💡 Our recommendation: The online store is your highest-ROI channel right now. Consider adding 2-3 new products next month and promoting them via email.</p>
+            </div>
+
+            <p style={{ fontSize: '13px', color: '#5b6072', marginTop: '24px', textAlign: 'center' }}>This is a sample report. When you sign up, Felix or Thomas will walk you through your actual data every month.</p>
+
+            <button onClick={() => setShowReportModal(false)} data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: All-In package"}' className="btn btn-primary" style={{ width: '100%', marginTop: '24px' }}>Get a free consultation</button>
+          </div>
+        </div>
+      )}
 
       {/* Cal.com popup embed — powers all "Get started" buttons */}
       <script
