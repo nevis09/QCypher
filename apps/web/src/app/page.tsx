@@ -479,10 +479,10 @@ export default function HomePage() {
       </section>
 
       {/* 30-DAY GUARANTEE */}
-      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
+      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '40px 0' }}>
         <div className="wrap">
-          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', border: '2px solid rgba(0,168,122,0.3)', borderRadius: '16px', padding: '48px 40px' }}>
-            <p style={{ fontSize: '20px', fontWeight: 700, color: '#1a3070', margin: 0 }}>
+          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', border: '2px solid rgba(0,168,122,0.3)', borderRadius: '16px', padding: '32px 32px' }}>
+            <p style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', margin: 0 }}>
               <span style={{ marginRight: '10px' }}>✓</span>
               Not seeing results? We refund your setup fee.
             </p>
@@ -491,7 +491,7 @@ export default function HomePage() {
       </section>
 
       {/* TESTIMONIALS — 10.4: structure ready; existing testimonials shown below */}
-      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '56px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <span className="eyebrow">What Our Clients Say</span>
