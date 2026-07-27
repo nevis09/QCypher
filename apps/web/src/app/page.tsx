@@ -304,7 +304,7 @@ export default function HomePage() {
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
           <p className="hero-lead">We build your website, handle setup with you personally, and manage everything ongoing. Real person from day one — monthly reports explained</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
-            <Link href="/pricing" className="btn btn-primary">See packages</Link>
+            <Link href="#packages-section" className="btn btn-primary">See packages</Link>
             <button onClick={() => setShowContactModal(true)} className="btn btn-ghost">Get a free quote</button>
           </div>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
@@ -412,7 +412,7 @@ export default function HomePage() {
             <p style={{ fontSize: '24px', fontWeight: 900, lineHeight: 1.4, margin: 0, position: 'relative', zIndex: 1, letterSpacing: '-0.5px', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>Custom packages built for your business. Let's find what works for your budget.</p>
           </div>
 
-          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <div id="packages-section" style={{ textAlign: 'center', marginBottom: '28px' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, rgba(74,157,181,0.1) 0%, rgba(0,168,122,0.08) 100%)', border: '1px solid rgba(74,157,181,0.2)', borderRadius: '24px', padding: '8px 20px', fontSize: '16px', color: '#2a52a0', fontWeight: 600 }}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 1C4.14 1 1 4.14 1 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm3.5 5L7 10.5 4.5 8" stroke="#4a9db5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
