@@ -290,7 +290,6 @@ export default function HomePage() {
             <Link href="/about" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>About</Link>
             <Link href="/pricing" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Pricing</Link>
             <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
-            <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Free Quote"}' className="btn btn-primary btn-sm nav-quote-btn">Free quote</button>
           </div>
         </div>
       </header>
