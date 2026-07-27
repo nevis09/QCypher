@@ -238,6 +238,54 @@ export default function PricingPage() {
             <p style={{ marginTop: '12px', fontSize: '14px', color: '#5b6072' }}>✓ Customer Management Tool included free with every monthly plan — no hidden fees, no per-user charges</p>
           </div>
 
+          {/* WHAT YOU'RE REALLY GETTING */}
+          <div style={{ marginTop: '60px', marginBottom: '60px' }}>
+            <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#1a3070', marginBottom: '32px', textAlign: 'center' }}>What You're Really Getting</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', maxWidth: '700px', margin: '0 auto' }}>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Custom website build</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,500–$3,000 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Google Business Profile setup & optimization</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$500–$800 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Domain, email, security, CRM</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,000+ value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Hands-on setup day with Felix or Thomas</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$800 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: 'linear-gradient(135deg, #00a87a 0%, #059669 100%)', borderRadius: '16px', padding: '24px', textAlign: 'center', color: '#fff', marginTop: '8px', boxShadow: '0 4px 16px rgba(0,168,122,0.2)' }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9, marginBottom: '6px' }}>Total value: $3,800–$5,600</div>
+                <div style={{ fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>All bundled: $1,250 + $49–$149/mo</div>
+                <div style={{ fontSize: '13px', opacity: 0.85 }}>That's 4–5x the value.</div>
+              </div>
+            </div>
+          </div>
+
           <div className="pkg-grid">
 
             {/* Starter */}
@@ -261,6 +309,7 @@ export default function PricingPage() {
                   </ul>
                 </div>
               </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Starter"}' className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
@@ -286,6 +335,7 @@ export default function PricingPage() {
                   </ul>
                 </div>
               </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Growth"}' className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get started</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
@@ -311,6 +361,7 @@ export default function PricingPage() {
                   </ul>
                 </div>
               </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: All-In"}' className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
@@ -340,6 +391,7 @@ export default function PricingPage() {
                 </details>
               </div>
               <div className="launch-cta">
+                <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
                 <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Online Launch"}' className="btn" style={{ background: '#059669', color: '#fff', border: 'none', borderRadius: '12px', padding: '0 32px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', minHeight: '48px', width: '100%' }}>Get started</button>
                 <p className="pkg-switch" style={{ marginTop: '4px' }}>No commitment — upgrade to a monthly plan anytime.</p>
               </div>
@@ -398,7 +450,7 @@ export default function PricingPage() {
                 <tr style={{ background: 'rgba(0,168,122,0.05)' }}>
                   <td style={{ padding: '20px', color: '#1a3070', fontWeight: 700 }}>Total Year 1</td>
                   <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af', fontWeight: 700 }}>$6,500+</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>starting $1,788</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>QCypher (Starter): $1,788/year</td>
                 </tr>
               </tbody>
             </table>
