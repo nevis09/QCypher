@@ -145,16 +145,65 @@ export interface Database {
           id: string; tenant_id: string; customer_id: string | null
           payment_status: 'draft' | 'pending' | 'paid' | 'refunded'
           total_amount: number; notes: string | null; created_at: string; updated_at: string
+          signed_at: string | null; helcim_transaction_id: string | null; paid_at: string | null
         }
         Insert: {
           id?: string; tenant_id: string; customer_id?: string | null
           payment_status?: 'draft' | 'pending' | 'paid' | 'refunded'
           total_amount?: number; notes?: string | null; created_at?: string; updated_at?: string
+          signed_at?: string | null; helcim_transaction_id?: string | null; paid_at?: string | null
         }
         Update: {
           customer_id?: string | null; payment_status?: 'draft' | 'pending' | 'paid' | 'refunded'
-          notes?: string | null; updated_at?: string
+          notes?: string | null; updated_at?: string; signed_at?: string | null
+          helcim_transaction_id?: string | null; paid_at?: string | null
         }
+      }
+      portal_magic_links: {
+        Row: {
+          id: string; tenant_id: string; contact_id: string
+          token: string; expires_at: string; used_at: string | null; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; contact_id: string
+          token: string; expires_at: string; used_at?: string | null; created_at?: string
+        }
+        Update: { used_at?: string | null }
+      }
+      portal_sessions: {
+        Row: {
+          id: string; tenant_id: string; contact_id: string
+          access_token: string; expires_at: string; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; contact_id: string
+          access_token: string; expires_at: string; created_at?: string
+        }
+        Update: Record<string, never>
+      }
+      quote_tokens: {
+        Row: {
+          id: string; tenant_id: string; order_id: string
+          access_token: string; token_expires_at: string; created_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; order_id: string
+          access_token: string; token_expires_at: string; created_at?: string
+        }
+        Update: { token_expires_at?: string }
+      }
+      quote_signatures: {
+        Row: {
+          id: string; tenant_id: string; order_id: string
+          signed_by_name: string; signature_type: string; signature_data: string
+          ip_address: string | null; signed_at: string; access_token: string; token_expires_at: string
+        }
+        Insert: {
+          id?: string; tenant_id: string; order_id: string
+          signed_by_name: string; signature_type?: string; signature_data: string
+          ip_address?: string | null; signed_at?: string; access_token: string; token_expires_at: string
+        }
+        Update: Record<string, never>
       }
       order_line_items: {
         Row: {

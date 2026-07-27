@@ -1,0 +1,276 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { revalidatePath } from 'next/cache'
+import { randomBytes } from 'crypto'
+
+const RESEND_API_KEY  = process.env.RESEND_API_KEY ?? ''
+const RESEND_FROM     = process.env.RESEND_FROM_EMAIL ?? 'hello@qcyphertech.com'
+const APP_URL         = process.env.APP_URL ?? 'https://www.qcyphertech.com'
+
+function adminClient() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+}
+
+export type QuoteToken = {
+  access_token: string
+  token_expires_at: string
+  order_id: string
+}
+
+export type SignatureRecord = {
+  id: string
+  signed_by_name: string
+  signature_type: string
+  signed_at: string
+  ip_address: string | null
+}
+
+// Generate (or regenerate) a quote token for an order. Tenant-scoped.
+export async function generateQuoteToken(orderId: string): Promise<{ token: string; url: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  const tenantId = user.app_metadata?.tenant_id
+  if (!tenantId) throw new Error('No tenant')
+
+  // Confirm order belongs to this tenant and is not already signed
+  const { data: order, error: oErr } = await supabase
+    .from('orders')
+    .select('id, signed_at, payment_status')
+    .eq('id', orderId)
+    .single()
+  if (oErr || !order) throw new Error('Order not found')
+  if (order.signed_at) throw new Error('This quote has already been signed and cannot be re-sent')
+
+  const token = randomBytes(32).toString('hex')
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
+
+  // Delete any existing token for this order, then insert fresh (no UPDATE policy needed)
+  await supabase.from('quote_tokens').delete().eq('order_id', orderId)
+  const { error } = await supabase.from('quote_tokens').insert(
+    { tenant_id: tenantId, order_id: orderId, access_token: token, token_expires_at: expiresAt },
+  )
+  if (error) throw error
+
+  revalidatePath(`/orders/${orderId}`)
+  return { token, url: `${APP_URL}/q/${token}` }
+}
+
+// Fetch the active token for an order (if any), for display in OrderDetail
+export async function getQuoteToken(orderId: string): Promise<QuoteToken | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('quote_tokens')
+    .select('access_token, token_expires_at, order_id')
+    .eq('order_id', orderId)
+    .maybeSingle()
+  return data ?? null
+}
+
+// Get the signature record for an already-signed order
+export async function getQuoteSignature(orderId: string): Promise<SignatureRecord | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('quote_signatures')
+    .select('id, signed_by_name, signature_type, signed_at, ip_address')
+    .eq('order_id', orderId)
+    .maybeSingle()
+  return data ?? null
+}
+
+// Send the quote link via email using Resend
+export async function sendQuoteEmail(input: {
+  orderId: string
+  recipientEmail: string
+  recipientName: string
+  businessName: string
+  total: number
+}): Promise<{ url: string; emailSent: boolean; emailError?: string } | { url: null; emailSent: false; emailError: string }> {
+  try {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { url: null, emailSent: false, emailError: 'Not authenticated' }
+
+  const tokenResult = await generateQuoteToken(input.orderId).catch((e: unknown) => ({ token: null as string | null, url: null as string | null, _err: e instanceof Error ? e.message : 'Failed to generate token' }))
+  if (!tokenResult.url) return { url: null, emailSent: false, emailError: (tokenResult as { _err?: string })._err ?? 'Failed to generate link' }
+  const { url } = tokenResult
+
+  const body = `Hi ${input.recipientName},
+
+${input.businessName} has sent you a quote to review and approve.
+
+Quote total: $${Number(input.total).toFixed(2)}
+
+Review and approve your quote here:
+${url}
+
+This link expires in 30 days. By clicking Approve on that page, you agree to the terms of this quote. This is a lightweight approval — not a notarized or legally-advanced e-signature.
+
+Questions? Reply to this email.
+
+— ${input.businessName}`
+
+  if (!RESEND_API_KEY) {
+    return { url, emailSent: false, emailError: 'Email not configured' }
+  }
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: RESEND_FROM,
+      to: [input.recipientEmail],
+      subject: `Your quote from ${input.businessName} — review and approve`,
+      text: body,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    return { url, emailSent: false, emailError: (err as { message?: string }).message ?? 'Email delivery failed' }
+  }
+
+  return { url, emailSent: true }
+  } catch (e: unknown) {
+    return { url: null, emailSent: false, emailError: e instanceof Error ? e.message : 'Unexpected error' }
+  }
+}
+
+// ── Public (service-role) actions — called from /q/[token] route ──────────────
+
+// Look up quote data from a token. No auth required — validates token in code.
+export async function getQuoteByToken(token: string): Promise<{
+  valid: boolean
+  expired?: boolean
+  alreadySigned?: boolean
+  order?: {
+    id: string
+    total_amount: number
+    created_at: string
+    business_name: string
+    tenant_id: string
+    contact_name: string | null
+  }
+  lines?: Array<{
+    id: string
+    item_name_snapshot: string
+    description_snapshot: string | null
+    quantity: number
+    unit_price: number
+    billing_unit_snapshot: string
+  }>
+} | null> {
+  const admin = adminClient()
+
+  const { data: qt } = await admin
+    .from('quote_tokens')
+    .select('order_id, tenant_id, token_expires_at')
+    .eq('access_token', token)
+    .maybeSingle()
+
+  if (!qt) {
+    // Check if already signed (token consumed)
+    const { data: sig } = await admin
+      .from('quote_signatures')
+      .select('order_id')
+      .eq('access_token', token)
+      .maybeSingle()
+    if (sig) return { valid: false, alreadySigned: true }
+    return { valid: false }
+  }
+
+  if (new Date(qt.token_expires_at) < new Date()) {
+    return { valid: false, expired: true }
+  }
+
+  const [{ data: order }, { data: lines }, { data: tenant }] = await Promise.all([
+    admin.from('orders')
+      .select('id, total_amount, created_at, signed_at, contact:contacts(first_name, last_name)')
+      .eq('id', qt.order_id)
+      .single(),
+    admin.from('order_line_items')
+      .select('id, item_name_snapshot, description_snapshot, quantity, unit_price, billing_unit_snapshot')
+      .eq('order_id', qt.order_id)
+      .order('created_at'),
+    admin.from('tenants').select('name').eq('id', qt.tenant_id).single(),
+  ])
+
+  if (!order) return { valid: false }
+  if (order.signed_at) return { valid: false, alreadySigned: true }
+
+  const contact = order.contact as { first_name: string; last_name: string | null } | null
+
+  return {
+    valid: true,
+    order: {
+      id: order.id,
+      total_amount: order.total_amount,
+      created_at: order.created_at,
+      business_name: (tenant as { name?: string } | null)?.name ?? 'Your service provider',
+      tenant_id: qt.tenant_id,
+      contact_name: contact ? `${contact.first_name} ${contact.last_name ?? ''}`.trim() : null,
+    },
+    lines: (lines ?? []) as any,
+  }
+}
+
+// Record a customer's signature. Service-role only. Called from the public quote page.
+export async function signQuote(input: {
+  token: string
+  signedByName: string
+  signatureType: 'typed' | 'drawn'
+  signatureData: string
+  ipAddress: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const admin = adminClient()
+
+  // Re-validate token
+  const { data: qt } = await admin
+    .from('quote_tokens')
+    .select('order_id, tenant_id, token_expires_at')
+    .eq('access_token', input.token)
+    .maybeSingle()
+
+  if (!qt) return { ok: false, error: 'This link is no longer valid.' }
+  if (new Date(qt.token_expires_at) < new Date()) return { ok: false, error: 'This link has expired. Please ask for a new one.' }
+
+  const { data: order } = await admin.from('orders').select('signed_at').eq('id', qt.order_id).single()
+  if (!order) return { ok: false, error: 'Quote not found.' }
+  if (order.signed_at) return { ok: false, error: 'This quote has already been signed.' }
+
+  const now = new Date().toISOString()
+
+  // Write signature record (token stored for audit trail)
+  const { error: sigErr } = await admin.from('quote_signatures').insert({
+    tenant_id: qt.tenant_id,
+    order_id: qt.order_id,
+    signed_by_name: input.signedByName.trim(),
+    signature_type: input.signatureType,
+    signature_data: input.signatureData,
+    ip_address: input.ipAddress,
+    signed_at: now,
+    access_token: input.token,
+    token_expires_at: qt.token_expires_at,
+  })
+  if (sigErr) {
+    console.error('[signQuote] insert error:', JSON.stringify(sigErr))
+    return { ok: false, error: `Could not record signature: ${sigErr.message}` }
+  }
+
+  // Transition order: draft → pending + set signed_at
+  await admin.from('orders').update({
+    payment_status: 'pending',
+    signed_at: now,
+  }).eq('id', qt.order_id)
+
+  // Consume token
+  await admin.from('quote_tokens').delete().eq('order_id', qt.order_id)
+
+  return { ok: true }
+}

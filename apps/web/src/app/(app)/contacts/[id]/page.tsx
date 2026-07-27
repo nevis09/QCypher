@@ -21,21 +21,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ContactPage({ params }: Props) {
   const { id } = await params
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const tenantId = user?.app_metadata?.tenant_id ?? ''
 
-  const [{ data: contact }, { data: interactions }] = await Promise.all([
-    supabase
-      .from('contacts')
-      .select('*')
-      .eq('id', id)
-      .single(),
-    supabase
-      .from('interactions')
-      .select('*')
-      .eq('contact_id', id)
-      .order('occurred_at', { ascending: false }),
+  const [{ data: contact }, { data: interactions }, { data: tenantRaw }] = await Promise.all([
+    supabase.from('contacts').select('*').eq('id', id).single(),
+    supabase.from('interactions').select('*').eq('contact_id', id).order('occurred_at', { ascending: false }),
+    supabase.from('tenants').select('slug, name').single(),
   ])
 
   if (!contact) notFound()
 
-  return <ContactDetail contact={contact} interactions={interactions ?? []} />
+  const tenant = tenantRaw as { slug: string; name: string } | null
+  return (
+    <ContactDetail
+      contact={contact}
+      interactions={interactions ?? []}
+      tenantId={tenantId}
+      tenantSlug={tenant?.slug ?? ''}
+      businessName={tenant?.name ?? ''}
+    />
+  )
 }

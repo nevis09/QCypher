@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { OrderDetail } from '@/components/orders/OrderDetail'
 import { getJobPhotos } from '@/lib/actions/photos'
+import { getQuoteSignature } from '@/lib/actions/quotes'
 
 export const metadata: Metadata = { title: 'Order' }
 
@@ -12,7 +13,7 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
   const { data: { user } } = await supabase.auth.getUser()
   const tenantId = user?.app_metadata?.tenant_id ?? ''
 
-  const [{ data: order }, { data: lines }, { data: catalogItems }, { data: contacts }, { data: tenant }, photos] = await Promise.all([
+  const [{ data: order }, { data: lines }, { data: catalogItems }, { data: contacts }, { data: tenant }, photos, signature] = await Promise.all([
     supabase
       .from('orders')
       .select('*, contact:contacts(id, first_name, last_name, email, phone)')
@@ -37,11 +38,13 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
       .select('name')
       .single(),
     getJobPhotos(params.id).catch(() => []),
+    getQuoteSignature(params.id).catch(() => null),
   ])
 
   if (!order) notFound()
 
   const t = tenant as { name?: string } | null
+  const sig = signature as { signed_by_name: string; signed_at: string } | null
   return (
     <OrderDetail
       order={order}
@@ -51,6 +54,8 @@ export default async function OrderPage({ params }: { params: { id: string } }) 
       businessName={t?.name ?? ''}
       initialPhotos={photos}
       tenantId={tenantId}
+      signedBy={sig?.signed_by_name ?? null}
+      signedAt={sig?.signed_at ?? null}
     />
   )
 }

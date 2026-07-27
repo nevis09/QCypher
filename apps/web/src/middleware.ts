@@ -36,7 +36,11 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/auth') ||
     pathname === '/' ||
     pathname === '/about' ||
-    pathname.startsWith('/api/telnyx/')
+    pathname === '/pricing' ||
+    pathname.startsWith('/api/telnyx/') ||
+    pathname.startsWith('/api/portal/') ||
+    pathname.startsWith('/q/') ||
+    pathname.startsWith('/portal/')
   ) {
     return supabaseResponse
   }

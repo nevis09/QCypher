@@ -7,7 +7,6 @@ import {
   addLineItem, removeLineItem, updateOrderStatus, updateJobStatus, returnRental, extendRental,
   type Order, type OrderLineItem,
 } from '@/lib/actions/orders'
-import { JobStatusSmsPrompt } from './JobStatusSmsPrompt'
 import { JobPhotos } from './JobPhotos'
 import type { JobPhoto } from '@/lib/actions/photos'
 import { SendQuoteButton } from './SendQuoteButton'
@@ -58,7 +57,6 @@ export function OrderDetail({
   const [showAddLine, setShowAddLine] = useState(false)
   const [extendLine, setExtendLine] = useState<OrderLineItem | null>(null)
   const [jobStatus, setJobStatus] = useState<Order['job_status']>(order.job_status)
-  const [promptKey, setPromptKey] = useState(0) // remount prompt on each status change
 
   const contact = order.contact as { id: string; first_name: string; last_name: string | null; email: string | null; phone?: string | null } | null
   const statusStyle = STATUS_COLORS[order.payment_status] ?? STATUS_COLORS.draft
@@ -70,7 +68,6 @@ export function OrderDetail({
 
   function handleJobStatusChange(status: Order['job_status']) {
     setJobStatus(status)
-    setPromptKey(k => k + 1)
     startTransition(() => updateJobStatus(order.id, status))
   }
 
@@ -198,20 +195,6 @@ export function OrderDetail({
           </div>
         </div>
       </div>
-
-      {/* One-tap job status SMS prompt */}
-      {contact?.id && jobStatus && (
-        <div className="no-print">
-          <JobStatusSmsPrompt
-            key={promptKey}
-            status={jobStatus}
-            contactId={contact.id}
-            contactName={`${contact.first_name} ${contact.last_name ?? ''}`.trim()}
-            contactPhone={(contact as any).phone ?? null}
-            businessName={businessName}
-          />
-        </div>
-      )}
 
       {/* Line items */}
       <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] overflow-hidden">

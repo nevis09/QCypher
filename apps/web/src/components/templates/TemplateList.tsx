@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Mail, MessageSquare, ChevronRight } from 'lucide-react'
+import { Mail, ChevronRight } from 'lucide-react'
 import type { Tables } from '@/types/database'
 
 type Template = Tables<'templates'>
@@ -70,13 +70,12 @@ const CATEGORIES = [
   },
 ]
 
-type Filter = 'all' | 'sms' | 'email'
+type Filter = 'all' | 'email'
 
 export function TemplateList({ templates }: { templates: Template[] }) {
   const [filter, setFilter] = useState<Filter>('all')
 
   const visible = filter === 'all' ? templates : templates.filter(t => t.channel === filter)
-  const smsCount   = templates.filter(t => t.channel === 'sms').length
   const emailCount = templates.filter(t => t.channel === 'email').length
 
   if (templates.length === 0) {
@@ -119,7 +118,6 @@ export function TemplateList({ templates }: { templates: Template[] }) {
       <div style={{ display: 'flex', gap: '8px', marginBottom: '28px', flexWrap: 'wrap' }}>
         {([
           { key: 'all',   label: 'All',   count: templates.length },
-          { key: 'sms',   label: '📱 SMS',  count: smsCount },
           { key: 'email', label: '✉️ Email', count: emailCount },
         ] as { key: Filter; label: string; count: number }[]).map(tab => {
           const active = filter === tab.key
@@ -237,8 +235,6 @@ function TemplateRow({ template: t, cat }: {
   template: Template
   cat: CatWithItems
 }) {
-  const isEmail = t.channel === 'email'
-
   return (
     <Link
       href={`/templates/${t.id}`}
@@ -276,10 +272,7 @@ function TemplateRow({ template: t, cat }: {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: cat.chip, border: `1px solid ${cat.border}`,
         }}>
-          {isEmail
-            ? <Mail size={16} color={cat.accent} />
-            : <MessageSquare size={16} color={cat.accent} />
-          }
+          <Mail size={16} color={cat.accent} />
         </div>
 
         <div style={{ display: 'flex', gap: '6px', marginLeft: 'auto' }}>
@@ -289,18 +282,8 @@ function TemplateRow({ template: t, cat }: {
             background: cat.chip, color: cat.accent,
             border: `1px solid ${cat.border}`,
           }}>
-            {isEmail ? '✉️ Email' : '📱 SMS'}
+            ✉️ Email
           </span>
-          {t.is_marketing && (
-            <span style={{
-              fontSize: '15px', fontWeight: 700, letterSpacing: '0.04em',
-              padding: '3px 8px', borderRadius: '100px',
-              background: 'rgba(249,115,22,0.12)', color: '#f97316',
-              border: '1px solid rgba(249,115,22,0.25)',
-            }}>
-              OPT-OUT
-            </span>
-          )}
         </div>
       </div>
 

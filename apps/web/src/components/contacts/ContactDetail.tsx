@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { InteractionTimeline } from '@/components/interactions/InteractionTimeline'
 import { AddInteractionForm } from '@/components/interactions/AddInteractionForm'
 import { QuickSendButton } from '@/components/templates/QuickSendButton'
+import { SendPortalLinkButton } from '@/components/portal/SendPortalLinkButton'
 import type { Tables } from '@/types/database'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +24,13 @@ function initials(c: Contact) {
   return `${c.first_name[0]}${c.last_name?.[0] ?? ''}`.toUpperCase()
 }
 
-export function ContactDetail({ contact, interactions }: { contact: Contact; interactions: Interaction[] }) {
+export function ContactDetail({ contact, interactions, tenantId, tenantSlug, businessName }: {
+  contact: Contact
+  interactions: Interaction[]
+  tenantId: string
+  tenantSlug: string
+  businessName: string
+}) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -95,9 +102,16 @@ export function ContactDetail({ contact, interactions }: { contact: Contact; int
         )}
 
         {/* Quick-send row */}
-        <div className="mt-4 pt-4 border-t border-[hsl(var(--border))] flex gap-2">
+        <div className="mt-4 pt-4 border-t border-[hsl(var(--border))] flex gap-2 flex-wrap">
           <QuickSendButton contact={contact} channel="email" />
           <QuickSendButton contact={contact} channel="sms" />
+          <SendPortalLinkButton
+            contactId={contact.id}
+            tenantId={tenantId}
+            tenantSlug={tenantSlug}
+            businessName={businessName}
+            hasEmail={!!contact.email}
+          />
         </div>
       </div>
 

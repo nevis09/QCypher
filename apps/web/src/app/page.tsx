@@ -288,6 +288,7 @@ export default function HomePage() {
           </div>
           <div className="nav-cta">
             <Link href="/about" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>About</Link>
+            <Link href="/pricing" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Pricing</Link>
             <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
             <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Free Quote"}' className="btn btn-primary btn-sm nav-quote-btn">Free quote</button>
           </div>
@@ -301,7 +302,7 @@ export default function HomePage() {
           <p className="hero-lead">We build a professional website for your business and handle all the setup with you personally. Then we manage everything online while you run the business.</p>
           <p className="hero-lead" style={{ marginBottom: '20px', fontSize: '15px' }}>You get a real person from day one. Monthly reports explained. No robots, no outsourcing.</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
-            <a href="#packages" className="btn btn-primary">See packages & pricing →</a>
+            <Link href="/pricing" className="btn btn-primary">See packages & pricing →</Link>
             <a href="#contact" className="btn btn-ghost">Get a free quote</a>
           </div>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
@@ -407,126 +408,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PACKAGES */}
-      <section id="packages" style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)' }}>
-        <div className="wrap">
-          <div className="section-head center">
-            <span className="eyebrow">Packages & Pricing</span>
-            <h2>Everything included. Pick your pace.</h2>
-            <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything starts with hands-on setup + a 90-day check-in. CRM included free with every monthly plan.</p>
-            <p style={{ marginTop: '12px', fontSize: '14px', color: '#5b6072' }}>✓ Customer Management Tool included free with every monthly plan — no hidden fees, no per-user charges</p>
-          </div>
-
-          <div className="pkg-grid">
-
-            {/* Starter */}
-            <div className="pkg-card">
-              <span className="pkg-badge-spacer" />
-              <div className="pkg-for">Getting started with protection</div>
-              <div className="pkg-name">Starter</div>
-              <p className="pkg-tagline">Built with hands-on setup. We walk you through the first week.</p>
-              <div className="pkg-price">
-                <span className="amt">$1,250</span><span className="freq"> one-time</span>
-                <span className="mo">+ $49/mo</span>
-              </div>
-              <details className="pkg-details" open>
-                <summary>See what&apos;s included</summary>
-                <div>
-                  <ul className="pkg-list">
-                    <li><span className="chk">✓</span><span><strong>Website</strong> <em>(a fast, mobile-friendly site built to bring in new customers)</em></span></li>
-                    <li><span className="chk">✓</span><span><strong>Get Set Up Online</strong> <em>(Google Business Profile, social pages, and business email — all in one pass)</em></span></li>
-                    <li><span className="chk">✓</span><span><strong>Security &amp; Backup</strong> <em>(daily backups and security monitoring to keep your site safe)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
-                  </ul>
-                </div>
-              </details>
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Starter"}' className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
-              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
-            </div>
-
-            {/* Growth */}
-            <div className="pkg-card pop">
-              <div className="pkg-badge">Most popular</div>
-              <div className="pkg-for">Ready for more customers</div>
-              <div className="pkg-name">Growth</div>
-              <p className="pkg-tagline">More bookings, automated reviews, monthly reports explained by a real person.</p>
-              <div className="pkg-price">
-                <span className="amt">$1,250</span><span className="freq"> one-time</span>
-                <span className="mo">+ $99/mo</span>
-              </div>
-              <details className="pkg-details" open>
-                <summary>See what&apos;s included</summary>
-                <div>
-                  <div className="pkg-inherit">Everything in Starter, plus:</div>
-                  <ul className="pkg-list">
-                    <li><span className="chk">✓</span><span><strong>Fast Customer Online Scheduler</strong> <em>(customers book appointments and fill out any needed forms, automatically)</em></span></li>
-                    <li><span className="chk">✓</span><span><strong>Generate More Online Reviews</strong> <em>(ongoing Google ranking work plus automatic requests for happy-customer reviews)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
-                  </ul>
-                </div>
-              </details>
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Growth"}' className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get started</button>
-              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
-            </div>
-
-            {/* All-In */}
-            <div className="pkg-card">
-              <span className="pkg-badge-spacer" />
-              <div className="pkg-for">Fully hands-off growth</div>
-              <div className="pkg-name">All-In</div>
-              <p className="pkg-tagline">Everything managed. Monthly check-ins, reports explained, questions answered.</p>
-              <div className="pkg-price">
-                <span className="amt">$1,250</span><span className="freq"> one-time</span>
-                <span className="mo">+ $149/mo</span>
-              </div>
-              <details className="pkg-details" open>
-                <summary>See what&apos;s included</summary>
-                <div>
-                  <div className="pkg-inherit">Everything in Growth, plus:</div>
-                  <ul className="pkg-list">
-                    <li><span className="chk">✓</span><span><strong>Sell Online</strong> <em>(a simple online store with secure payments built in)</em></span></li>
-                    <li><span className="chk">✓</span><span><strong>Customer Engagement</strong> <em>(email newsletters, text blasts, and 24/7 website chat — all your outreach in one place)</em></span></li>
-                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
-                  </ul>
-                </div>
-              </details>
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: All-In"}' className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
-              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
-            </div>
-
-            {/* Online Launch — full width on desktop, horizontal layout */}
-            <div className="pkg-card pkg-card-launch" style={{ borderColor: 'rgba(16,185,129,0.30)', background: 'linear-gradient(135deg,#f0fdf8 0%,#fff 70%)' }}>
-              <div className="launch-body">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#059669' }}>One-time only · No monthly fee</span>
-                  <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(5,150,105,0.4)', display: 'inline-block' }} />
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#5b6072' }}>Not ready for a monthly plan</span>
-                </div>
-                <div className="pkg-name">Online Launch</div>
-                <p className="pkg-tagline">Get your business online — no ongoing costs, no contracts, no surprises.</p>
-                <div className="pkg-price" style={{ borderBottom: 'none', marginBottom: '8px', paddingBottom: '0' }}>
-                  <span className="amt">$900</span><span className="freq"> one-time</span>
-                  <span className="no-mo">Pay once. Done. No monthly fee — ever.</span>
-                </div>
-                <details className="pkg-details" open>
-                  <summary>See what&apos;s included</summary>
-                  <div>
-                    <ul className="pkg-list">
-                      <li><span className="chk">✓</span><span><strong>Website</strong> <em>(a fast, mobile-friendly site built to bring in new customers)</em></span></li>
-                      <li><span className="chk">✓</span><span><strong>Get Set Up Online</strong> <em>(Google Business Profile, social pages, and business email — all in one pass)</em></span></li>
-                    </ul>
-                  </div>
-                </details>
-              </div>
-              <div className="launch-cta">
-                <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Online Launch"}' className="btn" style={{ background: '#059669', color: '#fff', border: 'none', borderRadius: '12px', padding: '0 32px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', minHeight: '48px', width: '100%' }}>Get started</button>
-                <p className="pkg-switch" style={{ marginTop: '4px' }}>No commitment — upgrade to a monthly plan anytime.</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* MONTHLY CHECK-IN */}
       <section style={{ background: '#fff', padding: '72px 0', borderTop: '1px solid rgba(31,60,136,.08)' }}>
@@ -568,62 +449,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* COMPARISON TABLE */}
-      <section style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
-        <div className="wrap">
-          <div className="section-head center">
-            <h2>QCypher vs. Building It Yourself</h2>
-          </div>
-          <div style={{ marginTop: '48px', overflowX: 'auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(26,48,112,0.08)' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '16px' }}>
-              <thead>
-                <tr style={{ background: 'linear-gradient(135deg, rgba(26,48,112,0.06) 0%, rgba(74,157,181,0.04) 100%)' }}>
-                  <th style={{ textAlign: 'left', padding: '20px', fontWeight: 700, color: '#1a3070' }}>Feature</th>
-                  <th style={{ textAlign: 'center', padding: '20px', fontWeight: 700, color: '#1a3070' }}>DIY</th>
-                  <th style={{ textAlign: 'center', padding: '20px', fontWeight: 700, color: '#1a3070' }}>QCypher</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Website Builder</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$14/mo</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>CRM</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$39/mo</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Free</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Reviews/Automation</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$500/mo</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Support</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>Email tickets</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Felix or Thomas</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Setup help</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>None</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Day 1 call</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Monthly check-in</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>None</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
-                </tr>
-                <tr style={{ background: 'rgba(0,168,122,0.05)' }}>
-                  <td style={{ padding: '20px', color: '#1a3070', fontWeight: 700 }}>Total Year 1</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af', fontWeight: 700 }}>$6,500+</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>starting $1,788</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
 
       {/* HOW WE WORK */}
       <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
@@ -762,7 +587,7 @@ export default function HomePage() {
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>
-              <a href="#packages">Packages</a>
+              <Link href="/pricing">Packages & Pricing</Link>
               <a href="#crm">Customer Management</a>
               <Link href="/about">About Us</Link>
               <Link href="/auth/login">Client Login</Link>

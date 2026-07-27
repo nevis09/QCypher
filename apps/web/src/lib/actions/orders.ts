@@ -122,6 +122,9 @@ export async function addLineItem(input: {
   const tenant_id = user.app_metadata?.tenant_id
   if (!tenant_id) throw new Error('No tenant')
 
+  const { data: order } = await supabase.from('orders').select('signed_at').eq('id', input.order_id).single()
+  if (order?.signed_at) throw new Error('Quote is signed and locked — line items cannot be modified')
+
   const { error } = await supabase
     .from('order_line_items')
     .insert({ ...input, tenant_id })
@@ -131,6 +134,9 @@ export async function addLineItem(input: {
 
 export async function removeLineItem(id: string, order_id: string) {
   const supabase = await createClient()
+  const { data: order } = await supabase.from('orders').select('signed_at').eq('id', order_id).single()
+  if (order?.signed_at) throw new Error('Quote is signed and locked — line items cannot be modified')
+
   const { error } = await supabase.from('order_line_items').delete().eq('id', id)
   if (error) throw error
   revalidatePath(`/orders/${order_id}`)
