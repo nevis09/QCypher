@@ -468,24 +468,16 @@ export default function HomePage() {
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Month 1: Check-in call. Review your numbers.
                 </li>
-                <li style={{ fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: '16px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Ongoing: Monthly reports explained by a real person.
                 </li>
+                <li style={{ fontSize: '15px', lineHeight: 1.6, color: '#1a3070', fontWeight: 700, padding: '12px', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', borderRadius: '8px', borderLeft: '3px solid #00a87a' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+                  Not seeing results? We refund your setup fee.
+                </li>
               </ul>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 30-DAY GUARANTEE */}
-      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '40px 0' }}>
-        <div className="wrap">
-          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', border: '2px solid rgba(0,168,122,0.3)', borderRadius: '16px', padding: '32px 32px' }}>
-            <p style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', margin: 0 }}>
-              <span style={{ marginRight: '10px' }}>✓</span>
-              Not seeing results? We refund your setup fee.
-            </p>
           </div>
         </div>
       </section>
