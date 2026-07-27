@@ -580,7 +580,7 @@ export default function HomePage() {
                 <tr style={{ background: 'rgba(0,168,122,0.05)' }}>
                   <td style={{ padding: '20px', color: '#1a3070', fontWeight: 700 }}>Total Year 1</td>
                   <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af', fontWeight: 700 }}>$6,500+</td>
-                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>$1,250 + $588–$1,788</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>starting $1,788</td>
                 </tr>
               </tbody>
             </table>
