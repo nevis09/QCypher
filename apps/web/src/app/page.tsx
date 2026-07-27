@@ -454,7 +454,11 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-head center">
             <h2>How We Work</h2>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '16px', maxWidth: '600px', margin: '20px auto 0' }}>
+            <p style={{ fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500, margin: '20px auto 0', maxWidth: '600px' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+              Not seeing results? We refund your setup fee.
+            </p>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '16px', maxWidth: '600px', margin: '12px auto 0' }}>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
@@ -468,13 +472,9 @@ export default function HomePage() {
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Month 1: Check-in call. Review your numbers.
                 </li>
-                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: 0, fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Ongoing: Monthly reports explained by a real person.
-                </li>
-                <li style={{ marginBottom: 0, fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500, background: 'transparent', padding: 0 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Not seeing results? We refund your setup fee.
                 </li>
               </ul>
             </div>
