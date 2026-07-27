@@ -254,7 +254,7 @@ export default function HomePage() {
         }
 
         /* FOOTER */
-        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #f0f3ff; }
+        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #fff; }
         .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
         @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; } }
         .foot-brand p { font-size: 15px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
@@ -356,7 +356,7 @@ export default function HomePage() {
       </div>
 
       {/* WHAT YOU'RE REALLY GETTING */}
-      <section style={{ background: 'linear-gradient(135deg, #f0f3ff 0%, #eef2ff 100%)', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
+      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2 style={{ fontSize: '36px', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>What You're Really Getting</h2>
@@ -450,7 +450,7 @@ export default function HomePage() {
 
 
       {/* HOW WE WORK */}
-      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '56px 0' }}>
+      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '56px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2>How We Work</h2>
