@@ -432,8 +432,9 @@ export default function HomePage() {
               <details className="pkg-details" open>
                 <summary>See what&apos;s included</summary>
                 <div>
-                  <div className="pkg-inherit">Everything in Online Launch, plus:</div>
                   <ul className="pkg-list">
+                    <li><span className="chk">✓</span><span><strong>Website</strong> <em>(a fast, mobile-friendly site built to bring in new customers)</em></span></li>
+                    <li><span className="chk">✓</span><span><strong>Get Set Up Online</strong> <em>(Google Business Profile, social pages, and business email — all in one pass)</em></span></li>
                     <li><span className="chk">✓</span><span><strong>Security &amp; Backup</strong> <em>(daily backups and security monitoring to keep your site safe)</em></span></li>
                     <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
                   </ul>
