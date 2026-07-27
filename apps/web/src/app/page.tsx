@@ -393,13 +393,6 @@ export default function HomePage() {
               <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Ongoing</h3>
               <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Monthly reports explained by a real person.</p>
             </div>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '14px' }}>✓</span>
-              </div>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Guarantee</h3>
-              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Not seeing results? We refund your setup fee.</p>
-            </div>
           </div>
         </div>
       </section>
@@ -438,7 +431,6 @@ export default function HomePage() {
                   </ul>
                 </div>
               </details>
-              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button onClick={() => setShowContactModal(true)} className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
@@ -460,7 +452,6 @@ export default function HomePage() {
                   </ul>
                 </div>
               </details>
-              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button onClick={() => setShowContactModal(true)} className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
@@ -482,11 +473,25 @@ export default function HomePage() {
                   </ul>
                 </div>
               </details>
-              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
               <button onClick={() => setShowContactModal(true)} className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* GUARANTEE */}
+      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '48px 0' }}>
+        <div className="wrap">
+          <div style={{ background: 'linear-gradient(135deg, rgba(42,82,160,0.06) 0%, rgba(74,157,181,0.06) 100%)', borderRadius: '20px', padding: '40px', textAlign: 'center', border: '1px solid rgba(74,157,181,0.15)', boxShadow: '0 2px 8px rgba(42,82,160,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#00a87a"/>
+              </svg>
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#171a2b', marginBottom: '8px' }}>We stand behind our work</h3>
+            <p style={{ fontSize: '15px', color: '#5b6072', lineHeight: 1.6, margin: 0, maxWidth: '560px', marginLeft: 'auto', marginRight: 'auto' }}>All packages come with hands-on setup, dedicated support, and the confidence that we're invested in your success. Not seeing results? Let's talk.</p>
           </div>
         </div>
       </section>
