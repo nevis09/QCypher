@@ -413,7 +413,7 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-head center">
             <h2>Monthly Check-In — We Explain the Numbers</h2>
-            <p>Every month, you get a report showing what's happening with your bookings, reviews, and customer engagement. And we'll walk you through it — no jargon, just what it means for your business.</p>
+            <p>Every month, you get a report tailored to your specific business — showing bookings, reviews, customer engagement, and what's working for you. And we'll walk you through it — no jargon, just what it means for your business.</p>
             <button onClick={() => setShowReportModal(true)} className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
           </div>
         </div>
