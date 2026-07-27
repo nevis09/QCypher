@@ -412,7 +412,7 @@ export default function HomePage() {
             <p style={{ fontSize: '24px', fontWeight: 900, lineHeight: 1.4, margin: 0, position: 'relative', zIndex: 1, letterSpacing: '-0.5px', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>Custom packages built for your business. Let's find what works for your budget.</p>
           </div>
 
-          <p style={{ fontSize: '13px', color: '#5b6072', textAlign: 'center', marginBottom: '28px', fontWeight: 600 }}>Switch tiers anytime — no penalty.</p>
+          <p style={{ fontSize: '16px', color: '#5b6072', textAlign: 'center', marginBottom: '28px', fontWeight: 600 }}>Switch tiers anytime — no penalty.</p>
 
           <div className="pkg-grid">
 
