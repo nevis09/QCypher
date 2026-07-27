@@ -472,7 +472,7 @@ export default function HomePage() {
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Ongoing: Monthly reports explained by a real person.
                 </li>
-                <li style={{ fontSize: '15px', lineHeight: 1.6, color: '#1a3070', fontWeight: 700, padding: '10px', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', borderRadius: '8px', borderLeft: '3px solid #00a87a' }}>
+                <li style={{ marginBottom: 0, fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 600 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Not seeing results? We refund your setup fee.
                 </li>
