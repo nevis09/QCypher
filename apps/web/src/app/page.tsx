@@ -254,7 +254,7 @@ export default function HomePage() {
         }
 
         /* FOOTER */
-        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #fff; }
+        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #f0f3ff; }
         .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
         @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; } }
         .foot-brand p { font-size: 15px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
