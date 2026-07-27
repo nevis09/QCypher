@@ -302,8 +302,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="wrap">
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
-          <p className="hero-lead">We build a professional website for your business and handle all the setup with you personally. Then we manage everything online while you run the business.</p>
-          <p className="hero-lead" style={{ marginBottom: '20px', fontSize: '15px' }}>You get a real person from day one. Monthly reports explained. No robots, no outsourcing.</p>
+          <p className="hero-lead">We build your website, handle setup with you personally, and manage everything ongoing. Real person from day one — monthly reports explained</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
             <Link href="/pricing" className="btn btn-primary">See packages</Link>
             <button onClick={() => setShowContactModal(true)} className="btn btn-ghost">Get a free quote</button>
