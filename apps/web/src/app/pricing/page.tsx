@@ -7,6 +7,11 @@ import { useState } from 'react'
 
 export default function PricingPage() {
   const [showReportModal, setShowReportModal] = useState(false)
+  const [showContactModal, setShowContactModal] = useState(false)
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({ businessName: '', phone: '', email: '' })
+  const [formSubmitting, setFormSubmitting] = useState(false)
+  const [formSuccess, setFormSuccess] = useState(false)
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', background: '#f8f9fc', color: '#171a2b', lineHeight: 1.5 }}>
@@ -310,7 +315,7 @@ export default function PricingPage() {
                 </div>
               </details>
               <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Starter"}' className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get started</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
 
@@ -336,7 +341,7 @@ export default function PricingPage() {
                 </div>
               </details>
               <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Growth"}' className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get started</button>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get started</button>
               <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
             </div>
 
@@ -392,7 +397,7 @@ export default function PricingPage() {
               </div>
               <div className="launch-cta">
                 <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
-                <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Online Launch"}' className="btn" style={{ background: '#059669', color: '#fff', border: 'none', borderRadius: '12px', padding: '0 32px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', minHeight: '48px', width: '100%' }}>Get started</button>
+                <button onClick={() => setShowContactModal(true)} className="btn" style={{ background: '#059669', color: '#fff', border: 'none', borderRadius: '12px', padding: '0 32px', fontSize: '15px', fontWeight: 700, cursor: 'pointer', minHeight: '48px', width: '100%' }}>Get started</button>
                 <p className="pkg-switch" style={{ marginTop: '4px' }}>No commitment — upgrade to a monthly plan anytime.</p>
               </div>
             </div>
@@ -565,6 +570,236 @@ export default function PricingPage() {
           </div>
         </div>
       </footer>
+
+      {/* CONTACT METHOD MODAL */}
+      {showContactModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '40px', maxWidth: '500px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#1a3070', marginBottom: '16px', textAlign: 'center' }}>How would you like to get started?</h2>
+            <p style={{ fontSize: '15px', color: '#5b6072', textAlign: 'center', marginBottom: '32px' }}>Choose your preferred way to connect with us.</p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+              <button
+                onClick={() => {
+                  setShowContactModal(false)
+                  window.Cal?.ns?.qcypher?.('pop', { date: new Date() })
+                }}
+                style={{
+                  padding: '20px',
+                  background: 'linear-gradient(135deg, #2a52a0, #4a9db5)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                📅 Schedule a Meeting
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowForm(true)
+                  setShowContactModal(false)
+                }}
+                style={{
+                  padding: '20px',
+                  background: '#f0f3ff',
+                  color: '#1a3070',
+                  border: '2px solid #1a3070',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                📝 Fill Out Form
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowContactModal(false)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                color: '#5b6072',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ONBOARDING FORM MODAL */}
+      {showForm && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 101 }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '40px', maxWidth: '450px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#1a3070', marginBottom: '8px' }}>Let's get you started</h2>
+            <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>Quick info so we can reach out and discuss your business needs.</p>
+
+            {formSuccess ? (
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>✓</div>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', marginBottom: '8px' }}>Thanks!</h3>
+                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>We'll be in touch shortly at the email and phone number you provided.</p>
+                <button
+                  onClick={() => {
+                    setShowForm(false)
+                    setFormSuccess(false)
+                    setFormData({ businessName: '', phone: '', email: '' })
+                  }}
+                  style={{
+                    padding: '12px 24px',
+                    background: '#1a3070',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  setFormSubmitting(true)
+                  try {
+                    const response = await fetch('https://formspree.io/f/xyzabc', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        businessName: formData.businessName,
+                        phone: formData.phone,
+                        email: formData.email,
+                        _subject: 'New Lead: ' + formData.businessName,
+                      }),
+                    })
+                    if (response.ok) {
+                      setFormSuccess(true)
+                    }
+                  } catch (error) {
+                    console.error('Form submission error:', error)
+                  } finally {
+                    setFormSubmitting(false)
+                  }
+                }}
+              >
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '6px' }}>Business Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.businessName}
+                    onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid rgba(26,48,112,0.2)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                    }}
+                    placeholder="Your business name"
+                  />
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '6px' }}>Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid rgba(26,48,112,0.2)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                    }}
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '6px' }}>Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid rgba(26,48,112,0.2)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                    }}
+                    placeholder="you@company.com"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={formSubmitting}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: formSubmitting ? '#ccc' : 'linear-gradient(135deg, #2a52a0, #4a9db5)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    cursor: formSubmitting ? 'not-allowed' : 'pointer',
+                    marginBottom: '12px',
+                  }}
+                >
+                  {formSubmitting ? 'Submitting...' : 'Send Information'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'transparent',
+                    color: '#5b6072',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Cal.com popup embed — powers all "Get started" buttons */}
       <script
