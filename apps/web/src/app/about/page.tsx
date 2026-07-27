@@ -1,11 +1,10 @@
-import Link from 'next/link'
+'use client'
 
-export const metadata = {
-  title: 'About Us — QCypher Technologies',
-  description: 'Meet the team behind QCypher Technologies. We build simple, powerful tech tools for local businesses.',
-}
+import Link from 'next/link'
+import { useState } from 'react'
 
 export default function AboutPage() {
+  const [showContactModal, setShowContactModal] = useState(false)
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', background: '#f8f9fc', color: '#171a2b', lineHeight: 1.5 }}>
       <style>{`
@@ -411,7 +410,7 @@ export default function AboutPage() {
             <p>Get in touch with our team. No commitment, no pressure.</p>
             <div className="cta-actions">
               <Link href="/#packages" className="btn btn-white">See packages</Link>
-              <button onClick={() => { window.location.href = '/#contact'; }} className="btn btn-outline-white">Get a free quote</button>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-outline-white">Get a free quote</button>
             </div>
           </div>
         </div>
@@ -448,6 +447,75 @@ export default function AboutPage() {
           </div>
         </div>
       </footer>
+      {/* CONTACT METHOD MODAL */}
+      {showContactModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '40px', maxWidth: '500px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#1a3070', marginBottom: '16px', textAlign: 'center' }}>How would you like to get started?</h2>
+            <p style={{ fontSize: '15px', color: '#5b6072', textAlign: 'center', marginBottom: '32px' }}>Choose your preferred way to connect with us.</p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+              <button
+                onClick={() => {
+                  setShowContactModal(false)
+                  window.Cal?.ns?.qcypher?.('pop', { date: new Date() })
+                }}
+                style={{
+                  padding: '20px',
+                  background: 'linear-gradient(135deg, #2a52a0, #4a9db5)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                📅 Schedule a Meeting
+              </button>
+
+              <button
+                style={{
+                  padding: '20px',
+                  background: '#f0f3ff',
+                  color: '#1a3070',
+                  border: '2px solid #1a3070',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                📝 Fill Out Form
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowContactModal(false)}
+              style={{
+                width: '100%',
+                padding: '12px',
+                background: 'transparent',
+                color: '#5b6072',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '14px',
+                cursor: 'pointer',
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Cal.com popup embed */}
       <script
         dangerouslySetInnerHTML={{ __html: `
