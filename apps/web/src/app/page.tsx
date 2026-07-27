@@ -454,25 +454,25 @@ export default function HomePage() {
         <div className="wrap">
           <div className="section-head center">
             <h2>How We Work</h2>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', maxWidth: '600px', margin: '20px auto 0' }}>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '16px', maxWidth: '600px', margin: '20px auto 0' }}>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: '12px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Day 1: Setup call. Site built, Google claimed, email live.
                 </li>
-                <li style={{ marginBottom: '12px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Week 1: Site goes live. Training included.
                 </li>
-                <li style={{ marginBottom: '12px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Month 1: Check-in call. Review your numbers.
                 </li>
-                <li style={{ marginBottom: '16px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
+                <li style={{ marginBottom: '10px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Ongoing: Monthly reports explained by a real person.
                 </li>
-                <li style={{ fontSize: '15px', lineHeight: 1.6, color: '#1a3070', fontWeight: 700, padding: '12px', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', borderRadius: '8px', borderLeft: '3px solid #00a87a' }}>
+                <li style={{ fontSize: '15px', lineHeight: 1.6, color: '#1a3070', fontWeight: 700, padding: '10px', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', borderRadius: '8px', borderLeft: '3px solid #00a87a' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
                   Not seeing results? We refund your setup fee.
                 </li>
