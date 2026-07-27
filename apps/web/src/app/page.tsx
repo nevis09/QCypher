@@ -356,17 +356,53 @@ export default function HomePage() {
       </div>
 
       {/* WHAT YOU'RE REALLY GETTING */}
-      <section style={{ background: '#f0f3ff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+      <section style={{ background: 'linear-gradient(135deg, #f0f3ff 0%, #eef2ff 100%)', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
         <div className="wrap">
           <div className="section-head center">
-            <h2>What You're Really Getting</h2>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '24px', fontSize: '16px', color: '#5b6072', lineHeight: 1.8, maxWidth: '600px', margin: '24px auto 0' }}>
-              <li style={{ marginBottom: '16px' }}>• Custom website build ($1,500–$3,000 standard)</li>
-              <li style={{ marginBottom: '16px' }}>• Google Business Profile setup & optimization ($500–$800)</li>
-              <li style={{ marginBottom: '16px' }}>• Domain, email, security, CRM ($1,000+)</li>
-              <li style={{ marginBottom: '16px' }}>• Hands-on setup day with Felix or Thomas</li>
-              <li>• All bundled: $1,250 setup + $49–$149/mo</li>
-            </ul>
+            <h2 style={{ fontSize: '36px', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>What You're Really Getting</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', maxWidth: '700px', margin: '0 auto' }}>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Custom website build</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,500–$3,000 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Google Business Profile setup & optimization</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$500–$800 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Domain, email, security, CRM</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,000+ value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Hands-on setup day with Felix or Thomas</div>
+                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$800 value</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ background: 'linear-gradient(135deg, #00a87a 0%, #059669 100%)', borderRadius: '16px', padding: '24px', textAlign: 'center', color: '#fff', marginTop: '8px', boxShadow: '0 4px 16px rgba(0,168,122,0.2)' }}>
+                <div style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9, marginBottom: '6px' }}>Total value: $3,800–$5,600</div>
+                <div style={{ fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>All bundled: $1,250 + $49–$149/mo</div>
+                <div style={{ fontSize: '13px', opacity: 0.85 }}>That's 4–5x the value.</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
