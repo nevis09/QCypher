@@ -355,6 +355,22 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* WHAT YOU'RE REALLY GETTING */}
+      <section style={{ background: '#f0f3ff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+        <div className="wrap">
+          <div className="section-head center">
+            <h2>What You're Really Getting</h2>
+            <ul style={{ listStyle: 'none', padding: 0, marginTop: '24px', fontSize: '16px', color: '#5b6072', lineHeight: 1.8, maxWidth: '600px', margin: '24px auto 0' }}>
+              <li style={{ marginBottom: '16px' }}>• Custom website build ($1,500–$3,000 standard)</li>
+              <li style={{ marginBottom: '16px' }}>• Google Business Profile setup & optimization ($500–$800)</li>
+              <li style={{ marginBottom: '16px' }}>• Domain, email, security, CRM ($1,000+)</li>
+              <li style={{ marginBottom: '16px' }}>• Hands-on setup day with Felix or Thomas</li>
+              <li>• All bundled: $1,250 setup + $49–$149/mo</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* PACKAGES */}
       <section id="packages" style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)' }}>
         <div className="wrap">
@@ -452,7 +468,7 @@ export default function HomePage() {
                 <div className="pkg-name">Online Launch</div>
                 <p className="pkg-tagline">Get your business online — no ongoing costs, no contracts, no surprises.</p>
                 <div className="pkg-price" style={{ borderBottom: 'none', marginBottom: '8px', paddingBottom: '0' }}>
-                  <span className="amt">$750</span><span className="freq"> one-time</span>
+                  <span className="amt">$900</span><span className="freq"> one-time</span>
                   <span className="no-mo">Pay once. Done. No monthly fee — ever.</span>
                 </div>
                 <details className="pkg-details" open>
@@ -495,7 +511,7 @@ export default function HomePage() {
           </div>
           <div className="crm-card">
             <div>
-              <p className="crm-lead">Built In-House CRM — Included Free with Every Monthly Plan. We'll walk you through it, and questions get answered by a real person.</p>
+              <p className="crm-lead">Built In-House CRM — $500 value, included free with every monthly plan. We'll walk you through it, and questions get answered by a real person.</p>
               <div className="crm-price-line">$500 one-time <span>+ $19/mo</span></div>
               <ul className="crm-features">
                 <li><span className="chk">✓</span>Your full customer contact list — always organized</li>
@@ -515,12 +531,83 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* COMPARISON TABLE */}
+      <section style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+        <div className="wrap">
+          <div className="section-head center">
+            <h2>QCypher vs. Building It Yourself</h2>
+          </div>
+          <div style={{ marginTop: '40px', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '15px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #1a3070' }}>
+                  <th style={{ textAlign: 'left', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>Feature</th>
+                  <th style={{ textAlign: 'center', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>DIY</th>
+                  <th style={{ textAlign: 'center', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>QCypher</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Website Builder</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$14/mo</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>CRM</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$39/mo</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Free</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Reviews/Automation</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$500/mo</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Support</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>Email tickets</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Felix or Thomas</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Setup help</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>None</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Day 1 call</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Monthly check-in</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>None</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '14px 16px', color: '#5b6072', fontWeight: 600 }}>Total Year 1</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072', fontWeight: 600 }}>$6,500+</td>
+                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 700 }}>$1,250 + $588–$1,788</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* HOW WE WORK */}
       <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2>How We Work</h2>
-            <p style={{ maxWidth: '680px', fontSize: '16px', lineHeight: 1.7, color: '#5b6072', marginTop: '24px' }}>You get a dedicated setup day — we build your site, set up your bookings, handle your Google Business Profile, and walk through everything. Then monthly check-ins to make sure it's working. Questions get answered by Felix or Thomas directly. No ticket queue, no bots.</p>
+            <ul style={{ listStyle: 'none', padding: 0, marginTop: '32px', fontSize: '16px', color: '#5b6072', lineHeight: 1.8, maxWidth: '600px', margin: '32px auto 0' }}>
+              <li style={{ marginBottom: '20px' }}>• Day 1: Setup call. Site built, Google claimed, email live.</li>
+              <li style={{ marginBottom: '20px' }}>• Week 1: Site goes live. Training included.</li>
+              <li style={{ marginBottom: '20px' }}>• Month 1: Check-in call. Review your numbers.</li>
+              <li>• Ongoing: Monthly reports explained by a real person.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* 30-DAY GUARANTEE */}
+      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '48px 0' }}>
+        <div className="wrap">
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '18px', fontWeight: 600, color: '#171a2b', margin: 0 }}>Not seeing results? We refund your setup fee.</p>
           </div>
         </div>
       </section>
@@ -546,7 +633,7 @@ export default function HomePage() {
               </div>
               <p style={{ fontSize: '15px', color: '#171a2b', lineHeight: 1.7, marginBottom: '20px' }}>
                 &ldquo;Before QCypher, I was keeping track of everything in my head and a bunch of sticky notes.
-                Now I actually know which customers I need to follow up with. It&apos;s honestly one of the best things I&apos;ve done for my business.&rdquo;
+                Now I actually know which customers I need to follow up with. Got 8 new bookings in 30 days. It&apos;s honestly one of the best things I&apos;ve done for my business.&rdquo;
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0, background: 'rgba(42,82,160,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 700, color: '#2a52a0' }}>MR</div>
