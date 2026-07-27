@@ -293,7 +293,6 @@ export default function HomePage() {
           </div>
           <div className="nav-cta">
             <Link href="/about" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>About</Link>
-            <Link href="/pricing" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Pricing</Link>
             <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
           </div>
         </div>
@@ -306,7 +305,7 @@ export default function HomePage() {
           <p className="hero-lead">We build a professional website for your business and handle all the setup with you personally. Then we manage everything online while you run the business.</p>
           <p className="hero-lead" style={{ marginBottom: '20px', fontSize: '15px' }}>You get a real person from day one. Monthly reports explained. No robots, no outsourcing.</p>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '28px', alignItems: 'center' }}>
-            <Link href="/pricing" className="btn btn-primary">See packages & pricing →</Link>
+            <Link href="/pricing" className="btn btn-primary">See packages</Link>
             <button onClick={() => setShowContactModal(true)} className="btn btn-ghost">Get a free quote</button>
           </div>
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
@@ -360,66 +359,135 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* WHAT YOU'RE REALLY GETTING */}
-      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
+      {/* HOW WE WORK */}
+      <section style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '56px 0' }}>
         <div className="wrap">
           <div className="section-head center">
-            <h2 style={{ fontSize: '36px', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>What You're Really Getting</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', maxWidth: '700px', margin: '0 auto' }}>
-              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Custom website build</div>
-                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,500–$3,000 value</div>
-                  </div>
-                </div>
+            <h2>How We Work</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', maxWidth: '900px', margin: '32px auto 0' }}>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>1</span>
               </div>
-              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Google Business Profile setup & optimization</div>
-                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$500–$800 value</div>
-                  </div>
-                </div>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Day 1</h3>
+              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Setup call. Site built, Google claimed, email live.</p>
+            </div>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>2</span>
               </div>
-              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Domain, email, security, CRM</div>
-                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$1,000+ value</div>
-                  </div>
-                </div>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Week 1</h3>
+              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Site goes live. Training included.</p>
+            </div>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>3</span>
               </div>
-              <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '24px', textAlign: 'left', boxShadow: '0 2px 8px rgba(26,48,112,0.06)' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <span style={{ fontSize: '18px', color: '#00a87a', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#171a2b', marginBottom: '4px' }}>Hands-on setup day with Felix or Thomas</div>
-                    <div style={{ fontSize: '15px', color: '#00a87a', fontWeight: 700 }}>$800 value</div>
-                  </div>
-                </div>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Month 1</h3>
+              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Check-in call. Review your numbers.</p>
+            </div>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>4</span>
               </div>
-              <div style={{ background: 'linear-gradient(135deg, #00a87a 0%, #059669 100%)', borderRadius: '16px', padding: '24px', textAlign: 'center', color: '#fff', marginTop: '8px', boxShadow: '0 4px 16px rgba(0,168,122,0.2)' }}>
-                <div style={{ fontSize: '14px', fontWeight: 600, opacity: 0.9, marginBottom: '6px' }}>Total value: $3,800–$5,600</div>
-                <div style={{ fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>All bundled: $1,250 + $49–$149/mo</div>
-                <div style={{ fontSize: '13px', opacity: 0.85 }}>That's 4–5x the value.</div>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Ongoing</h3>
+              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Monthly reports explained by a real person.</p>
+            </div>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
+                <span style={{ color: '#fff', fontWeight: 800, fontSize: '14px' }}>✓</span>
               </div>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Guarantee</h3>
+              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Not seeing results? We refund your setup fee.</p>
             </div>
           </div>
         </div>
       </section>
 
-
-      {/* MONTHLY CHECK-IN */}
-      <section style={{ background: '#fff', padding: '72px 0', borderTop: '1px solid rgba(31,60,136,.08)' }}>
+      {/* PACKAGES */}
+      <section id="packages" style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)' }}>
         <div className="wrap">
           <div className="section-head center">
-            <h2>Monthly Check-In — We Explain the Numbers</h2>
-            <p>Every month, you get a report tailored to your specific business — showing bookings, reviews, customer engagement, and what's working for you. And we'll walk you through it — no jargon, just what it means for your business.</p>
-            <button onClick={() => setShowReportModal(true)} className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
+            <span className="eyebrow">Packages</span>
+            <h2>Everything included. Pick your pace.</h2>
+            <p style={{ marginTop: '16px', fontSize: '15px', color: 'var(--ink)', fontWeight: 600 }}>Everything starts with hands-on setup + a 90-day check-in. CRM included free with every monthly plan.</p>
+          </div>
+
+          <div style={{ background: 'linear-gradient(135deg, var(--indigo-d) 0%, var(--cyan) 100%)', borderRadius: '16px', padding: '24px 30px', textAlign: 'center', marginBottom: '32px', position: 'relative', overflow: 'hidden', border: '1px solid rgba(74,157,181,0.3)', boxShadow: '0 8px 32px rgba(42,82,160,0.12)' }}>
+            <div style={{ position: 'absolute', top: '-40%', right: '-15%', width: '280px', height: '280px', background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '-20%', left: '-5%', width: '220px', height: '220px', background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <p style={{ fontSize: '24px', fontWeight: 900, lineHeight: 1.4, margin: 0, position: 'relative', zIndex: 1, letterSpacing: '-0.5px', color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>Custom packages built for your business. Let's find what works for your budget.</p>
+          </div>
+
+          <div className="pkg-grid">
+
+            {/* Starter */}
+            <div className="pkg-card">
+              <span className="pkg-badge-spacer" />
+              <div className="pkg-for">Getting started with protection</div>
+              <div className="pkg-name">Starter</div>
+              <p className="pkg-tagline">Built with hands-on setup. We walk you through the first week.</p>
+              <details className="pkg-details" open>
+                <summary>See what&apos;s included</summary>
+                <div>
+                  <ul className="pkg-list">
+                    <li><span className="chk">✓</span><span><strong>Website</strong> <em>(a fast, mobile-friendly site built to bring in new customers)</em></span></li>
+                    <li><span className="chk">✓</span><span><strong>Get Set Up Online</strong> <em>(Google Business Profile, social pages, and business email — all in one pass)</em></span></li>
+                    <li><span className="chk">✓</span><span><strong>Security &amp; Backup</strong> <em>(daily backups and security monitoring to keep your site safe)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
+                  </ul>
+                </div>
+              </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
+              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
+            </div>
+
+            {/* Growth */}
+            <div className="pkg-card pop">
+              <div className="pkg-badge">Most popular</div>
+              <div className="pkg-for">Ready for more customers</div>
+              <div className="pkg-name">Growth</div>
+              <p className="pkg-tagline">More bookings, automated reviews, monthly reports explained by a real person.</p>
+              <details className="pkg-details" open>
+                <summary>See what&apos;s included</summary>
+                <div>
+                  <div className="pkg-inherit">Everything in Starter, plus:</div>
+                  <ul className="pkg-list">
+                    <li><span className="chk">✓</span><span><strong>Fast Customer Online Scheduler</strong> <em>(customers book appointments and fill out any needed forms, automatically)</em></span></li>
+                    <li><span className="chk">✓</span><span><strong>Generate More Online Reviews</strong> <em>(ongoing Google ranking work plus automatic requests for happy-customer reviews)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
+                  </ul>
+                </div>
+              </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-primary btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
+              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
+            </div>
+
+            {/* All-In */}
+            <div className="pkg-card">
+              <span className="pkg-badge-spacer" />
+              <div className="pkg-for">Fully hands-off growth</div>
+              <div className="pkg-name">All-In</div>
+              <p className="pkg-tagline">Everything managed. Monthly check-ins, reports explained, questions answered.</p>
+              <details className="pkg-details" open>
+                <summary>See what&apos;s included</summary>
+                <div>
+                  <div className="pkg-inherit">Everything in Growth, plus:</div>
+                  <ul className="pkg-list">
+                    <li><span className="chk">✓</span><span><strong>Sell Online</strong> <em>(a simple online store with secure payments built in)</em></span></li>
+                    <li><span className="chk">✓</span><span><strong>Customer Engagement</strong> <em>(email newsletters, text blasts, and 24/7 website chat — all your outreach in one place)</em></span></li>
+                    <li><span className="chk crm-chk">✓</span><span><strong>Customer Management Tool</strong> <em>(included free with this plan)</em></span></li>
+                  </ul>
+                </div>
+              </details>
+              <p style={{ fontSize: '13px', color: '#00a87a', fontWeight: 600, marginTop: '16px', paddingBottom: '12px', borderBottom: '1px solid rgba(0,168,122,0.2)' }}>✓ Not seeing results? We refund your setup fee.</p>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-ghost btn-full" style={{ marginTop: '16px' }}>Get a Free Consultation</button>
+              <p className="pkg-switch">Switch tiers anytime — no penalty.</p>
+            </div>
+
           </div>
         </div>
       </section>
@@ -433,8 +501,7 @@ export default function HomePage() {
           </div>
           <div className="crm-card">
             <div>
-              <p className="crm-lead">Built In-House CRM — $500 value, included free with every monthly plan. We'll walk you through it, and questions get answered by a real person.</p>
-              <div className="crm-price-line">$500 one-time <span>+ $19/mo</span></div>
+              <p className="crm-lead">Built In-House CRM — included free with every monthly plan. We'll walk you through it, and questions get answered by a real person.</p>
               <ul className="crm-features">
                 <li><span className="chk">✓</span>Your full customer contact list — always organized</li>
                 <li><span className="chk">✓</span>Notes and call history on every customer</li>
@@ -443,46 +510,23 @@ export default function HomePage() {
                 <li><span className="chk">✓</span>Quick-reply text & email templates</li>
                 <li><span className="chk">✓</span>Works on your phone, tablet, or computer</li>
               </ul>
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Included free with Starter, Growth, and All-In plans. Standalone option: $500 one-time + $19/mo</p>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Included free with Starter, Growth, and All-In plans</p>
             </div>
             <div className="crm-cta-col">
-              <button onClick={() => setShowContactModal(true)} className="btn btn-primary">Learn more</button>
+              <button onClick={() => setShowContactModal(true)} className="btn btn-primary">Get a Free Consultation</button>
               <p style={{ fontSize: 13, color: 'var(--soft)', textAlign: 'center', maxWidth: 140, lineHeight: 1.4 }}>Included free with monthly plans</p>
             </div>
           </div>
         </div>
       </section>
 
-
-      {/* HOW WE WORK */}
-      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '56px 0' }}>
+      {/* MONTHLY CHECK-IN */}
+      <section style={{ background: '#f4f6fc', padding: '72px 0', borderTop: '1px solid rgba(31,60,136,.08)' }}>
         <div className="wrap">
           <div className="section-head center">
-            <h2>How We Work</h2>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '16px', maxWidth: '600px', margin: '20px auto 0' }}>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Day 1: Setup call. Site built, Google claimed, email live.
-                </li>
-                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Week 1: Site goes live. Training included.
-                </li>
-                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Month 1: Check-in call. Review your numbers.
-                </li>
-                <li style={{ marginBottom: '8px', fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Ongoing: Monthly reports explained by a real person.
-                </li>
-                <li style={{ marginBottom: 0, fontSize: '15px', lineHeight: 1.6, color: '#171a2b', fontWeight: 500 }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
-                  Not seeing results? We refund your setup fee.
-                </li>
-              </ul>
-            </div>
+            <h2>Monthly Check-In — We Explain the Numbers</h2>
+            <p>Every month, a tailored report showing bookings, reviews, and what's working. We walk you through it—just what matters to your business.</p>
+            <button onClick={() => setShowReportModal(true)} className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
           </div>
         </div>
       </section>
@@ -583,7 +627,7 @@ export default function HomePage() {
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>
-              <Link href="/pricing">Packages & Pricing</Link>
+              <Link href="/pricing">Packages</Link>
               <a href="#crm">Customer Management</a>
               <Link href="/about">About Us</Link>
               <Link href="/auth/login">Client Login</Link>

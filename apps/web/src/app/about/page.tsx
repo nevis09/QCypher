@@ -224,7 +224,6 @@ export default function AboutPage() {
           <div className="nav-cta">
             <Link href="/" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Home</Link>
             <Link href="/auth/login" className="btn btn-ghost btn-sm">Sign in</Link>
-            <Link href="/#contact" className="btn btn-primary btn-sm nav-quote-btn">Free quote</Link>
           </div>
         </div>
       </header>
@@ -268,7 +267,7 @@ export default function AboutPage() {
               </div>
               <div className="story-stat">
                 <div className="story-stat-num">$0</div>
-                <div className="story-stat-label">Per-user fees — flat pricing for your whole team</div>
+                <div className="story-stat-label">All-inclusive solution for your whole team</div>
               </div>
               <div className="story-stat">
                 <div className="story-stat-num">5★</div>
@@ -380,13 +379,6 @@ export default function AboutPage() {
             </div>
             <div className="value-card">
               <div className="value-icon">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a7 7 0 0 0-4 12.8V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.2A7 7 0 0 0 12 2zm2 15h-4v-1h4zm0-3H10v-1.5l-.7-.5A5 5 0 1 1 17 9a4.9 4.9 0 0 1-2.3 4.2l-.7.5zm-2 5a1 1 0 0 0 1 1h-2a1 1 0 0 0 1-1z"/></svg>
-              </div>
-              <div className="value-name">Honest pricing</div>
-              <p className="value-desc">One setup cost, one flat monthly rate. No surprise invoices, no per-user add-ons, no fine print.</p>
-            </div>
-            <div className="value-card">
-              <div className="value-icon">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5zm0 2.2l7 3.1V11c0 4.5-3 8.6-7 9.9-4-1.3-7-5.4-7-9.9V6.3zm-1 9.1l4.6-4.6-1.4-1.4L11 9.5 9.8 8.3 8.4 9.7z"/></svg>
               </div>
               <div className="value-name">Your data, your business</div>
@@ -416,10 +408,10 @@ export default function AboutPage() {
           <div className="cta-banner">
             <span className="eyebrow" style={{ color: 'rgba(255,255,255,0.65)' }}>Ready to get started?</span>
             <h2>Let's build something together.</h2>
-            <p>Get a free consultation and find out which package fits your business. No commitment, no pressure.</p>
+            <p>Get in touch with our team. No commitment, no pressure.</p>
             <div className="cta-actions">
-              <button data-cal-link="qcypher" data-cal-namespace="qcypher" data-cal-config='{"notes":"Interested in: Free Quote"}' className="btn btn-white">Get a free quote</button>
-              <Link href="/#packages" className="btn btn-outline-white">See packages & pricing</Link>
+              <Link href="/#packages" className="btn btn-white">See packages</Link>
+              <button onClick={() => { window.location.href = '/#contact'; }} className="btn btn-outline-white">Get a free quote</button>
             </div>
           </div>
         </div>
