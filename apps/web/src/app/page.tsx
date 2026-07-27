@@ -532,55 +532,55 @@ export default function HomePage() {
       </section>
 
       {/* COMPARISON TABLE */}
-      <section style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+      <section style={{ background: '#f4f6fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2>QCypher vs. Building It Yourself</h2>
           </div>
-          <div style={{ marginTop: '40px', overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '15px' }}>
+          <div style={{ marginTop: '48px', overflowX: 'auto', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(26,48,112,0.08)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '16px' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid #1a3070' }}>
-                  <th style={{ textAlign: 'left', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>Feature</th>
-                  <th style={{ textAlign: 'center', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>DIY</th>
-                  <th style={{ textAlign: 'center', padding: '16px', fontWeight: 800, color: '#1a3070', background: 'rgba(26,48,112,0.05)' }}>QCypher</th>
+                <tr style={{ background: 'linear-gradient(135deg, rgba(26,48,112,0.06) 0%, rgba(74,157,181,0.04) 100%)' }}>
+                  <th style={{ textAlign: 'left', padding: '20px', fontWeight: 700, color: '#1a3070' }}>Feature</th>
+                  <th style={{ textAlign: 'center', padding: '20px', fontWeight: 700, color: '#1a3070' }}>DIY</th>
+                  <th style={{ textAlign: 'center', padding: '20px', fontWeight: 700, color: '#1a3070' }}>QCypher</th>
                 </tr>
               </thead>
               <tbody>
                 <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Website Builder</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$14/mo</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>CRM</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$39/mo</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Free</td>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Website Builder</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$14/mo</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Reviews/Automation</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>$500/mo</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Support</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>Email tickets</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Felix or Thomas</td>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>CRM</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$39/mo</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Free</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Setup help</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>None</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Day 1 call</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: 'rgba(26,48,112,0.02)' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072' }}>Monthly check-in</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072' }}>None</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 600 }}>✓ Included</td>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Reviews/Automation</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>$500/mo</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
-                  <td style={{ padding: '14px 16px', color: '#5b6072', fontWeight: 600 }}>Total Year 1</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#5b6072', fontWeight: 600 }}>$6,500+</td>
-                  <td style={{ textAlign: 'center', padding: '14px 16px', color: '#00a87a', fontWeight: 700 }}>$1,250 + $588–$1,788</td>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Support</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>Email tickets</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Felix or Thomas</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Setup help</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>None</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Day 1 call</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(26,48,112,0.1)', background: '#fff' }}>
+                  <td style={{ padding: '20px', color: '#5b6072', fontWeight: 600 }}>Monthly check-in</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>None</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>✓ Included</td>
+                </tr>
+                <tr style={{ background: 'rgba(0,168,122,0.05)' }}>
+                  <td style={{ padding: '20px', color: '#1a3070', fontWeight: 700 }}>Total Year 1</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#9ca3af', fontWeight: 700 }}>$6,500+</td>
+                  <td style={{ textAlign: 'center', padding: '20px', color: '#00a87a', fontWeight: 700 }}>$1,250 + $588–$1,788</td>
                 </tr>
               </tbody>
             </table>
@@ -589,25 +589,42 @@ export default function HomePage() {
       </section>
 
       {/* HOW WE WORK */}
-      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '72px 0' }}>
+      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2>How We Work</h2>
-            <ul style={{ listStyle: 'none', padding: 0, marginTop: '32px', fontSize: '16px', color: '#5b6072', lineHeight: 1.8, maxWidth: '600px', margin: '32px auto 0' }}>
-              <li style={{ marginBottom: '20px' }}>• Day 1: Setup call. Site built, Google claimed, email live.</li>
-              <li style={{ marginBottom: '20px' }}>• Week 1: Site goes live. Training included.</li>
-              <li style={{ marginBottom: '20px' }}>• Month 1: Check-in call. Review your numbers.</li>
-              <li>• Ongoing: Monthly reports explained by a real person.</li>
-            </ul>
+            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.1)', borderRadius: '16px', padding: '40px', maxWidth: '600px', margin: '32px auto 0' }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ marginBottom: '18px', fontSize: '16px', lineHeight: 1.8, color: '#171a2b', fontWeight: 500 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+                  Day 1: Setup call. Site built, Google claimed, email live.
+                </li>
+                <li style={{ marginBottom: '18px', fontSize: '16px', lineHeight: 1.8, color: '#171a2b', fontWeight: 500 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+                  Week 1: Site goes live. Training included.
+                </li>
+                <li style={{ marginBottom: '18px', fontSize: '16px', lineHeight: 1.8, color: '#171a2b', fontWeight: 500 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+                  Month 1: Check-in call. Review your numbers.
+                </li>
+                <li style={{ fontSize: '16px', lineHeight: 1.8, color: '#171a2b', fontWeight: 500 }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: '50%', background: '#00a87a', color: '#fff', fontWeight: 700, fontSize: '12px', marginRight: '12px', flexShrink: 0 }}>✓</span>
+                  Ongoing: Monthly reports explained by a real person.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
       {/* 30-DAY GUARANTEE */}
-      <section style={{ background: '#fff', borderTop: '1px solid rgba(31,60,136,.08)', padding: '48px 0' }}>
+      <section style={{ background: '#f8f9fc', borderTop: '1px solid rgba(31,60,136,.08)', padding: '88px 0' }}>
         <div className="wrap">
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ fontSize: '18px', fontWeight: 600, color: '#171a2b', margin: 0 }}>Not seeing results? We refund your setup fee.</p>
+          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%)', border: '2px solid rgba(0,168,122,0.3)', borderRadius: '16px', padding: '48px 40px' }}>
+            <p style={{ fontSize: '20px', fontWeight: 700, color: '#1a3070', margin: 0 }}>
+              <span style={{ marginRight: '10px' }}>✓</span>
+              Not seeing results? We refund your setup fee.
+            </p>
           </div>
         </div>
       </section>
