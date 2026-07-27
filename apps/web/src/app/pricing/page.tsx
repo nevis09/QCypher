@@ -166,7 +166,7 @@ export default function PricingPage() {
         .pkg-list { list-style: none; }
         .pkg-list li { display: flex; gap: 8px; font-size: 14px; color: var(--soft); padding: 5px 0; border-top: 1px solid var(--border); align-items: flex-start; line-height: 1.5; }
         .pkg-list li:first-child { border-top: none; }
-        .pkg-inherit { font-size: 13px; font-style: italic; color: var(--soft); padding: 8px 0 6px; }
+        .pkg-inherit { font-size: 14px; font-weight: 700; color: var(--indigo-d); padding: 12px 12px; background: linear-gradient(135deg, rgba(0,168,122,0.08) 0%, rgba(74,157,181,0.08) 100%); border-left: 3px solid var(--cyan); border-radius: 6px; margin-bottom: 12px; }
         .chk { flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,200,150,.15); color: var(--mint); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; margin-top: 2px; }
 
         .pkg-switch { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; }
