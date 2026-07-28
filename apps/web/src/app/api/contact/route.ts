@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #2c3e50; background: #f8fafb; }
       .wrapper { background: #f8fafb; padding: 20px; }
       .container { max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-      .header { background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); padding: 30px 40px; text-align: center; color: white; }
+      .header { background: #1a365d; padding: 30px 40px; text-align: center; color: white; }
       .logo { font-size: 18px; font-weight: 400; margin-bottom: 8px; letter-spacing: -0.5px; color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
       .tagline { font-size: 12px; opacity: 0.95; font-weight: 400; letter-spacing: 0.3px; color: #ffffff; }
       .content { padding: 50px 40px; }
@@ -37,10 +37,10 @@ export async function POST(request: NextRequest) {
       .info-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
       .info-label { font-size: 11px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.6px; color: #718096; margin-bottom: 6px; }
       .info-value { font-size: 15px; color: #1a365d; font-weight: 400; }
-      .cta-box { background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); border-radius: 10px; padding: 36px 40px; margin: 32px 0; text-align: center; box-shadow: 0 8px 24px rgba(26, 54, 93, 0.15); }
+      .cta-box { background: #1a365d; border-radius: 10px; padding: 36px 40px; margin: 32px 0; text-align: center; box-shadow: 0 8px 24px rgba(26, 54, 93, 0.15); }
       .cta-text { color: white; font-size: 15px; margin-bottom: 14px; font-weight: 400; opacity: 0.95; }
       .cta-phone { color: white; font-size: 18px; font-weight: 400; letter-spacing: 0.5px; }
-      .footer { padding: 20px 40px; text-align: center; border-top: none; background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); font-size: 12px; }
+      .footer { padding: 20px 40px; text-align: center; border-top: none; background: #1a365d; font-size: 12px; }
       .footer-branding { font-weight: 400; color: #ffffff; margin-bottom: 4px; font-size: 13px; }
       .footer-text { color: #e2e8f0; font-size: 11px; }
     `
