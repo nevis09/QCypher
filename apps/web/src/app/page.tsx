@@ -822,14 +822,13 @@ export default function HomePage() {
                   e.preventDefault()
                   setFormSubmitting(true)
                   try {
-                    const response = await fetch('https://formspree.io/f/xyzabc', {
+                    const response = await fetch('/api/contact', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         businessName: formData.businessName,
                         phone: formData.phone,
                         email: formData.email,
-                        _subject: 'New Lead: ' + formData.businessName,
                       }),
                     })
                     if (response.ok) {
