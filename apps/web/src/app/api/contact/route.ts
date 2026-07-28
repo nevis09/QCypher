@@ -55,11 +55,12 @@ export async function POST(request: NextRequest) {
           <style>${commonStyles}</style>
         </head>
         <body>
-          <div class="container">
-            <div class="header">
-              <div class="logo">QCypher</div>
-              <div class="tagline">We handle the tech. You run the business</div>
-            </div>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <div class="logo">${qcypherLogo}</div>
+                <div class="tagline">We handle the tech. You run the business</div>
+              </div>
             <div class="content">
               <div class="greeting">Request Received ✓</div>
               <div class="subtitle">Thank you for your interest in QCypher</div>
@@ -165,6 +166,7 @@ export async function POST(request: NextRequest) {
                 <div class="footer-text">Simple tech, real results</div>
               </div>
             </div>
+          </div>
           </div>
         </body>
       </html>
