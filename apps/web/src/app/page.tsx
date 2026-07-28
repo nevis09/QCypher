@@ -878,7 +878,7 @@ export default function HomePage() {
                       fontSize: '14px',
                       fontFamily: 'inherit',
                     }}
-                    placeholder="(555) 123-4567"
+                    placeholder="(000) 000-0000"
                   />
                 </div>
 
