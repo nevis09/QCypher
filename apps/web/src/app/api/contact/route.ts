@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
       .container { max-width: 600px; margin: 0 auto; background: #ffffff; }
       .header { background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 100%); padding: 48px 30px; text-align: center; color: white; }
-      .logo { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+      .logo { font-size: 32px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }
       .tagline { font-size: 14px; opacity: 0.95; font-weight: 500; }
       .content { padding: 48px 30px; }
       .greeting { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #1e3a8a; }
