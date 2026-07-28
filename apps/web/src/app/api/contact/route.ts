@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
                 <div class="logo">${qcypherLogo}</div>
                 <div class="tagline">We handle the tech. You run the business</div>
               </div>
-            <div class="content">
+              <div class="content">
               <div class="greeting">Request Received ✓</div>
               <div class="subtitle">Thank you for your interest in QCypher</div>
 
