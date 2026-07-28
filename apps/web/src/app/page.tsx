@@ -10,7 +10,7 @@ export default function HomePage() {
   const [showReportModal, setShowReportModal] = useState(false)
   const [showContactModal, setShowContactModal] = useState(false)
   const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({ businessName: '', phone: '', email: '' })
+  const [formData, setFormData] = useState({ businessName: '', phone: '', email: '', message: '', selectedPackages: [] })
   const [formSubmitting, setFormSubmitting] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
 
@@ -796,12 +796,12 @@ export default function HomePage() {
                 <div style={{ fontSize: '48px', marginBottom: '16px' }}>✓</div>
                 <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', marginBottom: '8px' }}>Request Received!</h3>
                 <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '16px' }}>Thank you for reaching out to QCypher.</p>
-                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>Our team will be in touch within 24 hours at the email and phone number you provided to discuss your business needs and find the right solution for you.</p>
+                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>We'll reach out within 24 hours to discuss your needs and find the right solution.</p>
                 <button
                   onClick={() => {
                     setShowForm(false)
                     setFormSuccess(false)
-                    setFormData({ businessName: '', phone: '', email: '' })
+                    setFormData({ businessName: '', phone: '', email: '', message: '', selectedPackages: [] })
                   }}
                   style={{
                     padding: '12px 24px',
@@ -830,6 +830,8 @@ export default function HomePage() {
                         businessName: formData.businessName,
                         phone: formData.phone,
                         email: formData.email,
+                        message: formData.message,
+                        selectedPackages: formData.selectedPackages,
                       }),
                     })
                     if (response.ok) {
@@ -896,6 +898,48 @@ export default function HomePage() {
                       fontFamily: 'inherit',
                     }}
                     placeholder="you@company.com"
+                  />
+                </div>
+
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '10px' }}>Interested in (Optional)</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {['Starter', 'Growth', 'All-In'].map((pkg) => (
+                      <label key={pkg} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={formData.selectedPackages.includes(pkg)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setFormData({ ...formData, selectedPackages: [...formData.selectedPackages, pkg] })
+                            } else {
+                              setFormData({ ...formData, selectedPackages: formData.selectedPackages.filter((p) => p !== pkg) })
+                            }
+                          }}
+                          style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#1a3070' }}
+                        />
+                        <span style={{ fontSize: '14px', color: '#1a3070' }}>{pkg}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '6px' }}>Message (Optional)</label>
+                  <textarea
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid rgba(26,48,112,0.2)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      minHeight: '100px',
+                      resize: 'vertical',
+                    }}
+                    placeholder="Tell us more about your business or any specific needs..."
                   />
                 </div>
 

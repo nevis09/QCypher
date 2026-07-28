@@ -4,7 +4,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('API key present:', !!process.env.RESEND_API_KEY)
     console.log('API key value:', process.env.RESEND_API_KEY)
-    const { businessName, phone, email } = await request.json()
+    const { businessName, phone, email, message, selectedPackages } = await request.json()
 
     // Validate required fields
     if (!businessName || !phone || !email) {
@@ -81,6 +81,18 @@ export async function POST(request: NextRequest) {
                       <div class="info-label">Email</div>
                       <div class="info-value"><a href="mailto:${email}" style="color: #0369a1; text-decoration: none;">${email}</a></div>
                     </div>
+                    ${selectedPackages && selectedPackages.length > 0 ? `
+                    <div class="info-row">
+                      <div class="info-label">Interested In</div>
+                      <div class="info-value">${selectedPackages.join(', ')}</div>
+                    </div>
+                    ` : ''}
+                    ${message ? `
+                    <div class="info-row">
+                      <div class="info-label">Message</div>
+                      <div class="info-value" style="white-space: pre-wrap;">${message}</div>
+                    </div>
+                    ` : ''}
                   </div>
 
                   <div class="cta-box">
