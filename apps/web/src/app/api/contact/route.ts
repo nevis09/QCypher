@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'noreply@qcyphertechnologies.com',
+        from: 'noreply@qcyphertech.com',
         to: email,
         subject: 'Request Received - QCypher Technologies',
         html: customerEmailHtml,
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'noreply@qcyphertechnologies.com',
+        from: 'noreply@qcyphertech.com',
         to: 'qcyphertech@gmail.com',
         subject: `New Lead: ${businessName}`,
         html: teamEmailHtml,
