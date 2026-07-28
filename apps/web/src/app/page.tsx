@@ -14,6 +14,16 @@ export default function HomePage() {
   const [formSubmitting, setFormSubmitting] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
 
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, '')
+    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/)
+    if (!match) return value
+    const [, area, exchange, line] = match
+    if (!exchange) return area ? `(${area}` : ''
+    if (!line) return `(${area}) ${exchange}`
+    return `(${area}) ${exchange}-${line}`
+  }
+
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', background: '#f8f9fc', color: '#171a2b', lineHeight: 1.5 }}>
       <style>{`
@@ -866,10 +876,13 @@ export default function HomePage() {
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#1a3070', marginBottom: '6px' }}>Phone Number</label>
                   <input
-                    type="tel"
+                    type="text"
                     required
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => {
+                      const formatted = formatPhoneNumber(e.target.value)
+                      setFormData({ ...formData, phone: formatted })
+                    }}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -879,6 +892,7 @@ export default function HomePage() {
                       fontFamily: 'inherit',
                     }}
                     placeholder="(000) 000-0000"
+                    maxLength={14}
                   />
                 </div>
 
