@@ -1,29 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const qcypherLogo = `
-  <svg width="140" height="60" viewBox="0 0 140 60" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="logoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
-      </linearGradient>
-      <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#0369a1;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
-      </linearGradient>
-    </defs>
-    <!-- Q with gradient -->
-    <g transform="translate(8, 8)">
-      <circle cx="12" cy="12" r="10" fill="none" stroke="url(#logoGrad1)" stroke-width="3"/>
-      <circle cx="12" cy="12" r="6.5" fill="none" stroke="url(#logoGrad1)" stroke-width="2"/>
-      <line x1="18" y1="18" x2="22" y2="22" stroke="url(#logoGrad1)" stroke-width="2.5" stroke-linecap="round"/>
-    </g>
-    <!-- C with gradient -->
-    <g transform="translate(28, 8)">
-      <path d="M 12 2 A 10 10 0 0 0 12 22" fill="none" stroke="url(#logoGrad2)" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 9 5 A 6.5 6.5 0 0 0 9 19" fill="none" stroke="url(#logoGrad2)" stroke-width="2" stroke-linecap="round"/>
-    </g>
-  </svg>
+  <div style="display: inline-block; background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 50%, #06b6d4 100%); padding: 16px 28px; border-radius: 8px; color: white; font-weight: 900; font-size: 32px; letter-spacing: -1px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1;">QC</div>
 `
 
 export async function POST(request: NextRequest) {
