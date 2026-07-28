@@ -1,5 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const qcypherLogo = `
+  <svg width="140" height="60" viewBox="0 0 140 60" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="logoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#0369a1;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <!-- Q with gradient -->
+    <g transform="translate(8, 8)">
+      <circle cx="12" cy="12" r="10" fill="none" stroke="url(#logoGrad1)" stroke-width="3"/>
+      <circle cx="12" cy="12" r="6.5" fill="none" stroke="url(#logoGrad1)" stroke-width="2"/>
+      <line x1="18" y1="18" x2="22" y2="22" stroke="url(#logoGrad1)" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    <!-- C with gradient -->
+    <g transform="translate(28, 8)">
+      <path d="M 12 2 A 10 10 0 0 0 12 22" fill="none" stroke="url(#logoGrad2)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M 9 5 A 6.5 6.5 0 0 0 9 19" fill="none" stroke="url(#logoGrad2)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+`
+
 export async function POST(request: NextRequest) {
   try {
     console.log('API key present:', !!process.env.RESEND_API_KEY)
@@ -110,7 +136,7 @@ export async function POST(request: NextRequest) {
           <div class="wrapper">
             <div class="container">
               <div class="header">
-                <div class="logo">QCypher</div>
+                <div class="logo">${qcypherLogo}</div>
                 <div class="tagline">Simple tech solutions for local businesses</div>
               </div>
               <div class="content">
