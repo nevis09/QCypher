@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const qcypherLogo = `
-  <div style="display: inline-block; background: linear-gradient(135deg, #1e3a8a 0%, #0369a1 50%, #06b6d4 100%); padding: 16px 28px; border-radius: 8px; color: white; font-weight: 900; font-size: 32px; letter-spacing: -1px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1;">QC</div>
+  <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+    <tr>
+      <td style="background-color: #0369a1; width: 140px; height: 60px; border-radius: 8px; text-align: center; vertical-align: middle; padding: 0;">
+        <span style="color: white; font-weight: 900; font-size: 32px; line-height: 60px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;">QC</span>
+      </td>
+    </tr>
+  </table>
 `
 
 export async function POST(request: NextRequest) {
