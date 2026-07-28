@@ -23,13 +23,20 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         from: 'info@qcyphertech.com',
-        to: 'info@qcyphertech.com',
-        subject: `QCypher: New Lead from ${businessName}`,
+        to: email,
+        subject: 'Your QCypher Request Received',
         html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Business Name:</strong> ${businessName}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Email:</strong> ${email}</p>
+          <h2>Thank you for reaching out to QCypher!</h2>
+          <p>Hi ${businessName},</p>
+          <p>We've received your request and our team will be in touch within 24 hours to discuss your business needs and find the right solution for you.</p>
+          <p>In the meantime, if you have any questions, feel free to reply to this email or call us at <strong>(804) 250-5066</strong>.</p>
+          <hr>
+          <p><strong>Your Information:</strong></p>
+          <p>Business Name: ${businessName}</p>
+          <p>Phone: ${phone}</p>
+          <p>Email: ${email}</p>
+          <hr>
+          <p>Best regards,<br>The QCypher Team</p>
         `,
       }),
     })
