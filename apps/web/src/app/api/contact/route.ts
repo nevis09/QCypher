@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       .cta-phone { color: white; font-size: 18px; font-weight: 400; letter-spacing: 0.5px; }
       .footer { padding: 20px 40px; text-align: center; border-top: none; background: #1a365d; font-size: 12px; }
       .footer-branding { font-weight: 400; color: #ffffff; margin-bottom: 4px; font-size: 13px; }
-      .footer-text { color: #e2e8f0; font-size: 11px; }
+      .footer-text { color: #ffffff; font-size: 11px; }
     `
 
     // Customer confirmation email
