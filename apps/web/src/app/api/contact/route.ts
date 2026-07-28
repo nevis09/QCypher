@@ -186,7 +186,16 @@ export async function POST(request: NextRequest) {
     })
 
     if (!customerResponse.ok) {
-      throw new Error(`Failed to send customer email: ${await customerResponse.text()}`)
+      const errorText = await customerResponse.text()
+      console.error('Customer email sending failed:', errorText)
+      // In testing mode, Resend only allows sending to verified emails.
+      // This will work once domain is verified in Resend dashboard.
+      // For now, log the error but continue with team notification.
+      if (!errorText.includes('validation_error')) {
+        throw new Error(`Failed to send customer email: ${errorText}`)
+      }
+    } else {
+      console.log('Customer confirmation email sent to:', email)
     }
 
     // Send team lead notification email
