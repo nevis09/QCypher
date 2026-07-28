@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         from: 'noreply@qcyphertech.com',
         to: 'info@qcyphertech.com',
-        subject: `New Lead: ${businessName}`,
+        subject: `QCypher: New Lead from ${businessName}`,
         html: `
           <h2>New Contact Form Submission</h2>
           <p><strong>Business Name:</strong> ${businessName}</p>
