@@ -170,6 +170,25 @@ export async function POST(request: NextRequest) {
       </html>
     `
 
+    // Send customer confirmation email
+    const customerResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'Request Received - QCypher Technologies',
+        html: customerEmailHtml,
+      }),
+    })
+
+    if (!customerResponse.ok) {
+      throw new Error(`Failed to send customer email: ${await customerResponse.text()}`)
+    }
+
     // Send team lead notification email
     const teamResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
