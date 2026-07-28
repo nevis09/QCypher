@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'info@qcyphertech.com',
-        to: 'info@qcyphertech.com',
+        from: 'onboarding@resend.dev',
+        to: 'qcyphertech@gmail.com',
         subject: `New Lead: ${businessName}`,
         html: `
           <!DOCTYPE html>
@@ -113,12 +113,22 @@ export async function POST(request: NextRequest) {
       }),
     })
 
+    const responseText = await response.text()
+    console.log('Resend response status:', response.status)
+    console.log('Resend response text:', responseText)
+
     if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Resend API error:', errorData)
-      throw new Error(`Failed to send email: ${JSON.stringify(errorData)}`)
+      try {
+        const errorData = JSON.parse(responseText)
+        console.error('Resend API error:', errorData)
+        throw new Error(`Failed to send email: ${JSON.stringify(errorData)}`)
+      } catch (e) {
+        console.error('Resend API error (raw):', responseText)
+        throw new Error(`Failed to send email: ${responseText}`)
+      }
     }
 
+    console.log('Email sent successfully to:', email)
     return NextResponse.json(
       { success: true, message: 'Email sent successfully' },
       { status: 200 }
@@ -126,7 +136,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Contact form error:', error)
     return NextResponse.json(
-      { error: 'Failed to send message' },
+      { error: 'Failed to send message', details: String(error) },
       { status: 500 }
     )
   }
