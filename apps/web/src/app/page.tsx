@@ -794,8 +794,9 @@ export default function HomePage() {
             {formSuccess ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <div style={{ fontSize: '48px', marginBottom: '16px' }}>✓</div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', marginBottom: '8px' }}>Thanks!</h3>
-                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>We'll be in touch shortly at the email and phone number you provided.</p>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a3070', marginBottom: '8px' }}>Request Received!</h3>
+                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '16px' }}>Thank you for reaching out to QCypher.</p>
+                <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>Our team will be in touch within 24 hours at the email and phone number you provided to discuss your business needs and find the right solution for you.</p>
                 <button
                   onClick={() => {
                     setShowForm(false)

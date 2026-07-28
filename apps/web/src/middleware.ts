@@ -39,6 +39,7 @@ export async function middleware(request: NextRequest) {
     pathname === '/pricing' ||
     pathname.startsWith('/api/telnyx/') ||
     pathname.startsWith('/api/portal/') ||
+    pathname.startsWith('/api/contact') ||
     pathname.startsWith('/q/') ||
     pathname.startsWith('/portal/')
   ) {

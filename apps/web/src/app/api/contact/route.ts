@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('API key present:', !!process.env.RESEND_API_KEY)
+    console.log('API key value:', process.env.RESEND_API_KEY)
     const { businessName, phone, email } = await request.json()
 
     // Validate required fields
@@ -20,7 +22,7 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'noreply@qcyphertech.com',
+        from: 'info@qcyphertech.com',
         to: 'info@qcyphertech.com',
         subject: `QCypher: New Lead from ${businessName}`,
         html: `
@@ -33,7 +35,9 @@ export async function POST(request: NextRequest) {
     })
 
     if (!response.ok) {
-      throw new Error('Failed to send email')
+      const errorData = await response.json()
+      console.error('Resend API error:', errorData)
+      throw new Error(`Failed to send email: ${JSON.stringify(errorData)}`)
     }
 
     return NextResponse.json(
