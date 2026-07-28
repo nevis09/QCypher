@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
           <div class="container">
             <div class="header">
               <div class="logo">QCypher</div>
-              <div class="tagline">Simple tech solutions for local businesses</div>
+              <div class="tagline">We handle the tech. You run the business</div>
             </div>
             <div class="content">
               <div class="greeting">Request Received ✓</div>
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
             <div class="container">
               <div class="header">
                 <div class="logo">${qcypherLogo}</div>
-                <div class="tagline">Simple tech solutions for local businesses</div>
+                <div class="tagline">We handle the tech. You run the business</div>
               </div>
               <div class="content">
                 <div class="greeting">New Lead Received 🎉</div>
