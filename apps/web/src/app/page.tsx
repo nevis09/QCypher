@@ -799,7 +799,7 @@ export default function HomePage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 101 }}>
           <div style={{ background: '#fff', borderRadius: '16px', padding: '40px', maxWidth: '450px', width: '90%', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#1a3070', marginBottom: '8px' }}>Let's get you started</h2>
-            <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>Quick info so we can reach out and discuss your business needs.</p>
+            {!formSuccess && <p style={{ fontSize: '14px', color: '#5b6072', marginBottom: '24px' }}>Quick info so we can reach out and discuss your business needs.</p>}
 
             {formSuccess ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
