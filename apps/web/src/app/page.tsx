@@ -732,7 +732,7 @@ export default function HomePage() {
               <button
                 onClick={() => {
                   setShowContactModal(false)
-                  window.Cal?.ns?.qcypher?.('pop', { date: new Date() })
+                  window.Cal?.ns?.qcyphertech?.('pop', { date: new Date() })
                 }}
                 style={{
                   padding: '20px',
@@ -1012,8 +1012,8 @@ export default function HomePage() {
     p(cal,ar)
   };
 })(window,"https://app.cal.com/embed/embed.js","init");
-Cal("init","qcypher",{origin:"https://cal.com"});
-Cal.ns.qcypher("ui",{"hideEventTypeDetails":false,"layout":"month_view"});
+Cal("init","qcyphertech",{origin:"https://cal.com"});
+Cal.ns.qcyphertech("ui",{"hideEventTypeDetails":false,"layout":"month_view"});
         ` }}
       />
     </div>
