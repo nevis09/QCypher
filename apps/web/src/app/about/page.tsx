@@ -109,7 +109,6 @@ export default function AboutPage() {
         .page-hero p { font-size: 16px; color: var(--soft); max-width: 520px; line-height: 1.7; }
         @media (max-width: 900px) {
           .page-hero .wrap { grid-template-columns: 1fr; gap: 32px; }
-          .page-hero-image { order: -1; }
         }
         @media (max-width: 600px) { .page-hero { padding: 52px 0 40px; } .page-hero h1 { font-size: 30px; } }
 
