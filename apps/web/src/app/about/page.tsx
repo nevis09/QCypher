@@ -87,8 +87,14 @@ export default function AboutPage() {
           height: auto;
           display: block;
           border-radius: 12px;
-          -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 0%, black 62%, transparent 95%);
-          mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 0%, black 62%, transparent 95%);
+          -webkit-mask-image:
+            linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+            linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+          -webkit-mask-composite: source-in;
+          mask-image:
+            linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%),
+            linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+          mask-composite: intersect;
         }
         .page-hero h1 {
           font-size: 44px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em;
