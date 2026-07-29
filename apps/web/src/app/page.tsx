@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Public marketing page — no auth calls, no Supabase imports.
 // Middleware handles logged-in redirect (/ → /dashboard).
@@ -23,6 +23,25 @@ export default function HomePage() {
     if (!line) return `(${area}) ${exchange}`
     return `(${area}) ${exchange}-${line}`
   }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.1 })
+
+    const benefitItems = document.querySelectorAll('.benefit-item')
+    const workStepCards = document.querySelectorAll('.work-step-card')
+
+    benefitItems.forEach((item) => observer.observe(item))
+    workStepCards.forEach((card) => observer.observe(card))
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif', background: '#f8f9fc', color: '#171a2b', lineHeight: 1.5 }}>
@@ -92,6 +111,179 @@ export default function HomePage() {
           background: radial-gradient(ellipse 60% 70% at 80% 50%, rgba(74,157,181,0.18) 0%, transparent 70%),
                       radial-gradient(ellipse 40% 50% at 10% 80%, rgba(42,82,160,0.3) 0%, transparent 60%);
           pointer-events: none;
+        }
+
+        /* Torus Animation Background - ULTRA 3D Futuristic */
+        @keyframes rorusTorus3DUltra {
+          0% { transform: perspective(500px) rotateX(35deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+          25% { transform: perspective(500px) rotateX(45deg) rotateY(90deg) rotateZ(20deg) scale(1.1); }
+          50% { transform: perspective(500px) rotateX(35deg) rotateY(180deg) rotateZ(-10deg) scale(1); }
+          75% { transform: perspective(500px) rotateX(45deg) rotateY(270deg) rotateZ(20deg) scale(1.1); }
+          100% { transform: perspective(500px) rotateX(35deg) rotateY(360deg) rotateZ(0deg) scale(1); }
+        }
+        @keyframes torusGlowNeon {
+          0%, 100% {
+            filter: drop-shadow(0 0 30px rgba(0,255,255,0.8))
+                    drop-shadow(0 0 60px rgba(0,255,255,0.4))
+                    drop-shadow(10px 10px 40px rgba(74,157,181,0.3));
+          }
+          50% {
+            filter: drop-shadow(0 0 50px rgba(0,255,255,1))
+                    drop-shadow(0 0 100px rgba(100,200,255,0.6))
+                    drop-shadow(-10px -10px 50px rgba(0,255,200,0.4));
+          }
+        }
+        @keyframes torusFloat3D {
+          0%, 100% { transform: perspective(500px) rotateX(35deg) rotateY(0deg) rotateZ(0deg) scale(1) translateY(0px) translateZ(0px); }
+          25% { transform: perspective(500px) rotateX(45deg) rotateY(90deg) rotateZ(20deg) scale(1.1) translateY(-15px) translateZ(50px); }
+          50% { transform: perspective(500px) rotateX(35deg) rotateY(180deg) rotateZ(-10deg) scale(1) translateY(0px) translateZ(100px); }
+          75% { transform: perspective(500px) rotateX(45deg) rotateY(270deg) rotateZ(20deg) scale(1.1) translateY(-15px) translateZ(50px); }
+          100% { transform: perspective(500px) rotateX(35deg) rotateY(360deg) rotateZ(0deg) scale(1) translateY(0px) translateZ(0px); }
+        }
+        @keyframes scanlineEffect {
+          0% { background-position: 0 0; }
+          100% { background-position: 0 2px; }
+        }
+        /* Hero Animations Container */
+        .hero-animations-container {
+          position: absolute;
+          top: 50%;
+          right: 5%;
+          transform: translateY(-50%);
+          width: 400px;
+          height: 400px;
+          z-index: 0;
+          pointer-events: none;
+        }
+
+        .hero .torus-bg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 380px;
+          height: 380px;
+          opacity: 0.35;
+          animation: torusFloat3D 18s cubic-bezier(0.4, 0.0, 0.2, 1) infinite, torusGlowNeon 3s ease-in-out infinite;
+          pointer-events: none;
+          z-index: 1;
+          transform-style: preserve-3d;
+          filter: drop-shadow(0 0 30px rgba(0,255,255,0.8));
+        }
+        .hero .torus-bg::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(0,255,255,0.1) 50%,
+            transparent 100%
+          );
+          background-size: 200% 100%;
+          animation: scanlineEffect 8s linear infinite;
+          pointer-events: none;
+        }
+
+        /* Hero Orb Styling */
+        .hero-orb {
+          position: absolute;
+          top: 50%;
+          left: 65%;
+          transform: translateY(-50%) rotateX(15deg) rotateZ(-25deg);
+          width: 220px;
+          height: 220px;
+          z-index: 2;
+          perspective: 1000px;
+          transform-style: preserve-3d;
+        }
+        .hero-orb-blob {
+          width: 100%;
+          height: 100%;
+          background:
+            radial-gradient(circle at 35% 35%, rgba(255,255,255,0.5), transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(0,255,255,0.5), rgba(100,50,200,0.2), rgba(0,200,200,0.1));
+          border-radius: 50%;
+          animation: blobMorph3DUltra 18s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+          border: 3px solid rgba(0,255,255,0.7);
+          box-shadow:
+            inset 0 0 60px rgba(0,255,255,0.25),
+            inset -40px -40px 60px rgba(100,50,200,0.3),
+            inset 30px 30px 40px rgba(0,255,255,0.2),
+            0 0 80px rgba(0,255,255,0.6),
+            0 0 150px rgba(0,255,255,0.4),
+            0 0 200px rgba(100,200,255,0.3),
+            0 40px 100px rgba(0,255,255,0.4);
+          transform-style: preserve-3d;
+          filter: drop-shadow(0 50px 100px rgba(0,255,255,0.5)) drop-shadow(0 0 80px rgba(0,255,200,0.3));
+          position: relative;
+        }
+        .hero-orb-blob::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, transparent 30%, rgba(0,255,255,0.1) 50%, transparent 70%);
+          border-radius: inherit;
+          animation: globeGlitch 8s ease-in-out infinite;
+          pointer-events: none;
+        }
+        .hero-orb-nodes {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          transform-style: preserve-3d;
+          transform: rotateX(-15deg) rotateZ(25deg);
+        }
+        .hero-orb-node {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: rgba(0,255,255,0.08);
+          border-radius: 50%;
+          box-shadow:
+            0 0 10px rgba(0,255,255,0.6),
+            inset 0 0 8px rgba(255,255,255,0.3);
+          transform-style: preserve-3d;
+          border: 1.5px solid rgba(0,255,255,0.6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          filter: drop-shadow(0 0 6px rgba(0,255,255,0.5));
+          color: #00ffff;
+        }
+        .hero-orb-node svg {
+          width: 20px;
+          height: 20px;
+          fill: #00ffff;
+        }
+        .hero-orb-node:nth-child(1) { top: -25%; left: 50%; transform: translateX(-50%) translateZ(40px); animation: nodePulseUltra 16s ease-in-out infinite; }
+        .hero-orb-node:nth-child(2) { top: 15%; right: -35%; transform: translateZ(30px); animation: nodePulseUltra 18.4s ease-in-out infinite 0.2s; }
+        .hero-orb-node:nth-child(3) { bottom: 15%; right: -35%; transform: translateZ(50px); animation: nodePulseUltra 20.8s ease-in-out infinite 0.4s; }
+        .hero-orb-node:nth-child(4) { bottom: -25%; left: 50%; transform: translateX(-50%) translateZ(35px); animation: nodePulseUltra 23.2s ease-in-out infinite 0.6s; }
+        .hero-orb-node:nth-child(5) { bottom: 15%; left: -35%; transform: translateZ(25px); animation: nodePulseUltra 20s ease-in-out infinite 0.8s; }
+        .hero-orb-node:nth-child(6) { top: 15%; left: -35%; transform: translateZ(45px); animation: nodePulseUltra 21.6s ease-in-out infinite 1s; }
+        .hero-orb-icon {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0.7;
+          z-index: 3;
+          color: #00ffff;
+        }
+        .hero-orb-icon svg {
+          width: 200px;
+          height: 200px;
+          fill: #00ffff;
         }
         .hero .wrap { position: relative; }
         .hero h1 { font-size: 46px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; color: #fff; margin-bottom: 16px; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
@@ -236,6 +428,251 @@ export default function HomePage() {
         .crm-cta-col .btn { white-space: nowrap; }
         .crm-cta-col p { color: rgba(255,255,255,0.5) !important; }
 
+        /* HOLOGRAPHIC GLOBE SECTION - ULTRA 3D Futuristic (Horizontal Only, Always Round) */
+        @keyframes blobMorph3DUltra {
+          0%, 100% {
+            border-radius: 50%;
+            transform: perspective(600px) rotateY(0deg) scale(1) translateZ(0px);
+          }
+          20% {
+            border-radius: 50%;
+            transform: perspective(600px) rotateY(72deg) scale(1.15) translateZ(40px);
+          }
+          40% {
+            border-radius: 50%;
+            transform: perspective(600px) rotateY(144deg) scale(1) translateZ(80px);
+          }
+          60% {
+            border-radius: 50%;
+            transform: perspective(600px) rotateY(216deg) scale(1.1) translateZ(40px);
+          }
+          80% {
+            border-radius: 50%;
+            transform: perspective(600px) rotateY(288deg) scale(1.05) translateZ(60px);
+          }
+        }
+        @keyframes rotateGlobeUltra3D {
+          0% { transform: perspective(600px) rotateY(0deg) rotateX(30deg) rotateZ(0deg); }
+          100% { transform: perspective(600px) rotateY(360deg) rotateX(30deg) rotateZ(10deg); }
+        }
+        @keyframes nodePulseUltra {
+          0%, 100% { opacity: 0.5; transform: scale(1) translateZ(0px); filter: drop-shadow(0 0 10px rgba(0,255,255,0.6)); }
+          50% { opacity: 1; transform: scale(1.6) translateZ(30px); filter: drop-shadow(0 0 30px rgba(0,255,255,1)) drop-shadow(0 0 50px rgba(100,200,255,0.8)); }
+        }
+        @keyframes globeFloat3DUltra {
+          0%, 100% { transform: perspective(600px) rotateY(0deg) rotateX(30deg) rotateZ(0deg) translateZ(0px) translateY(0px); }
+          25% { transform: perspective(600px) rotateY(90deg) rotateX(35deg) rotateZ(20deg) translateZ(60px) translateY(-20px); }
+          50% { transform: perspective(600px) rotateY(180deg) rotateX(30deg) rotateZ(-10deg) translateZ(120px) translateY(0px); }
+          75% { transform: perspective(600px) rotateY(270deg) rotateX(35deg) rotateZ(20deg) translateZ(60px) translateY(-20px); }
+        }
+        @keyframes globeGlitch {
+          0%, 100% { clip-path: inset(0 0 0 0); }
+          20% { clip-path: inset(0 0 95% 0); }
+          40% { clip-path: inset(0 0 70% 0); }
+          60% { clip-path: inset(0 0 90% 0); }
+          80% { clip-path: inset(0 0 75% 0); }
+        }
+        @keyframes neonGlow {
+          0%, 100% { text-shadow: 0 0 10px rgba(0,255,255,0.5), 0 0 20px rgba(0,255,255,0.3); }
+          50% { text-shadow: 0 0 20px rgba(0,255,255,1), 0 0 40px rgba(100,200,255,0.6), 0 0 60px rgba(0,255,200,0.4); }
+        }
+        .holographic-section {
+          background: linear-gradient(135deg, #0e1f45 0%, #1a3070 50%, #0f1429 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        .holographic-section::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background:
+            radial-gradient(circle at 80% 30%, rgba(74,157,181,0.08) 0%, transparent 50%),
+            radial-gradient(circle at 20% 70%, rgba(100,50,200,0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+        .globe-showcase {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 60px;
+          align-items: center;
+          position: relative;
+          z-index: 1;
+        }
+        .globe-visual {
+          position: relative;
+          height: 360px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .globe-base-hero {
+          width: 280px;
+          height: 280px;
+          position: relative;
+          perspective: 600px;
+          animation: globeFloat3DUltra 32s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+          transform-style: preserve-3d;
+        }
+        .holographic-blob-hero {
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.4), rgba(100,50,200,0.15), rgba(0,200,200,0.05));
+          border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+          animation: blobMorph3DUltra 10s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+          border: 3px solid rgba(0,255,255,0.7);
+          box-shadow:
+            inset 0 0 80px rgba(0,255,255,0.3),
+            inset -30px -30px 80px rgba(100,50,200,0.2),
+            0 0 80px rgba(0,255,255,0.6),
+            0 0 150px rgba(0,255,255,0.4),
+            0 0 200px rgba(100,200,255,0.3),
+            0 30px 80px rgba(0,255,255,0.3);
+          transform-style: preserve-3d;
+          filter: drop-shadow(0 40px 80px rgba(0,255,255,0.4)) drop-shadow(0 0 60px rgba(0,255,200,0.2));
+          position: relative;
+        }
+        .holographic-blob-hero::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, transparent 30%, rgba(0,255,255,0.1) 50%, transparent 70%);
+          border-radius: inherit;
+          animation: globeGlitch 8s ease-in-out infinite;
+          pointer-events: none;
+        }
+        .globe-icon-hero {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 60px;
+          opacity: 0.6;
+        }
+        .neon-nodes-hero {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+        }
+        .node-hero {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: #00ffff;
+          border-radius: 50%;
+          box-shadow:
+            0 0 20px rgba(0,255,255,1),
+            0 0 40px rgba(0,255,255,0.8),
+            0 0 60px rgba(100,200,255,0.6),
+            inset 0 0 10px rgba(255,255,255,0.6);
+          transform-style: preserve-3d;
+          border: 2px solid rgba(0,255,255,0.8);
+        }
+        .node-hero:nth-child(1) { top: 15%; left: 50%; animation: nodePulseUltra 2s ease-in-out infinite; }
+        .node-hero:nth-child(2) { top: 35%; right: 15%; animation: nodePulseUltra 2.3s ease-in-out infinite 0.2s; }
+        .node-hero:nth-child(3) { top: 65%; right: 10%; animation: nodePulseUltra 2.6s ease-in-out infinite 0.4s; }
+        .node-hero:nth-child(4) { bottom: 20%; left: 50%; animation: nodePulseUltra 2.9s ease-in-out infinite 0.6s; }
+        .node-hero:nth-child(5) { top: 65%; left: 10%; animation: nodePulseUltra 2.5s ease-in-out infinite 0.8s; }
+        .node-hero:nth-child(6) { top: 35%; left: 15%; animation: nodePulseUltra 2.7s ease-in-out infinite 1s; }
+        .globe-content-hero {
+          color: white;
+        }
+        .globe-content-hero h2 {
+          font-size: 32px;
+          font-weight: 900;
+          color: #7dd3f7;
+          margin-bottom: 16px;
+          line-height: 1.2;
+          text-shadow: 0 0 20px rgba(74,157,181,0.3);
+        }
+        .globe-content-hero p {
+          font-size: 15px;
+          color: rgba(255,255,255,0.75);
+          line-height: 1.7;
+          margin-bottom: 24px;
+        }
+        /* Standalone Globe with Stars */
+        @keyframes twinkleStar {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+        @keyframes revolveGlobe {
+          0% { transform: rotateZ(0deg); }
+          100% { transform: rotateZ(360deg); }
+        }
+        @keyframes floatGlobe {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        .standalone-globe-container {
+          position: relative;
+          height: 500px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 1000px;
+          animation: revolveGlobe 40s linear infinite;
+        }
+        .stars-background {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          pointer-events: none;
+        }
+        .star {
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background: white;
+          border-radius: 50%;
+          box-shadow: 0 0 5px rgba(255,255,255,0.8);
+          animation: twinkleStar 3s ease-in-out infinite;
+        }
+        .floating-globe {
+          position: relative;
+          z-index: 2;
+          width: 200px;
+          height: 200px;
+          animation: floatGlobe 4s ease-in-out infinite;
+        }
+        .globe-core {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 120px;
+          filter: drop-shadow(0 0 40px rgba(0,255,255,0.6)) drop-shadow(0 20px 50px rgba(0,255,255,0.3));
+          transform-style: preserve-3d;
+        }
+
+        @media (max-width: 960px) {
+          .globe-showcase { grid-template-columns: 1fr; gap: 40px; }
+          .globe-visual { height: 300px; }
+          .globe-base-hero { width: 200px; height: 200px; }
+          .globe-content-hero h2 { font-size: 26px; }
+          .standalone-globe-container { height: 400px; }
+          .floating-globe { width: 150px; height: 150px; }
+          .globe-core { font-size: 80px; }
+        }
+
+        /* BENEFIT STRIP ANIMATIONS */
+        @keyframes benefitFadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
         /* BENEFIT STRIP */
         .benefit-strip {
           background: #fff;
@@ -250,16 +687,95 @@ export default function HomePage() {
         .benefit-item {
           display: flex; align-items: center; gap: 14px;
           padding: 12px 20px; flex: 1; min-width: 180px;
+          opacity: 0;
+          transform: translateX(-20px);
+          transition: all 0.3s ease;
+        }
+        .benefit-item.animate-in {
+          animation: benefitFadeInLeft 0.6s ease-out forwards;
+        }
+        .benefit-item:nth-child(1).animate-in { animation-delay: 0.1s; }
+        .benefit-item:nth-child(2).animate-in { animation-delay: 0.2s; }
+        .benefit-item:nth-child(3).animate-in { animation-delay: 0.3s; }
+        .benefit-item:nth-child(4).animate-in { animation-delay: 0.4s; }
+        .benefit-item:hover {
+          transform: translateY(-4px);
         }
         .benefit-icon {
           width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
           display: flex; align-items: center; justify-content: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .benefit-item:hover .benefit-icon {
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 8px 24px rgba(0, 0, 0, 0.15);
+          transform: scale(1.1);
         }
         .benefit-text strong { display: block; font-size: 14px; font-weight: 800; color: var(--ink); }
         .benefit-text span { font-size: 13px; color: var(--soft); line-height: 1.4; }
         @media (max-width: 540px) {
           .benefit-item { min-width: 50%; padding: 10px 14px; }
           .benefit-icon { width: 38px; height: 38px; }
+        }
+
+        /* WORK STEP CARDS */
+        .work-step-card {
+          background: #fff;
+          border: 1px solid rgba(26,48,112,0.08);
+          border-radius: 12px;
+          padding: 16px 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+          opacity: 0;
+          transform: translateX(-20px);
+          transition: all 0.3s ease;
+        }
+        .work-step-card.animate-in {
+          animation: benefitFadeInLeft 0.6s ease-out forwards;
+        }
+        .work-step-card:nth-child(1).animate-in { animation-delay: 0.1s; }
+        .work-step-card:nth-child(2).animate-in { animation-delay: 0.2s; }
+        .work-step-card:nth-child(3).animate-in { animation-delay: 0.3s; }
+        .work-step-card:nth-child(4).animate-in { animation-delay: 0.4s; }
+        .work-step-card:hover {
+          transform: translateY(-4px);
+        }
+        .step-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00a87a, #00d4a8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .work-step-card:hover .step-icon {
+          box-shadow: 0 0 20px rgba(0, 168, 122, 0.4), 0 8px 24px rgba(0, 0, 0, 0.15);
+          transform: scale(1.1);
+        }
+        .step-icon span {
+          color: #fff;
+          font-weight: 800;
+          font-size: 16px;
+        }
+        .work-step-card h3 {
+          font-size: 14px;
+          font-weight: 700;
+          color: #171a2b;
+          margin-bottom: 6px;
+        }
+        .work-step-card p {
+          font-size: 12px;
+          color: #5b6072;
+          line-height: 1.5;
+          margin: 0;
         }
 
         /* TESTIMONIALS */
@@ -310,6 +826,54 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="hero">
+        {/* Holographic Orb */}
+        <div className="hero-orb">
+          <div className="hero-orb-nodes">
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10C5.12 10 3.94 10.88 3.54 12.08C2.58 12.51 1.86 13.46 1.86 14.59C1.86 16.23 3.2 17.55 4.87 17.55H19C20.93 17.55 22.5 16.05 22.5 14.18C22.5 12.46 21.32 11.04 19.78 10.83C19.32 8.77 17.56 7.23 15.4 7.23C13.95 7.23 12.66 8.01 11.95 9.14C11.4 8.98 10.82 8.9 10.23 8.9C8.45 8.9 6.85 9.64 5.78 10.8C6.06 10.35 6.5 10 6.5 10Z"/></svg></div>
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L2 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-5z"/></svg></div>
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5s-5 2.24-5 5v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div>
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H4C2.9 6 2 6.9 2 8V16C2 17.1 2.9 18 4 18H20C21.1 18 22 17.1 22 16V8C22 6.9 21.1 6 20 6M4 8H20V10H4V8M4 16V12H20V16H4Z"/></svg></div>
+            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+          </div>
+          <div className="hero-orb-icon">
+            <svg viewBox="0 0 240 240" style={{ animation: 'spin 40s linear infinite' }}>
+              <defs>
+                <radialGradient id="globeGrad" cx="35%" cy="35%">
+                  <stop offset="0%" stopColor="rgba(100,200,255,0.9)" stopOpacity="1"/>
+                  <stop offset="50%" stopColor="rgba(50,150,220,0.8)" stopOpacity="1"/>
+                  <stop offset="100%" stopColor="rgba(30,80,150,0.7)" stopOpacity="1"/>
+                </radialGradient>
+                <radialGradient id="globeShine" cx="30%" cy="30%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.8)" stopOpacity="1"/>
+                  <stop offset="50%" stopColor="rgba(200,240,255,0.2)" stopOpacity="1"/>
+                  <stop offset="100%" stopColor="rgba(100,200,255,0)" stopOpacity="1"/>
+                </radialGradient>
+              </defs>
+              <circle cx="120" cy="120" r="110" fill="url(#globeGrad)" stroke="rgba(0,255,255,0.3)" strokeWidth="1"/>
+              <g stroke="rgba(100,200,255,0.6)" strokeWidth="1.2" fill="none">
+                <circle cx="120" cy="120" r="100"/>
+                <circle cx="120" cy="120" r="80"/>
+                <circle cx="120" cy="120" r="60"/>
+                <ellipse cx="120" cy="120" rx="100" ry="40" opacity="0.4"/>
+                <ellipse cx="120" cy="120" rx="80" ry="30" opacity="0.3"/>
+                <path d="M 20 120 L 220 120" opacity="0.4"/>
+                <path d="M 120 20 L 120 220" opacity="0.4"/>
+              </g>
+              <g fill="rgba(0,255,255,0.8)">
+                <circle cx="120" cy="30" r="2.5"/>
+                <circle cx="180" cy="60" r="2"/>
+                <circle cx="210" cy="120" r="2.5"/>
+                <circle cx="180" cy="180" r="2"/>
+                <circle cx="120" cy="210" r="2.5"/>
+                <circle cx="60" cy="180" r="2"/>
+                <circle cx="30" cy="120" r="2.5"/>
+                <circle cx="60" cy="60" r="2"/>
+              </g>
+              <circle cx="120" cy="120" r="110" fill="url(#globeShine)"/>
+            </svg>
+          </div>
+        </div>
         <div className="wrap">
           <h1>We handle the tech.<br/>You run the <em>business.</em></h1>
           <p className="hero-lead">We build your website, handle setup with you personally, and manage everything ongoing. Real person from day one — monthly reports explained</p>
@@ -375,33 +939,33 @@ export default function HomePage() {
             <h2>How We Work</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', maxWidth: '900px', margin: '32px auto 0' }}>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>1</span>
+            <div className="work-step-card">
+              <div className="step-icon">
+                <span>1</span>
               </div>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Day 1</h3>
-              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Setup call. Site built, Google claimed, email live.</p>
+              <h3>Day 1</h3>
+              <p>Setup call. Site built, Google claimed, email live.</p>
             </div>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>2</span>
+            <div className="work-step-card">
+              <div className="step-icon">
+                <span>2</span>
               </div>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Week 1</h3>
-              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Site goes live. Training included.</p>
+              <h3>Week 1</h3>
+              <p>Site goes live. Training included.</p>
             </div>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>3</span>
+            <div className="work-step-card">
+              <div className="step-icon">
+                <span>3</span>
               </div>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Month 1</h3>
-              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Check-in call. Review your numbers.</p>
+              <h3>Month 1</h3>
+              <p>Check-in call. Review your numbers.</p>
             </div>
-            <div style={{ background: '#fff', border: '1px solid rgba(26,48,112,0.08)', borderRadius: '12px', padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.03)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #00a87a, #00d4a8)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', flexShrink: 0 }}>
-                <span style={{ color: '#fff', fontWeight: 800, fontSize: '16px' }}>4</span>
+            <div className="work-step-card">
+              <div className="step-icon">
+                <span>4</span>
               </div>
-              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#171a2b', marginBottom: '6px' }}>Ongoing</h3>
-              <p style={{ fontSize: '12px', color: '#5b6072', lineHeight: 1.5, margin: 0 }}>Monthly reports explained by a real person.</p>
+              <h3>Ongoing</h3>
+              <p>Monthly reports explained by a real person.</p>
             </div>
           </div>
         </div>
