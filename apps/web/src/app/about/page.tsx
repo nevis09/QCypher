@@ -87,8 +87,8 @@ export default function AboutPage() {
           height: auto;
           display: block;
           border-radius: 12px;
-          -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, black 35%, transparent 100%);
-          mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, black 35%, transparent 100%);
+          -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 0%, black 55%, transparent 100%);
+          mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 0%, black 55%, transparent 100%);
         }
         .page-hero h1 {
           font-size: 44px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em;
