@@ -582,7 +582,7 @@ export default function PricingPage() {
               <button
                 onClick={() => {
                   setShowContactModal(false)
-                  window.Cal?.ns?.qcyphertech?.('pop', { date: new Date() })
+                  window.open('https://cal.com/qcyphertech', '_blank')
                 }}
                 style={{
                   padding: '20px',
