@@ -68,6 +68,26 @@ export default function AboutPage() {
           background: linear-gradient(155deg, #eef2ff 0%, #f8f9fc 65%);
           border-bottom: 1px solid var(--border);
         }
+        .page-hero .wrap {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 56px;
+          align-items: center;
+        }
+        .page-hero-content { display: flex; flex-direction: column; justify-content: center; }
+        .page-hero-image {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          max-width: 100%;
+          height: auto;
+        }
+        .page-hero-image img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 12px;
+        }
         .page-hero h1 {
           font-size: 44px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em;
           color: var(--ink); margin-bottom: 16px;
@@ -79,6 +99,10 @@ export default function AboutPage() {
           -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .page-hero p { font-size: 16px; color: var(--soft); max-width: 520px; line-height: 1.7; }
+        @media (max-width: 900px) {
+          .page-hero .wrap { grid-template-columns: 1fr; gap: 32px; }
+          .page-hero-image { order: -1; }
+        }
         @media (max-width: 600px) { .page-hero { padding: 52px 0 40px; } .page-hero h1 { font-size: 30px; } }
 
         /* SECTION */
@@ -230,9 +254,14 @@ export default function AboutPage() {
       {/* PAGE HERO */}
       <div className="page-hero">
         <div className="wrap">
-          <span className="eyebrow">Our Story</span>
-          <h1>Built by small business<br/>people, for <em>small businesses.</em></h1>
-          <p>We started QCypher because we saw too many local businesses paying too much for tools that were built for enterprises. We fixed that.</p>
+          <div className="page-hero-content">
+            <span className="eyebrow">Our Story</span>
+            <h1>Built by small business<br/>people, for <em>small businesses.</em></h1>
+            <p>We started QCypher because we saw too many local businesses paying too much for tools that were built for enterprises. We fixed that.</p>
+          </div>
+          <div className="page-hero-image">
+            <img src="/about-hero-illustration.png" alt="QCypher team working on security solutions" />
+          </div>
         </div>
       </div>
 
