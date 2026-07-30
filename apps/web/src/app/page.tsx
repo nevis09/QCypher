@@ -890,6 +890,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* AI CIRCLE GATE — Hero Underlay */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '40px 20px', background: '#f8f9fc', position: 'relative', zIndex: 1 }}>
+        <img src="/ai-circle-gate.webp" alt="AI Circle Gate" style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px', objectFit: 'contain' }} />
+      </div>
+
       {/* BENEFIT STRIP — 10.2 */}
       <div className="benefit-strip">
         <div className="wrap">
