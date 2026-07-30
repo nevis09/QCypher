@@ -192,13 +192,14 @@ export default function HomePage() {
         .hero-orb {
           position: absolute;
           top: 50%;
-          left: 65%;
-          transform: translateY(-50%) rotateX(15deg) rotateZ(-25deg);
-          width: 220px;
-          height: 220px;
+          left: 80%;
+          transform: translateX(-50%) translateY(-50%) rotateX(15deg) rotateZ(-25deg);
+          width: 480px;
+          height: 480px;
           z-index: 2;
           perspective: 1000px;
           transform-style: preserve-3d;
+          overflow: visible;
         }
         .hero-orb-blob {
           width: 100%;
@@ -242,8 +243,23 @@ export default function HomePage() {
           transform-style: preserve-3d;
           transform: rotateX(-15deg) rotateZ(25deg);
         }
-        .hero-orb-node {
+        .hero-orb-node-pos {
           position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 40px;
+          height: 40px;
+          margin: -20px 0 0 -20px;
+          transform-style: preserve-3d;
+        }
+        .hero-orb-node-pos:nth-child(1) { transform: rotate(0deg) translate(220px) rotate(0deg); }
+        .hero-orb-node-pos:nth-child(2) { transform: rotate(60deg) translate(220px) rotate(-60deg); }
+        .hero-orb-node-pos:nth-child(3) { transform: rotate(120deg) translate(220px) rotate(-120deg); }
+        .hero-orb-node-pos:nth-child(4) { transform: rotate(180deg) translate(220px) rotate(-180deg); }
+        .hero-orb-node-pos:nth-child(5) { transform: rotate(240deg) translate(220px) rotate(-240deg); }
+        .hero-orb-node-pos:nth-child(6) { transform: rotate(300deg) translate(220px) rotate(-300deg); }
+        .hero-orb-node {
+          position: relative;
           width: 40px;
           height: 40px;
           background: rgba(0,255,255,0.08);
@@ -265,12 +281,12 @@ export default function HomePage() {
           height: 20px;
           fill: #00ffff;
         }
-        .hero-orb-node:nth-child(1) { top: -25%; left: 50%; transform: translateX(-50%) translateZ(40px); animation: nodePulseUltra 16s ease-in-out infinite; }
-        .hero-orb-node:nth-child(2) { top: 15%; right: -35%; transform: translateZ(30px); animation: nodePulseUltra 18.4s ease-in-out infinite 0.2s; }
-        .hero-orb-node:nth-child(3) { bottom: 15%; right: -35%; transform: translateZ(50px); animation: nodePulseUltra 20.8s ease-in-out infinite 0.4s; }
-        .hero-orb-node:nth-child(4) { bottom: -25%; left: 50%; transform: translateX(-50%) translateZ(35px); animation: nodePulseUltra 23.2s ease-in-out infinite 0.6s; }
-        .hero-orb-node:nth-child(5) { bottom: 15%; left: -35%; transform: translateZ(25px); animation: nodePulseUltra 20s ease-in-out infinite 0.8s; }
-        .hero-orb-node:nth-child(6) { top: 15%; left: -35%; transform: translateZ(45px); animation: nodePulseUltra 21.6s ease-in-out infinite 1s; }
+        .hero-orb-node-pos:nth-child(1) .hero-orb-node { animation: nodePulseUltra 16s ease-in-out infinite; }
+        .hero-orb-node-pos:nth-child(2) .hero-orb-node { animation: nodePulseUltra 18.4s ease-in-out infinite 0.2s; }
+        .hero-orb-node-pos:nth-child(3) .hero-orb-node { animation: nodePulseUltra 20.8s ease-in-out infinite 0.4s; }
+        .hero-orb-node-pos:nth-child(4) .hero-orb-node { animation: nodePulseUltra 23.2s ease-in-out infinite 0.6s; }
+        .hero-orb-node-pos:nth-child(5) .hero-orb-node { animation: nodePulseUltra 20s ease-in-out infinite 0.8s; }
+        .hero-orb-node-pos:nth-child(6) .hero-orb-node { animation: nodePulseUltra 21.6s ease-in-out infinite 1s; }
         .hero-orb-icon {
           position: absolute;
           top: 50%;
@@ -284,6 +300,14 @@ export default function HomePage() {
           width: 200px;
           height: 200px;
           fill: #00ffff;
+        }
+        @keyframes portalSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .portal-spin {
+          animation: portalSpin 28s linear infinite;
+          filter: drop-shadow(0 0 25px rgba(0,220,255,0.8)) drop-shadow(0 0 60px rgba(0,180,255,0.5)) drop-shadow(0 0 100px rgba(0,150,255,0.3));
         }
         .hero .wrap { position: relative; }
         .hero h1 { font-size: 46px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; color: #fff; margin-bottom: 16px; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
@@ -829,49 +853,15 @@ export default function HomePage() {
         {/* Holographic Orb */}
         <div className="hero-orb">
           <div className="hero-orb-nodes">
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10C5.12 10 3.94 10.88 3.54 12.08C2.58 12.51 1.86 13.46 1.86 14.59C1.86 16.23 3.2 17.55 4.87 17.55H19C20.93 17.55 22.5 16.05 22.5 14.18C22.5 12.46 21.32 11.04 19.78 10.83C19.32 8.77 17.56 7.23 15.4 7.23C13.95 7.23 12.66 8.01 11.95 9.14C11.4 8.98 10.82 8.9 10.23 8.9C8.45 8.9 6.85 9.64 5.78 10.8C6.06 10.35 6.5 10 6.5 10Z"/></svg></div>
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L2 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-5z"/></svg></div>
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5s-5 2.24-5 5v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div>
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H4C2.9 6 2 6.9 2 8V16C2 17.1 2.9 18 4 18H20C21.1 18 22 17.1 22 16V8C22 6.9 21.1 6 20 6M4 8H20V10H4V8M4 16V12H20V16H4Z"/></svg></div>
-            <div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10C5.12 10 3.94 10.88 3.54 12.08C2.58 12.51 1.86 13.46 1.86 14.59C1.86 16.23 3.2 17.55 4.87 17.55H19C20.93 17.55 22.5 16.05 22.5 14.18C22.5 12.46 21.32 11.04 19.78 10.83C19.32 8.77 17.56 7.23 15.4 7.23C13.95 7.23 12.66 8.01 11.95 9.14C11.4 8.98 10.82 8.9 10.23 8.9C8.45 8.9 6.85 9.64 5.78 10.8C6.06 10.35 6.5 10 6.5 10Z"/></svg></div></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L2 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-5z"/></svg></div></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5s-5 2.24-5 5v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></div></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6H4C2.9 6 2 6.9 2 8V16C2 17.1 2.9 18 4 18H20C21.1 18 22 17.1 22 16V8C22 6.9 21.1 6 20 6M4 8H20V10H4V8M4 16V12H20V16H4Z"/></svg></div></div>
+            <div className="hero-orb-node-pos"><div className="hero-orb-node"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div></div>
           </div>
           <div className="hero-orb-icon">
-            <svg viewBox="0 0 240 240" style={{ animation: 'spin 40s linear infinite' }}>
-              <defs>
-                <radialGradient id="globeGrad" cx="35%" cy="35%">
-                  <stop offset="0%" stopColor="rgba(100,200,255,0.9)" stopOpacity="1"/>
-                  <stop offset="50%" stopColor="rgba(50,150,220,0.8)" stopOpacity="1"/>
-                  <stop offset="100%" stopColor="rgba(30,80,150,0.7)" stopOpacity="1"/>
-                </radialGradient>
-                <radialGradient id="globeShine" cx="30%" cy="30%">
-                  <stop offset="0%" stopColor="rgba(255,255,255,0.8)" stopOpacity="1"/>
-                  <stop offset="50%" stopColor="rgba(200,240,255,0.2)" stopOpacity="1"/>
-                  <stop offset="100%" stopColor="rgba(100,200,255,0)" stopOpacity="1"/>
-                </radialGradient>
-              </defs>
-              <circle cx="120" cy="120" r="110" fill="url(#globeGrad)" stroke="rgba(0,255,255,0.3)" strokeWidth="1"/>
-              <g stroke="rgba(100,200,255,0.6)" strokeWidth="1.2" fill="none">
-                <circle cx="120" cy="120" r="100"/>
-                <circle cx="120" cy="120" r="80"/>
-                <circle cx="120" cy="120" r="60"/>
-                <ellipse cx="120" cy="120" rx="100" ry="40" opacity="0.4"/>
-                <ellipse cx="120" cy="120" rx="80" ry="30" opacity="0.3"/>
-                <path d="M 20 120 L 220 120" opacity="0.4"/>
-                <path d="M 120 20 L 120 220" opacity="0.4"/>
-              </g>
-              <g fill="rgba(0,255,255,0.8)">
-                <circle cx="120" cy="30" r="2.5"/>
-                <circle cx="180" cy="60" r="2"/>
-                <circle cx="210" cy="120" r="2.5"/>
-                <circle cx="180" cy="180" r="2"/>
-                <circle cx="120" cy="210" r="2.5"/>
-                <circle cx="60" cy="180" r="2"/>
-                <circle cx="30" cy="120" r="2.5"/>
-                <circle cx="60" cy="60" r="2"/>
-              </g>
-              <circle cx="120" cy="120" r="110" fill="url(#globeShine)"/>
-            </svg>
+            <img src="/ai-circle-gate-transparent.png" alt="AI Portal" className="portal-spin" style={{ width: '480px', height: '480px', maxWidth: 'none', objectFit: 'contain' }} />
           </div>
         </div>
         <div className="wrap">
@@ -889,11 +879,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* AI CIRCLE GATE — Hero Underlay */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '40px 20px', position: 'relative', zIndex: 1 }}>
-        <img src="/ai-circle-gate.webp" alt="AI Circle Gate" style={{ maxWidth: '100%', height: 'auto', maxHeight: '400px', objectFit: 'contain' }} />
-      </div>
 
       {/* BENEFIT STRIP — 10.2 */}
       <div className="benefit-strip">
