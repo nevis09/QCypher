@@ -312,14 +312,19 @@ export default function HomePage() {
         .hero .wrap { position: relative; }
         .hero h1 { font-size: 46px; font-weight: 900; line-height: 1.08; letter-spacing: -0.03em; color: #fff; margin-bottom: 16px; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
         .hero h1 em { font-style: normal; background: linear-gradient(90deg, #7dd3f7, #4a9db5, #00e5aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-lead { font-size: 16px; color: rgba(255,255,255,0.75); max-width: 500px; margin-bottom: 28px; line-height: 1.7; }
+        .hero-lead { font-size: 16px; color: rgba(255,255,255,0.95); max-width: 500px; margin-bottom: 28px; line-height: 1.7; }
         .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
         .hero .btn-ghost { color: #fff; border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.07); }
         .hero .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.14); }
-        .trust-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 600; }
+        .trust-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 600; }
         .trust-row span { display: flex; align-items: center; gap: 6px; }
         .dot { width: 5px; height: 5px; border-radius: 50%; background: #00e5aa; flex-shrink: 0; }
-        @media (max-width: 600px) { .hero { padding: 56px 0 48px; } .hero h1 { font-size: 32px; } .hero-lead { font-size: 15px; } }
+        @media (max-width: 600px) {
+          .hero { padding: 56px 0 48px; }
+          .hero h1 { font-size: 32px; }
+          .hero-lead { font-size: 15px; }
+          .hero .wrap { position: relative; z-index: 10; }
+        }
 
         /* SECTION */
         section { padding: 72px 0; }
@@ -871,7 +876,7 @@ export default function HomePage() {
             <Link href="#packages-section" className="btn btn-primary">See packages</Link>
             <button onClick={() => setShowContactModal(true)} className="btn btn-ghost">Get a free quote</button>
           </div>
-          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.85)', fontWeight: 500, marginBottom: '28px', marginTop: '-20px' }}>Talk to Felix or Thomas directly. No sales team.</p>
           <div className="trust-row">
             <span><span className="dot" />No long-term contracts</span>
             <span><span className="dot" />Switch tiers anytime</span>
