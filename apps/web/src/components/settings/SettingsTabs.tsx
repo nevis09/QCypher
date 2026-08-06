@@ -3,22 +3,26 @@
 import { useState } from 'react'
 import { Sun, Blocks, Zap, Users, User, Shield, LogOut } from 'lucide-react'
 
-const TABS = [
+const ALL_TABS = [
   { id: 'workspace', label: 'Workspace', icon: Blocks },
   { id: 'team',      label: 'Team',      icon: Users  },
   { id: 'account',   label: 'Account',   icon: User   },
 ] as const
 
-type TabId = typeof TABS[number]['id']
+type TabId = typeof ALL_TABS[number]['id']
 
 type Props = {
   workspaceContent: React.ReactNode
   teamContent: React.ReactNode
   accountContent: React.ReactNode
+  // Phase 21 RBAC — only admins (owner role) see Workspace/Team; User and
+  // Read-only roles only ever see their own Account tab.
+  isAdmin?: boolean
 }
 
-export function SettingsTabs({ workspaceContent, teamContent, accountContent }: Props) {
-  const [active, setActive] = useState<TabId>('workspace')
+export function SettingsTabs({ workspaceContent, teamContent, accountContent, isAdmin = true }: Props) {
+  const TABS = isAdmin ? ALL_TABS : ALL_TABS.filter(t => t.id === 'account')
+  const [active, setActive] = useState<TabId>(isAdmin ? 'workspace' : 'account')
 
   const content = { workspace: workspaceContent, team: teamContent, account: accountContent }
 

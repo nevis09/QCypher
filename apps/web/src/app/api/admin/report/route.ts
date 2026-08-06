@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { assembleReportData } from '@/lib/actions/admin'
+import { renderBrandedEmail } from '@/lib/email/brand'
 
 const GEMINI_API_KEY  = process.env.GEMINI_API_KEY ?? ''
 const RESEND_API_KEY  = process.env.RESEND_API_KEY ?? ''
@@ -82,6 +83,30 @@ Write the summary now. Use only these exact numbers.`
   }
 
   // ── Step 3: Build email — data table + AI summary ─────────────────────────
+  const statRow = (label: string, value: string) => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid rgba(26,48,112,0.08);color:#5b6072;font-size:14px;">${label}</td>
+      <td style="padding:10px 0;border-bottom:1px solid rgba(26,48,112,0.08);color:#171a2b;font-size:14px;font-weight:700;text-align:right;">${value}</td>
+    </tr>
+  `
+
+  const emailHtml = renderBrandedEmail({
+    bodyHtml: `
+      <p style="margin:0 0 4px;font-size:20px;font-weight:800;color:#171a2b;">Your ${data.month} summary</p>
+      <p style="margin:0 0 20px;color:#5b6072;">Hi ${data.tenantName} team,</p>
+      <p style="margin:0 0 20px;">${aiSummary}</p>
+      <table style="width:100%;border-collapse:collapse;background:#f8f9fc;border-radius:12px;padding:4px 20px;margin:0 0 20px;border:1px solid rgba(26,48,112,0.08);">
+        <tr><td colspan="2" style="padding:14px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#5b6072;">Your ${data.month} numbers</td></tr>
+        ${statRow('Review request texts sent', String(data.reviewsSent))}
+        ${statRow('Missed-call auto text-backs', String(data.missedCallTexts))}
+        ${statRow('Online scheduler', data.calConnected ? 'Active' : 'Not connected')}
+        ${statRow('Security &amp; backups', 'Managed by Supabase (daily)')}
+      </table>
+      <p style="margin:0;">Questions? Reply to this email or call us at <strong>(804) 250-5066</strong>.</p>
+      <p style="margin:16px 0 0;color:#5b6072;">— The QCypher Team<br>hello@qcyphertech.com</p>
+    `,
+  })
+
   const emailBody = `Hi ${data.tenantName} team,
 
 Here's your QCypher activity summary for ${data.month}.
@@ -115,6 +140,7 @@ hello@qcyphertech.com`
       from: RESEND_FROM,
       to: [recipientEmail],
       subject: `Your ${data.month} QCypher Summary`,
+      html: emailHtml,
       text: emailBody,
     }),
   })

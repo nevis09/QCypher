@@ -3,10 +3,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
 
+// 'owner' = Admin, 'member' = User, 'read_only' = Read-only (Phase 21 RBAC)
+export type Role = 'owner' | 'member' | 'read_only'
+
 export type TeamMember = {
   id: string
   email: string
-  role: 'owner' | 'member'
+  role: Role
   joined_at: string
   last_seen: string | null
 }
@@ -14,15 +17,35 @@ export type TeamMember = {
 export type PendingInvite = {
   id: string
   email: string
+  role: Role
   expires_at: string
   created_at: string
 }
 
-async function getCallerTenantId() {
+async function getCaller() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
-  return getTenantId(user.id, user.app_metadata)
+  const tenant_id = await getTenantId(user.id, user.app_metadata)
+
+  // Re-fetch fresh app_metadata via Admin API — the caller's own JWT can be
+  // stale (same staleness issue getTenantId works around), and role is a
+  // security-sensitive check so we don't trust a cached token for it.
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+  const role = (fresh?.app_metadata?.role ?? 'member') as Role
+
+  return { userId: user.id, tenant_id, role }
+}
+
+async function getCallerTenantId() {
+  return (await getCaller()).tenant_id
+}
+
+async function requireOwner() {
+  const caller = await getCaller()
+  if (caller.role !== 'owner') throw new Error('Only admins can manage team members')
+  return caller
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
@@ -35,7 +58,7 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
     .map(u => ({
       id: u.id,
       email: u.email ?? '',
-      role: (u.app_metadata?.role ?? 'member') as 'owner' | 'member',
+      role: (u.app_metadata?.role ?? 'member') as Role,
       joined_at: u.created_at,
       last_seen: u.last_sign_in_at ?? null,
     }))
@@ -59,26 +82,45 @@ export async function getPendingInvites(): Promise<PendingInvite[]> {
     .gt('expires_at', new Date().toISOString())
     .order('created_at', { ascending: false })
 
-  return (data ?? []) as PendingInvite[]
+  if (!data?.length) return []
+
+  // Role isn't stored on invite_tokens — it lives on the stub auth user
+  // Supabase creates at invite time (see api/team/invite/route.ts), so look
+  // it up by email to display it alongside the pending invite.
+  const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const roleByEmail = new Map(users.map(u => [u.email?.toLowerCase(), (u.app_metadata?.role ?? 'member') as Role]))
+
+  const invites = data as { id: string; email: string; expires_at: string; created_at: string }[]
+  return invites.map(invite => ({
+    ...invite,
+    role: roleByEmail.get(invite.email.toLowerCase()) ?? 'member',
+  }))
 }
 
 export async function revokeInvite(id: string) {
-  const tenant_id = await getCallerTenantId()
+  const caller = await requireOwner()
   const admin = createAdminClient()
   await admin
     .from('invite_tokens')
     .delete()
     .eq('id', id)
-    .eq('tenant_id', tenant_id)
+    .eq('tenant_id', caller.tenant_id)
 }
 
-export async function updateMemberRole(memberId: string, role: 'owner' | 'member') {
-  const tenant_id = await getCallerTenantId()
+const VALID_ROLES: Role[] = ['owner', 'member', 'read_only']
+
+export async function updateMemberRole(memberId: string, role: Role) {
+  const caller = await requireOwner()
+  if (!VALID_ROLES.includes(role)) throw new Error('Invalid role')
+
   const admin = createAdminClient()
 
   // Verify the target user is in the same tenant before updating
   const { data: { user } } = await admin.auth.admin.getUserById(memberId)
-  if (user?.app_metadata?.tenant_id !== tenant_id) throw new Error('Forbidden')
+  if (user?.app_metadata?.tenant_id !== caller.tenant_id) throw new Error('Forbidden')
+  if (memberId === caller.userId && role !== 'owner') {
+    throw new Error("You can't demote yourself — ask another admin to change your role")
+  }
 
   await admin.auth.admin.updateUserById(memberId, {
     app_metadata: { ...user.app_metadata, role },
@@ -86,12 +128,12 @@ export async function updateMemberRole(memberId: string, role: 'owner' | 'member
 }
 
 export async function removeMember(memberId: string) {
-  const tenant_id = await getCallerTenantId()
+  const caller = await requireOwner()
   const admin = createAdminClient()
 
   const { data: { user } } = await admin.auth.admin.getUserById(memberId)
-  if (user?.app_metadata?.tenant_id !== tenant_id) throw new Error('Forbidden')
-  if (user?.app_metadata?.role === 'owner') throw new Error('Cannot remove the owner')
+  if (user?.app_metadata?.tenant_id !== caller.tenant_id) throw new Error('Forbidden')
+  if (user?.app_metadata?.role === 'owner') throw new Error('Cannot remove an admin')
 
   // Remove from tenant by clearing tenant_id — account still exists but can't access this workspace
   await admin.auth.admin.updateUserById(memberId, {

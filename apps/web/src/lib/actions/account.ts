@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
+import { renderBrandedEmail } from '@/lib/email/brand'
 
 export async function updateBusinessName(name: string): Promise<{ error?: string }> {
   try {
@@ -143,14 +144,15 @@ export async function requestAccountDeactivation() {
         from:    RESEND_FROM,
         to:      [user.email!],
         subject: 'Your QCypher account deactivation request was received',
-        html:    `
-          <p>Hi,</p>
-          <p>We received your request to deactivate your QCypher CRM account.</p>
-          <p>Your account remains active while our team reviews the request. We'll follow up within 1–2 business days to confirm deactivation and provide options for exporting your data.</p>
-          <p>If this was a mistake, you don't need to do anything — just reply to this email and we'll disregard the request.</p>
-          <br>
-          <p>— The QCypher Team<br>info@qcyphertech.com</p>
-        `,
+        html: renderBrandedEmail({
+          bodyHtml: `
+            <p style="margin:0 0 16px;">Hi,</p>
+            <p style="margin:0 0 16px;">We received your request to deactivate your QCypher CRM account.</p>
+            <p style="margin:0 0 16px;">Your account remains active while our team reviews the request. We'll follow up within 1–2 business days to confirm deactivation and provide options for exporting your data.</p>
+            <p style="margin:0 0 16px;">If this was a mistake, you don't need to do anything — just reply to this email and we'll disregard the request.</p>
+            <p style="margin:24px 0 0;color:#5b6072;">— The QCypher Team<br>info@qcyphertech.com</p>
+          `,
+        }),
       }),
     })
   }

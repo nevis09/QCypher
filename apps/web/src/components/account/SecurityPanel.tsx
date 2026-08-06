@@ -23,9 +23,10 @@ type Props = {
   hasPassword: boolean
   hasGoogle:   boolean
   signedInAt:  string
+  readOnly?:   boolean
 }
 
-export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Props) {
+export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt, readOnly = false }: Props) {
   const [pwOpen,   setPwOpen]   = useState(false)
   const [pw,       setPw]       = useState({ next: '', confirm: '' })
   const [showPw,   setShowPw]   = useState(false)
@@ -100,7 +101,8 @@ export function SecurityPanel({ email, hasPassword, hasGoogle, signedInAt }: Pro
       </div>
 
       {/* ── Change password ── */}
-      {hasPassword && (
+      {/* Read-only role: view-only per RBAC spec, so password changes are disabled too */}
+      {hasPassword && !readOnly && (
         <div style={{ borderRadius: '16px', border: `1px solid ${BORDER}`, background: CARD, overflow: 'hidden' }}>
           <button
             onClick={() => { setPwOpen(o => !o); setPwMsg(null) }}

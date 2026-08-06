@@ -49,7 +49,7 @@ export default function PricingPage() {
           padding: 12px 20px; max-width: 1060px; margin: 0 auto;
         }
         .nav-logo { display: flex; align-items: center; gap: 2px; font-weight: 800; font-size: 17px; color: var(--indigo); }
-        .nav-logo img { height: 48px; width: auto; display: block; transform: translateY(-5px); }
+        .nav-logo img { height: 44px; width: auto; display: block; }
         .nav-cta { display: flex; align-items: center; gap: 8px; }
 
         /* BUTTONS */
@@ -200,11 +200,10 @@ export default function PricingPage() {
         @media (max-width: 480px) {
           .nav-inner { padding: 10px 16px; }
           .nav-logo { font-size: 15px; }
-          .nav-logo img { height: 36px; transform: translateY(-3px); }
+          .nav-logo img { height: 32px; }
           .btn-sm { font-size: 13px; padding: 0 12px; }
           section { padding: 56px 0; }
           .nav-page-link { font-size: 13px !important; margin-right: 2px !important; }
-          .nav-logo-text { display: none; }
           .nav-quote-btn { display: none !important; }
         }
       `}</style>
@@ -213,8 +212,7 @@ export default function PricingPage() {
       <header className="nav-bar">
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img src="/qcypher-logo.png" alt="QCypher" />
-            <span className="nav-logo-text">QCypher Technologies</span>
+            <img src="/qcypher-logo-horizontal.png" alt="QCypher Technologies" />
           </Link>
           <div className="nav-cta">
             <Link href="/" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Home</Link>
@@ -546,8 +544,7 @@ export default function PricingPage() {
           <div className="foot-grid">
             <div className="foot-brand">
               <div className="nav-logo" style={{ marginBottom: 0 }}>
-                <img src="/qcypher-logo.png" alt="QCypher" />
-                QCypher Technologies
+                <img src="/qcypher-logo-horizontal.png" alt="QCypher Technologies" />
               </div>
               <p>Simple tech solutions for local businesses. No jargon, just results.</p>
             </div>

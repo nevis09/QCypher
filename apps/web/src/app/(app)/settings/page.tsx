@@ -20,14 +20,19 @@ export default async function SettingsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
+  // Phase 21 RBAC — 'owner' = Admin, 'member' = User, 'read_only' = Read-only.
+  const role = (user.app_metadata?.role as 'owner' | 'member' | 'read_only' | undefined) ?? 'member'
+  const isAdmin = role === 'owner'
+  const isReadOnly = role === 'read_only'
+
   const [{ data: tenant }, { data: profile }, members, pendingInvites] = await Promise.all([
     supabase.from('tenants').select('name, slug, settings, telnyx_number').single(),
     supabase.from('users')
       .select('legal_name, nickname, phone, street, city, state, zip')
       .eq('id', user.id)
       .single(),
-    getTeamMembers().catch(() => []),
-    getPendingInvites().catch(() => []),
+    isAdmin ? getTeamMembers().catch(() => []) : Promise.resolve([]),
+    isAdmin ? getPendingInvites().catch(() => []) : Promise.resolve([]),
   ])
 
   const settings: TenantSettings = { ...DEFAULT_SETTINGS, ...(tenant?.settings ?? {}) }
@@ -90,6 +95,7 @@ export default async function SettingsPage() {
             zip:           (profile as any)?.zip        ?? null,
             email:         user.email ?? '',
           }}
+          readOnly={isReadOnly}
         />
       </SettingsSection>
 
@@ -99,6 +105,7 @@ export default async function SettingsPage() {
           hasPassword={hasPassword}
           hasGoogle={hasGoogle}
           signedInAt={signedInAt}
+          readOnly={isReadOnly}
         />
       </SettingsSection>
 
@@ -123,6 +130,7 @@ export default async function SettingsPage() {
         workspaceContent={workspaceTab}
         teamContent={teamTab}
         accountContent={accountTab}
+        isAdmin={isAdmin}
       />
     </div>
   )

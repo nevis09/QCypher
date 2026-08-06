@@ -8,6 +8,7 @@ import { InteractionTimeline } from '@/components/interactions/InteractionTimeli
 import { AddInteractionForm } from '@/components/interactions/AddInteractionForm'
 import { QuickSendButton } from '@/components/templates/QuickSendButton'
 import { SendPortalLinkButton } from '@/components/portal/SendPortalLinkButton'
+import { useUserRole } from '@/lib/hooks/useUserRole'
 import type { Tables } from '@/types/database'
 import { cn } from '@/lib/utils'
 
@@ -33,6 +34,7 @@ export function ContactDetail({ contact, interactions, tenantId, tenantSlug, bus
 }) {
   const router = useRouter()
   const supabase = createClient()
+  const { canEdit } = useUserRole() // Phase 21 RBAC — hides edit/delete for read-only
 
   async function handleDelete() {
     if (!confirm(`Delete ${contact.first_name}? This cannot be undone.`)) return
@@ -58,14 +60,16 @@ export function ContactDetail({ contact, interactions, tenantId, tenantSlug, bus
             </div>
             {contact.company && <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{contact.company}</p>}
           </div>
-          <div className="flex gap-2 flex-shrink-0">
-            <Link href={`/contacts/${contact.id}/edit`} className="p-2 rounded-xl hover:bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] transition-colors">
-              <Pencil className="w-4 h-4" />
-            </Link>
-            <button onClick={handleDelete} className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-[hsl(var(--muted-foreground))] hover:text-red-500 transition-colors">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
+          {canEdit && (
+            <div className="flex gap-2 flex-shrink-0">
+              <Link href={`/contacts/${contact.id}/edit`} className="p-2 rounded-xl hover:bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] transition-colors">
+                <Pencil className="w-4 h-4" />
+              </Link>
+              <button onClick={handleDelete} className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-[hsl(var(--muted-foreground))] hover:text-red-500 transition-colors">
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Contact fields */}

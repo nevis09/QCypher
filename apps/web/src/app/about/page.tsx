@@ -3,6 +3,18 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
+// Same footer used on the homepage — see apps/web/src/app/page.tsx
+const INTEGRATION_LOGOS = [
+  { name: 'Google Business Profile', file: '/logos/googlebusiness.png' },
+  { name: 'Cal.com', file: '/logos/calcom.png' },
+  { name: 'Telnyx', file: '/logos/telnyx.svg' },
+  { name: 'Resend', file: '/logos/resend.svg' },
+  { name: 'Cloudflare', file: '/logos/cloudflare.svg' },
+  { name: 'Vercel', file: '/logos/vercel.svg' },
+  { name: 'GitHub', file: '/logos/github.svg' },
+  { name: 'Anthropic', file: '/logos/anthropic.png' },
+]
+
 export default function AboutPage() {
   const [showContactModal, setShowContactModal] = useState(false)
   return (
@@ -40,7 +52,7 @@ export default function AboutPage() {
           padding: 12px 20px; max-width: 1060px; margin: 0 auto;
         }
         .nav-logo { display: flex; align-items: center; gap: 2px; font-weight: 800; font-size: 17px; color: var(--indigo); }
-        .nav-logo img { height: 48px; width: auto; display: block; transform: translateY(-5px); }
+        .nav-logo img { height: 44px; width: auto; display: block; }
         .nav-links { display: flex; align-items: center; gap: 24px; }
         .nav-link { font-size: 15px; font-weight: 600; color: var(--soft); transition: color .15s; }
         .nav-link:hover, .nav-link.active { color: var(--indigo); }
@@ -218,24 +230,84 @@ export default function AboutPage() {
         .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
         .btn-outline-white:hover { border-color: #fff; }
 
-        /* FOOTER */
-        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #f0f3ff; }
-        .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
-        @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; } }
-        .foot-brand p { font-size: 15px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
-        .foot-col h5 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--soft); margin-bottom: 12px; font-weight: 700; }
-        .foot-col a { display: block; font-size: 15px; color: var(--soft); margin-bottom: 9px; font-weight: 500; }
-        .foot-col a:hover { color: var(--indigo); }
+        /* FOOTER — same as homepage */
+        footer {
+          position: relative;
+          padding: 22px 0 12px;
+          background: linear-gradient(145deg, #0e1f45 0%, #1a3070 45%, #1e4a7a 75%, #246080 100%);
+          overflow: hidden;
+        }
+        footer::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, transparent, var(--cyan), var(--mint), transparent);
+          opacity: 0.7;
+        }
+        footer::after {
+          content: '';
+          position: absolute; inset: 0;
+          background: radial-gradient(ellipse 50% 60% at 85% 0%, rgba(74,157,181,0.12) 0%, transparent 70%);
+          pointer-events: none;
+        }
+        footer .wrap { position: relative; }
+        footer .nav-logo { color: #fff; }
+        .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+        @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; gap: 14px; } }
+        .foot-brand p { font-size: 12px; color: rgba(255,255,255,0.55); max-width: 260px; margin-top: 4px; line-height: 1.45; }
+        .foot-col h5 {
+          font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+          color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 700;
+        }
+        .foot-col a {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 500;
+          transition: color .15s, transform .15s; width: fit-content;
+        }
+        .foot-col a:hover { color: #fff; transform: translateX(3px); }
+        .foot-col a::after {
+          content: '→'; opacity: 0; transform: translateX(-4px);
+          transition: opacity .15s, transform .15s; font-size: 11px; color: var(--cyan);
+        }
+        .foot-col a:hover::after { opacity: 1; transform: translateX(0); }
         .foot-bottom {
-          border-top: 1px solid var(--border); padding-top: 18px;
+          border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;
           display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-          font-size: 14px; color: var(--soft);
+          font-size: 12px; color: rgba(255,255,255,0.4);
+        }
+
+        /* INTEGRATIONS FOOTER — same as homepage */
+        .integrations-section {
+          max-width: 900px; margin: 0 auto; padding: 0.85rem 0;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          margin-bottom: 10px;
+        }
+        .integrations-headline {
+          font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6);
+          text-align: center; margin-bottom: 0.5rem;
+        }
+        .integrations-grid {
+          display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
+        }
+        .integration-card {
+          width: 60px; height: 30px;
+          background: rgba(255,255,255,0.92);
+          border: 0.5px solid rgba(255,255,255,0.15);
+          border-radius: 6px;
+          padding: 5px;
+          display: flex; align-items: center; justify-content: center;
+          flex: 0 0 auto;
+          transition: background .15s, transform .15s;
+        }
+        .integration-card:hover { background: #fff; transform: translateY(-2px); }
+        .integration-card img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+        @media (max-width: 768px) {
+          .integrations-grid { gap: 8px; }
         }
 
         @media (max-width: 480px) {
           .nav-inner { padding: 10px 16px; }
-          .nav-logo-text { display: none; }
-          .nav-logo img { height: 36px; transform: translateY(-3px); }
+          .nav-logo img { height: 32px; }
           .btn-sm { font-size: 13px; padding: 0 12px; }
           section { padding: 56px 0; }
           .nav-links { display: none; }
@@ -248,8 +320,7 @@ export default function AboutPage() {
       <header className="nav-bar">
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
-            <img src="/qcypher-logo.png" alt="QCypher" />
-            <span className="nav-logo-text">QCypher Technologies</span>
+            <img src="/qcypher-logo-horizontal.png" alt="QCypher Technologies" />
           </Link>
           <div className="nav-cta">
             <Link href="/" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>Home</Link>
@@ -452,22 +523,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* FOOTER — same as homepage */}
       <footer id="contact">
         <div className="wrap">
           <div className="foot-grid">
             <div className="foot-brand">
               <div className="nav-logo" style={{ marginBottom: 0 }}>
-                <img src="/qcypher-logo.png" alt="QCypher" />
-                QCypher Technologies
+                <img src="/qcypher-logo-footer.png" alt="QCypher Technologies" />
               </div>
               <p>Simple tech solutions for local businesses. No jargon, just results.</p>
             </div>
             <div className="foot-col">
               <h5>Contact Us</h5>
               <a href="mailto:info@qcyphertech.com">info@qcyphertech.com</a>
-              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--indigo)', marginBottom: '4px' }}>(804) 250-5066</a>
-              <p style={{ fontSize: '13px', color: 'var(--soft)', margin: '0' }}>Ask for Felix or Thomas.</p>
+              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--cyan)', marginBottom: '4px' }}>(804) 250-5066</a>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', margin: '0' }}>Ask for Felix or Thomas.</p>
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>
@@ -477,6 +547,19 @@ export default function AboutPage() {
               <Link href="/auth/login">Client Login</Link>
             </div>
           </div>
+
+          {/* INTEGRATIONS FOOTER — same as homepage */}
+          <div className="integrations-section" role="region" aria-label="Integration partners">
+            <div className="integrations-headline">Built to work together — no tech headaches</div>
+            <div className="integrations-grid">
+              {INTEGRATION_LOGOS.map((logo) => (
+                <div className="integration-card" key={logo.file}>
+                  <img src={logo.file} alt={logo.name} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="foot-bottom">
             <span>© 2026 QCypher Technologies. All rights reserved.</span>
             <span>Built for small businesses, by a small business.</span>

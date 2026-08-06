@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
   const { email, role = 'member' } = await request.json() as { email: string; role?: string }
   if (!email?.trim()) return NextResponse.json({ error: 'Email is required' }, { status: 400 })
-  if (!['owner', 'member'].includes(role)) return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
+  if (!['owner', 'member', 'read_only'].includes(role)) return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
 
   // Record the pending invite
   const { data: token, error: tokenErr } = await admin

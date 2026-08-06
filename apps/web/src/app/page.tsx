@@ -6,6 +6,37 @@ import { useState, useEffect } from 'react'
 // Public marketing page — no auth calls, no Supabase imports.
 // Middleware handles logged-in redirect (/ → /dashboard).
 
+// Phase 17: Customer Logo Carousel — real logos extracted from each company's
+// live site (or official press assets) and stored locally in /public/logos.
+const CUSTOMER_LOGOS = [
+  { name: 'Make Me Pulse', file: '/logos/makemepulse.svg' },
+  { name: 'BuildOps', file: '/logos/buildops.svg' },
+  { name: 'Contractor Nation', file: '/logos/contractornation.svg' },
+  { name: 'FieldEdge', file: '/logos/fieldedge.svg' },
+  { name: 'Mace Group', file: '/logos/macegroup.png' },
+  { name: 'ServiceTitan', file: '/logos/servicetitan.svg' },
+  { name: 'AlignOps', file: '/logos/alignops.png' },
+  { name: 'Adoratorio', file: '/logos/adoratorio.png' },
+  { name: 'Aquest', file: '/logos/aquest.png' },
+  { name: 'Burocratik', file: '/logos/burocratik.png' },
+  { name: 'DogStudio', file: '/logos/dogstudio.png' },
+  { name: 'Immersive G', file: '/logos/immersiveg.png' },
+  { name: 'Lusion', file: '/logos/lusion.png' },
+]
+
+// Phase 19: Integration Logos Footer — real logos extracted from each
+// service's live site and stored locally in /public/logos.
+const INTEGRATION_LOGOS = [
+  { name: 'Google Business Profile', file: '/logos/googlebusiness.png' },
+  { name: 'Cal.com', file: '/logos/calcom.png' },
+  { name: 'Telnyx', file: '/logos/telnyx.svg' },
+  { name: 'Resend', file: '/logos/resend.svg' },
+  { name: 'Cloudflare', file: '/logos/cloudflare.svg' },
+  { name: 'Vercel', file: '/logos/vercel.svg' },
+  { name: 'GitHub', file: '/logos/github.svg' },
+  { name: 'Anthropic', file: '/logos/anthropic.png' },
+]
+
 export default function HomePage() {
   const [showReportModal, setShowReportModal] = useState(false)
   const [showContactModal, setShowContactModal] = useState(false)
@@ -79,7 +110,7 @@ export default function HomePage() {
           padding: 12px 20px; max-width: 1060px; margin: 0 auto;
         }
         .nav-logo { display: flex; align-items: center; gap: 2px; font-weight: 800; font-size: 17px; color: var(--indigo); }
-        .nav-logo img { height: 48px; width: auto; display: block; transform: translateY(-5px); }
+        .nav-logo img { height: 44px; width: auto; display: block; }
         .nav-cta { display: flex; align-items: center; gap: 8px; }
 
         /* BUTTONS */
@@ -807,6 +838,62 @@ export default function HomePage() {
           margin: 0;
         }
 
+        /* LOGO CAROUSEL — Phase 17 */
+        .logo-carousel-section { padding: 0.5rem 0 1.5rem; background: #fff; }
+        .logo-carousel-trust-line {
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          flex-wrap: wrap; margin-bottom: 2rem;
+        }
+        .logo-carousel-eyebrow {
+          text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;
+          color: var(--soft); font-weight: 600;
+        }
+        .logo-carousel-dot {
+          width: 4px; height: 4px; border-radius: 50%;
+          background: var(--cyan); flex-shrink: 0;
+        }
+        .logo-carousel-headline {
+          font-size: 14px; font-weight: 500; color: var(--ink);
+        }
+        .logo-carousel-viewport {
+          position: relative;
+          max-width: 900px;
+          margin: 0 auto;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+        }
+        .logo-carousel-track {
+          display: flex;
+          align-items: center;
+          gap: 32px;
+          width: max-content;
+          animation: logoScroll 30s linear infinite;
+          will-change: transform;
+        }
+        @keyframes logoScroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .logo-card {
+          flex: 0 0 auto;
+          width: 140px; height: 60px;
+          background: var(--card);
+          border: 0.5px solid var(--border);
+          border-radius: 8px;
+          padding: 12px;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .logo-card img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+        @media (max-width: 768px) {
+          .logo-carousel-viewport {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+          }
+          .logo-carousel-track { gap: 20px; animation-duration: 22s; }
+          .logo-card { width: 104px; height: 48px; padding: 8px; }
+        }
+
         /* TESTIMONIALS */
         .tcard {
           background: #f8f9fc; border: 1px solid rgba(31,60,136,.08);
@@ -814,27 +901,87 @@ export default function HomePage() {
         }
 
         /* FOOTER */
-        footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #f0f3ff; }
-        .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
-        @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; } }
-        .foot-brand p { font-size: 15px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
-        .foot-col h5 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--soft); margin-bottom: 12px; font-weight: 700; }
-        .foot-col a { display: block; font-size: 15px; color: var(--soft); margin-bottom: 9px; font-weight: 500; }
-        .foot-col a:hover { color: var(--indigo); }
+        footer {
+          position: relative;
+          padding: 22px 0 12px;
+          background: linear-gradient(145deg, #0e1f45 0%, #1a3070 45%, #1e4a7a 75%, #246080 100%);
+          overflow: hidden;
+        }
+        footer::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, transparent, var(--cyan), var(--mint), transparent);
+          opacity: 0.7;
+        }
+        footer::after {
+          content: '';
+          position: absolute; inset: 0;
+          background: radial-gradient(ellipse 50% 60% at 85% 0%, rgba(74,157,181,0.12) 0%, transparent 70%);
+          pointer-events: none;
+        }
+        footer .wrap { position: relative; }
+        footer .nav-logo { color: #fff; }
+        .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+        @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; gap: 14px; } }
+        .foot-brand p { font-size: 12px; color: rgba(255,255,255,0.55); max-width: 260px; margin-top: 4px; line-height: 1.45; }
+        .foot-col h5 {
+          font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
+          color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 700;
+        }
+        .foot-col a {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 500;
+          transition: color .15s, transform .15s; width: fit-content;
+        }
+        .foot-col a:hover { color: #fff; transform: translateX(3px); }
+        .foot-col a::after {
+          content: '→'; opacity: 0; transform: translateX(-4px);
+          transition: opacity .15s, transform .15s; font-size: 11px; color: var(--cyan);
+        }
+        .foot-col a:hover::after { opacity: 1; transform: translateX(0); }
         .foot-bottom {
-          border-top: 1px solid var(--border); padding-top: 18px;
+          border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;
           display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-          font-size: 14px; color: var(--soft);
+          font-size: 12px; color: rgba(255,255,255,0.4);
+        }
+
+        /* INTEGRATIONS FOOTER — Phase 19 */
+        .integrations-section {
+          max-width: 900px; margin: 0 auto; padding: 0.85rem 0;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+          margin-bottom: 10px;
+        }
+        .integrations-headline {
+          font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6);
+          text-align: center; margin-bottom: 0.5rem;
+        }
+        .integrations-grid {
+          display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
+        }
+        .integration-card {
+          width: 60px; height: 30px;
+          background: rgba(255,255,255,0.92);
+          border: 0.5px solid rgba(255,255,255,0.15);
+          border-radius: 6px;
+          padding: 5px;
+          display: flex; align-items: center; justify-content: center;
+          flex: 0 0 auto;
+          transition: background .15s, transform .15s;
+        }
+        .integration-card:hover { background: #fff; transform: translateY(-2px); }
+        .integration-card img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+        @media (max-width: 768px) {
+          .integrations-grid { gap: 8px; }
         }
 
         @media (max-width: 480px) {
           .nav-inner { padding: 10px 16px; }
           .nav-logo { font-size: 15px; }
-          .nav-logo img { height: 36px; transform: translateY(-3px); }
+          .nav-logo img { height: 32px; }
           .btn-sm { font-size: 13px; padding: 0 12px; }
           section { padding: 56px 0; }
           .nav-page-link { font-size: 13px !important; margin-right: 2px !important; }
-          .nav-logo-text { display: none; }
           .nav-quote-btn { display: none !important; }
         }
       `}</style>
@@ -843,8 +990,7 @@ export default function HomePage() {
       <header className="nav-bar">
         <div className="nav-inner">
           <div className="nav-logo">
-            <img src="/qcypher-logo.png" alt="QCypher" />
-            <span className="nav-logo-text">QCypher Technologies</span>
+            <img src="/qcypher-logo-horizontal.png" alt="QCypher Technologies" />
           </div>
           <div className="nav-cta">
             <Link href="/about" className="nav-page-link" style={{ fontSize: '15px', fontWeight: 600, color: '#5b6072', marginRight: '4px' }}>About</Link>
@@ -1100,12 +1246,37 @@ export default function HomePage() {
       </section>
 
       {/* MONTHLY CHECK-IN */}
-      <section style={{ background: '#f4f6fc', padding: '72px 0', borderTop: '1px solid rgba(31,60,136,.08)' }}>
+      <section style={{ background: '#fff', padding: '40px 0 8px', borderTop: '1px solid rgba(31,60,136,.08)' }}>
         <div className="wrap">
           <div className="section-head center">
             <h2>Monthly Check-In — We Explain the Numbers</h2>
             <p>Every month, a tailored report showing bookings, reviews, and what's working. We walk you through it—just what matters to your business.</p>
             <button onClick={() => setShowReportModal(true)} className="btn btn-ghost" style={{ marginTop: '20px' }}>Ask for a sample report</button>
+          </div>
+        </div>
+      </section>
+
+      {/* CUSTOMER LOGO CAROUSEL — Phase 17 */}
+      <section className="logo-carousel-section">
+        <div className="wrap">
+          <div className="logo-carousel-trust-line">
+            <span className="logo-carousel-eyebrow">Trusted by service businesses</span>
+            <span className="logo-carousel-dot" />
+            <span className="logo-carousel-headline">Real companies, real results</span>
+          </div>
+          <div className="logo-carousel-viewport" role="region" aria-label="Customer logos">
+            <div className="logo-carousel-track">
+              {[...CUSTOMER_LOGOS, ...CUSTOMER_LOGOS].map((logo, i) => (
+                <div className="logo-card" key={`${logo.file}-${i}`}>
+                  <img
+                    src={logo.file}
+                    alt={logo.name}
+                    loading="lazy"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = 'hidden' }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1193,16 +1364,15 @@ export default function HomePage() {
           <div className="foot-grid">
             <div className="foot-brand">
               <div className="nav-logo" style={{ marginBottom: 0 }}>
-                <img src="/qcypher-logo.png" alt="QCypher" />
-                QCypher Technologies
+                <img src="/qcypher-logo-footer.png" alt="QCypher Technologies" />
               </div>
               <p>Simple tech solutions for local businesses. No jargon, just results.</p>
             </div>
             <div className="foot-col">
               <h5>Contact Us</h5>
               <a href="mailto:info@qcyphertech.com">info@qcyphertech.com</a>
-              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--indigo)', marginBottom: '4px' }}>(804) 250-5066</a>
-              <p style={{ fontSize: '13px', color: 'var(--soft)', margin: '0' }}>Ask for Felix or Thomas.</p>
+              <a href="tel:+18042505066" style={{ fontWeight: 600, color: 'var(--cyan)', marginBottom: '4px' }}>(804) 250-5066</a>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', margin: '0' }}>Ask for Felix or Thomas.</p>
             </div>
             <div className="foot-col">
               <h5>Quick Links</h5>
@@ -1212,6 +1382,19 @@ export default function HomePage() {
               <Link href="/auth/login">Client Login</Link>
             </div>
           </div>
+
+          {/* INTEGRATIONS FOOTER — Phase 19 */}
+          <div className="integrations-section" role="region" aria-label="Integration partners">
+            <div className="integrations-headline">Built to work together — no tech headaches</div>
+            <div className="integrations-grid">
+              {INTEGRATION_LOGOS.map((logo) => (
+                <div className="integration-card" key={logo.file}>
+                  <img src={logo.file} alt={logo.name} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="foot-bottom">
             <span>© 2026 QCypher Technologies. All rights reserved.</span>
             <span>Built for small businesses, by a small business.</span>

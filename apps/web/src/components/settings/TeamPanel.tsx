@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { UserPlus, X, Clock, Crown, User, ChevronDown } from 'lucide-react'
-import type { TeamMember, PendingInvite } from '@/lib/actions/team'
+import { UserPlus, X, Clock, Crown, User, Eye, ChevronDown } from 'lucide-react'
+import type { TeamMember, PendingInvite, Role } from '@/lib/actions/team'
 import { revokeInvite, updateMemberRole, removeMember } from '@/lib/actions/team'
 
 type Props = {
@@ -11,7 +11,11 @@ type Props = {
   currentUserId: string
 }
 
-function Avatar({ email, role }: { email: string; role: string }) {
+const ROLE_LABEL: Record<Role, string> = { owner: 'Admin', member: 'User', read_only: 'Read-only' }
+const ROLE_ICON: Record<Role, typeof Crown> = { owner: Crown, member: User, read_only: Eye }
+const ROLE_COLOR: Record<Role, string> = { owner: '#2a52a0', member: 'hsl(var(--muted-foreground))', read_only: '#a16207' }
+
+function Avatar({ email, role }: { email: string; role: Role }) {
   const initials = email.split('@')[0].slice(0, 2).toUpperCase()
   return (
     <div style={{
@@ -28,17 +32,18 @@ function Avatar({ email, role }: { email: string; role: string }) {
   )
 }
 
-function RoleBadge({ role }: { role: string }) {
-  const isOwner = role === 'owner'
+function RoleBadge({ role }: { role: Role }) {
+  const Icon = ROLE_ICON[role]
+  const color = ROLE_COLOR[role]
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: '4px',
       padding: '2px 8px', borderRadius: '99px', fontSize: '12px', fontWeight: 600,
-      background: isOwner ? 'rgba(42,82,160,0.10)' : 'hsl(var(--muted))',
-      color: isOwner ? '#2a52a0' : 'hsl(var(--muted-foreground))',
+      background: role === 'owner' ? 'rgba(42,82,160,0.10)' : role === 'read_only' ? 'rgba(161,98,7,0.10)' : 'hsl(var(--muted))',
+      color,
     }}>
-      {isOwner ? <Crown style={{ width: '10px', height: '10px' }} /> : <User style={{ width: '10px', height: '10px' }} />}
-      {isOwner ? 'Owner' : 'Member'}
+      <Icon style={{ width: '10px', height: '10px' }} />
+      {ROLE_LABEL[role]}
     </span>
   )
 }
@@ -52,7 +57,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
   const [pending, setPending] = useState(initialPending)
   const [showInvite, setShowInvite] = useState(false)
   const [email, setEmail] = useState('')
-  const [role, setRole] = useState<'member' | 'owner'>('member')
+  const [role, setRole] = useState<Role>('member')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -83,6 +88,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
     setPending(prev => [{
       id: json.token,
       email: email.trim().toLowerCase(),
+      role,
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date().toISOString(),
     }, ...prev])
@@ -95,7 +101,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
     })
   }
 
-  function handleRoleChange(memberId: string, newRole: 'owner' | 'member') {
+  function handleRoleChange(memberId: string, newRole: Role) {
     startTransition(async () => {
       await updateMemberRole(memberId, newRole)
       setMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: newRole } : m))
@@ -145,7 +151,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
                     <select
                       value={m.role}
                       disabled={isPending}
-                      onChange={e => handleRoleChange(m.id, e.target.value as 'owner' | 'member')}
+                      onChange={e => handleRoleChange(m.id, e.target.value as Role)}
                       style={{
                         appearance: 'none', WebkitAppearance: 'none',
                         padding: '3px 24px 3px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
@@ -154,8 +160,9 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
                         cursor: 'pointer',
                       }}
                     >
-                      <option value="member">Member</option>
-                      <option value="owner">Owner</option>
+                      <option value="owner">Admin</option>
+                      <option value="member">User</option>
+                      <option value="read_only">Read-only</option>
                     </select>
                     <ChevronDown style={{ position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)', width: '12px', height: '12px', pointerEvents: 'none', color: 'hsl(var(--muted-foreground))' }} />
                   </div>
@@ -194,6 +201,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
                 Invite pending · expires {fmt(p.expires_at)}
               </p>
             </div>
+            <RoleBadge role={p.role} />
             <span style={{
               padding: '2px 8px', borderRadius: '99px', fontSize: '12px', fontWeight: 600,
               background: 'rgba(234,179,8,0.10)', color: '#a16207',
@@ -245,7 +253,7 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
                 <div style={{ position: 'relative' }}>
                   <select
                     value={role}
-                    onChange={e => setRole(e.target.value as 'member' | 'owner')}
+                    onChange={e => setRole(e.target.value as Role)}
                     style={{
                       appearance: 'none', WebkitAppearance: 'none',
                       padding: '8px 28px 8px 10px', borderRadius: '10px', fontSize: '14px', fontWeight: 500,
@@ -254,8 +262,9 @@ export function TeamPanel({ members: initialMembers, pending: initialPending, cu
                       cursor: 'pointer',
                     }}
                   >
-                    <option value="member">Member</option>
-                    <option value="owner">Owner</option>
+                    <option value="member">User</option>
+                    <option value="owner">Admin</option>
+                    <option value="read_only">Read-only</option>
                   </select>
                   <ChevronDown style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', width: '13px', height: '13px', pointerEvents: 'none', color: 'hsl(var(--muted-foreground))' }} />
                 </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { randomBytes } from 'crypto'
+import { renderNeutralEmail } from '@/lib/email/neutral'
 
 // Self-serve: customer enters their email, gets a magic link if their email
 // matches a contact record for this tenant.
@@ -52,6 +53,17 @@ export async function POST(req: NextRequest) {
   const appUrl = process.env.APP_URL ?? 'https://www.qcyphertech.com'
   const link = `${appUrl}/portal/${tenantSlug}/auth?token=${token}`
 
+  const html = renderNeutralEmail({
+    senderName: tenant.name,
+    bodyHtml: `
+      <p style="margin:0 0 4px;font-size:20px;font-weight:800;color:#1a202c;">Your sign-in link</p>
+      <p style="margin:0 0 20px;color:#718096;">For ${tenant.name}'s client portal</p>
+      <p style="margin:0 0 16px;">Hi ${contact.first_name ?? 'there'},</p>
+      <p style="margin:0;">Click below to sign in. This link expires in 24 hours and can only be used once.</p>
+    `,
+    cta: { label: 'Sign in to portal', href: link },
+  })
+
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -62,6 +74,7 @@ export async function POST(req: NextRequest) {
       from: `${tenant.name} <${process.env.RESEND_FROM_EMAIL ?? 'hello@qcyphertech.com'}>`,
       to: [contact.email!],
       subject: `${tenant.name} — your portal sign-in link`,
+      html,
       text: [
         `Hi ${contact.first_name ?? 'there'},`,
         '',

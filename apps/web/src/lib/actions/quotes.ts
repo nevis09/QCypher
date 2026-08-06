@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { randomBytes } from 'crypto'
+import { renderNeutralEmail } from '@/lib/email/neutral'
 
 const RESEND_API_KEY  = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM     = process.env.RESEND_FROM_EMAIL ?? 'hello@qcyphertech.com'
@@ -116,6 +117,22 @@ Questions? Reply to this email.
 
 — ${input.businessName}`
 
+  const html = renderNeutralEmail({
+    senderName: input.businessName,
+    bodyHtml: `
+      <p style="margin:0 0 4px;font-size:20px;font-weight:800;color:#1a202c;">You have a quote to review</p>
+      <p style="margin:0 0 20px;color:#718096;">From ${input.businessName}</p>
+      <p style="margin:0 0 16px;">Hi ${input.recipientName},</p>
+      <p style="margin:0 0 20px;">${input.businessName} has sent you a quote to review and approve.</p>
+      <div style="background:#f7f7f8;border-radius:12px;padding:20px 24px;margin:0 0 20px;border:1px solid rgba(15,23,42,0.06);text-align:center;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#718096;margin-bottom:6px;">Quote total</div>
+        <div style="font-size:28px;font-weight:800;color:#1a202c;">$${Number(input.total).toFixed(2)}</div>
+      </div>
+      <p style="margin:0 0 8px;font-size:13px;color:#718096;">This link expires in 30 days. By clicking Approve, you agree to the terms of this quote — a lightweight approval, not a notarized or legally-advanced e-signature.</p>
+    `,
+    cta: { label: 'Review and approve', href: url! },
+  })
+
   if (!RESEND_API_KEY) {
     return { url, emailSent: false, emailError: 'Email not configured' }
   }
@@ -127,6 +144,7 @@ Questions? Reply to this email.
       from: RESEND_FROM,
       to: [input.recipientEmail],
       subject: `Your quote from ${input.businessName} — review and approve`,
+      html,
       text: body,
     }),
   })

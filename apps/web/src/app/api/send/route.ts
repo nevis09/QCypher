@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server'
 import { rateLimit, LIMITS } from '@/lib/rate-limit'
 import { getIp } from '@/lib/get-ip'
 import { sendSms } from '@/lib/telnyx'
+import { renderNeutralEmail } from '@/lib/email/neutral'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const RESEND_FROM    = process.env.RESEND_FROM_EMAIL ?? 'noreply@example.com'
@@ -43,10 +44,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Fetch template and contact — RLS ensures they belong to the caller's tenant
-  const [{ data: template }, { data: contact }] = await Promise.all([
+  // Fetch template, contact, and tenant name (for the email header) — RLS
+  // ensures template/contact belong to the caller's tenant
+  const [{ data: template }, { data: contact }, { data: tenant }] = await Promise.all([
     supabase.from('templates').select('*').eq('id', templateId).single(),
     supabase.from('contacts').select('*').eq('id', contactId).single(),
+    supabase.from('tenants').select('name').single(),
   ])
 
   if (!template || !contact) {
@@ -84,6 +87,11 @@ export async function POST(request: NextRequest) {
       providerId = result.id
     } else {
       if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not configured')
+      const businessName = (tenant as { name?: string } | null)?.name ?? 'Your business'
+      const html = renderNeutralEmail({
+        senderName: businessName,
+        bodyHtml: `<div style="white-space:pre-wrap;">${preview.replace(/[&<>]/g, (c: string) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]!))}</div>`,
+      })
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -91,6 +99,7 @@ export async function POST(request: NextRequest) {
           from:    RESEND_FROM,
           to:      [recipient],
           subject: template.subject ?? '(no subject)',
+          html,
           text:    preview,
         }),
       })

@@ -16,6 +16,7 @@ type Props = {
     email:         string
     business_name: string | null
   }
+  readOnly?: boolean
 }
 
 type NominatimResult = {
@@ -41,7 +42,7 @@ const inputStyle = {
   color: 'hsl(var(--foreground))',
 }
 
-export function ProfileForm({ initial }: Props) {
+export function ProfileForm({ initial, readOnly = false }: Props) {
   const [editing, setEditing] = useState(false)
   const [saving,  setSaving]  = useState(false)
   const [saved,   setSaved]   = useState(false)
@@ -188,7 +189,7 @@ export function ProfileForm({ initial }: Props) {
                 : <><Check style={{ width: '13px', height: '13px' }} />Save</>}
             </button>
           </div>
-        ) : (
+        ) : !readOnly ? (
           <button onClick={() => setEditing(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: '6px',
@@ -201,7 +202,7 @@ export function ProfileForm({ initial }: Props) {
               ? <><Check style={{ width: '13px', height: '13px', color: '#10b981' }} /><span style={{ color: '#10b981' }}>Saved</span></>
               : <><Pencil style={{ width: '13px', height: '13px' }} />Edit</>}
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Fields */}
