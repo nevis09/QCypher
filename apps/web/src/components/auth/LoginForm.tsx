@@ -75,7 +75,11 @@ export function LoginForm() {
     e.preventDefault(); setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { setError(error.message); setLoading(false) }
-    else router.push('/dashboard')
+    else {
+      const { logAudit } = await import('@/lib/actions/audit')
+      logAudit({ action: 'login', resource_type: 'auth' })
+      router.push('/dashboard')
+    }
   }
 
   async function handleMagicLink(e: React.FormEvent) {

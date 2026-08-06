@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Users, Calendar, UserPlus, Activity, ShoppingBag, DollarSign, LayoutGrid, BookOpen, FileText, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 import { WelcomeBanner } from '@/components/layout/WelcomeBanner'
+import { getRecentAuditLogs, type AuditLog } from '@/lib/actions/audit'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
@@ -212,6 +213,34 @@ function Panel({ title, href, linkLabel, children }: { title: string; href?: str
   )
 }
 
+/* ─── Recent Activity Row ────────────────────────────────────────────── */
+const ACTIVITY_LABEL: Record<string, string> = {
+  contact_created: 'created contact', contact_updated: 'updated contact', contact_deleted: 'deleted contact',
+  event_created: 'created event', event_updated: 'updated event', event_deleted: 'deleted event',
+  note_created: 'added a note',
+  template_created: 'created template', template_updated: 'updated template', template_deleted: 'deleted template',
+  login: 'signed in', logout: 'signed out',
+  invite_sent: 'sent an invite', role_changed: 'changed a role', user_removed: 'removed a user',
+}
+function ActivityRow({ log }: { log: AuditLog }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px' }}>
+      <div style={{ width: '28px', height: '28px', borderRadius: '9px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${TEAL}18`, border: `1px solid ${TEAL}30` }}>
+        <Activity style={{ width: '13px', height: '13px', color: TEAL }} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: '13px', color: 'hsl(var(--foreground))', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <strong>{log.user_email}</strong> {ACTIVITY_LABEL[log.action] ?? log.action}
+          {log.resource_name ? ` — ${log.resource_name}` : ''}
+        </p>
+      </div>
+      <span style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', flexShrink: 0 }}>
+        {new Date(log.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+      </span>
+    </div>
+  )
+}
+
 /* ─── Page ───────────────────────────────────────────────────────────── */
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -223,6 +252,8 @@ export default async function DashboardPage() {
     ? await supabase.from('users').select('has_seen_welcome').eq('id', user.id).single()
     : { data: null }
   const showWelcome = (profile as { has_seen_welcome?: boolean } | null)?.has_seen_welcome === false
+  const isAdmin = user?.app_metadata?.role === 'owner'
+  const recentActivity = isAdmin ? await getRecentAuditLogs(5) : []
 
   const [
     { count: totalContacts },
@@ -316,6 +347,16 @@ export default async function DashboardPage() {
           }
         </Panel>
       </div>
+
+      {/* Recent activity (admin only) */}
+      {isAdmin && (
+        <Panel title="Recent Activity" href="/settings" linkLabel="Audit trail">
+          {recentActivity.length === 0
+            ? <p style={{ fontSize: '15px', textAlign: 'center', padding: '24px 0', color: 'hsl(var(--muted-foreground))' }}>No activity yet.</p>
+            : recentActivity.map(log => <ActivityRow key={log.id} log={log} />)
+          }
+        </Panel>
+      )}
 
       {/* Quick actions */}
       <Panel title="Quick Actions">

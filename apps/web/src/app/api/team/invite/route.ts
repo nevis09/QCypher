@@ -66,5 +66,15 @@ export async function POST(request: NextRequest) {
     })
   }
 
+  await admin.from('audit_logs').insert({
+    tenant_id,
+    user_id: user.id,
+    user_email: user.email ?? '',
+    action: 'invite_sent',
+    resource_type: 'team',
+    resource_name: email.trim(),
+    details: { role },
+  })
+
   return NextResponse.json({ success: true, token: token.token })
 }

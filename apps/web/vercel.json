@@ -1,6 +1,8 @@
 {
-  "buildCommand": "next build",
-  "outputDirectory": ".next",
-  "installCommand": "pnpm install",
-  "framework": "nextjs"
+  "crons": [
+    {
+      "path": "/api/cron/purge-audit-logs",
+      "schedule": "0 6 * * *"
+    }
+  ]
 }

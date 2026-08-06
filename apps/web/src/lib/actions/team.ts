@@ -48,6 +48,25 @@ async function requireOwner() {
   return caller
 }
 
+async function logTeamAudit(
+  caller: { userId: string; tenant_id: string },
+  action: 'role_changed' | 'user_removed',
+  resource_id: string,
+  details?: Record<string, unknown>,
+) {
+  const admin = createAdminClient()
+  const { data: { user } } = await admin.auth.admin.getUserById(caller.userId)
+  await admin.from('audit_logs').insert({
+    tenant_id: caller.tenant_id,
+    user_id: caller.userId,
+    user_email: user?.email ?? '',
+    action,
+    resource_type: 'team',
+    resource_id,
+    details: details ?? null,
+  })
+}
+
 export async function getTeamMembers(): Promise<TeamMember[]> {
   const tenant_id = await getCallerTenantId()
   const admin = createAdminClient()
@@ -125,6 +144,7 @@ export async function updateMemberRole(memberId: string, role: Role) {
   await admin.auth.admin.updateUserById(memberId, {
     app_metadata: { ...user.app_metadata, role },
   })
+  await logTeamAudit(caller, 'role_changed', memberId, { new_role: role, email: user.email })
 }
 
 export async function removeMember(memberId: string) {
@@ -139,4 +159,5 @@ export async function removeMember(memberId: string) {
   await admin.auth.admin.updateUserById(memberId, {
     app_metadata: { ...user.app_metadata, tenant_id: null, role: null },
   })
+  await logTeamAudit(caller, 'user_removed', memberId, { email: user.email })
 }

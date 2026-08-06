@@ -6,6 +6,7 @@ import { MissedCallSetup } from '@/components/settings/MissedCallSetup'
 import { ProfileForm } from '@/components/account/ProfileForm'
 import { SecurityPanel } from '@/components/account/SecurityPanel'
 import { TeamPanel } from '@/components/settings/TeamPanel'
+import { AuditTrailPanel } from '@/components/settings/AuditTrailPanel'
 import { SettingsTabs, SettingsSection } from '@/components/settings/SettingsTabs'
 import { getTeamMembers, getPendingInvites } from '@/lib/actions/team'
 import { DEFAULT_SETTINGS, type TenantSettings } from '@/lib/types/settings'
@@ -80,6 +81,14 @@ export default async function SettingsPage() {
     </div>
   )
 
+  const auditTab = (
+    <div>
+      <SettingsSection label="Audit Trail" hint="Who did what, and when. Logs are kept for 90 days.">
+        <AuditTrailPanel members={members} />
+      </SettingsSection>
+    </div>
+  )
+
   const accountTab = (
     <div style={{ maxWidth: '640px' }}>
       <SettingsSection label="Profile">
@@ -129,6 +138,7 @@ export default async function SettingsPage() {
       <SettingsTabs
         workspaceContent={workspaceTab}
         teamContent={teamTab}
+        auditContent={auditTab}
         accountContent={accountTab}
         isAdmin={isAdmin}
       />

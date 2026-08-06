@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Phone, Mail, Building2, MapPin, Tag, Pencil, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/actions/audit'
 import { InteractionTimeline } from '@/components/interactions/InteractionTimeline'
 import { AddInteractionForm } from '@/components/interactions/AddInteractionForm'
 import { QuickSendButton } from '@/components/templates/QuickSendButton'
@@ -39,6 +40,7 @@ export function ContactDetail({ contact, interactions, tenantId, tenantSlug, bus
   async function handleDelete() {
     if (!confirm(`Delete ${contact.first_name}? This cannot be undone.`)) return
     await supabase.from('contacts').delete().eq('id', contact.id)
+    logAudit({ action: 'contact_deleted', resource_type: 'contact', resource_id: contact.id, resource_name: `${contact.first_name} ${contact.last_name ?? ''}`.trim() })
     router.push('/contacts')
     router.refresh()
   }

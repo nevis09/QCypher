@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/actions/audit'
 import type { Tables } from '@/types/database'
 
 type Template = Tables<'templates'>
@@ -45,12 +46,14 @@ export function TemplateForm({ template }: { template?: Template }) {
       if (template) {
         const { error } = await supabase.from('templates').update(payload).eq('id', template.id)
         if (error) { setError(error.message); return }
+        logAudit({ action: 'template_updated', resource_type: 'template', resource_id: template.id, resource_name: payload.name })
       } else {
         const { data: { user } } = await supabase.auth.getUser()
         const tenantId = user?.app_metadata?.tenant_id
         if (!tenantId) { setError('Could not determine tenant — please refresh and try again'); return }
         const { error } = await supabase.from('templates').insert({ ...payload, tenant_id: tenantId })
         if (error) { setError(error.message); return }
+        logAudit({ action: 'template_created', resource_type: 'template', resource_name: payload.name })
       }
       router.push('/templates')
       router.refresh()
@@ -64,6 +67,7 @@ export function TemplateForm({ template }: { template?: Template }) {
       .from('templates')
       .update({ deleted_at: new Date().toISOString() } as any)
       .eq('id', template.id)
+    logAudit({ action: 'template_deleted', resource_type: 'template', resource_id: template.id, resource_name: template.name })
     router.push('/templates')
     router.refresh()
   }

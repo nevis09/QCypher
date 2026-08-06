@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { X, Trash2, AlertTriangle, Clock, CalendarDays } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/actions/audit'
 import type { Tables } from '@/types/database'
 
 type CalEvent = Pick<Tables<'events'>, 'id' | 'title' | 'description' | 'starts_at' | 'ends_at' | 'contact_id'>
@@ -70,9 +71,11 @@ export function EventModal({ date, event, readOnly, onClose }: {
       if (event) {
         const { error } = await supabase.from('events').update(payload).eq('id', event.id)
         if (error) { setError(error.message); return }
+        logAudit({ action: 'event_updated', resource_type: 'event', resource_id: event.id, resource_name: payload.title })
       } else {
         const { error } = await supabase.from('events').insert(payload)
         if (error) { setError(error.message); return }
+        logAudit({ action: 'event_created', resource_type: 'event', resource_name: payload.title })
       }
       router.refresh()
       onClose()
@@ -92,6 +95,7 @@ export function EventModal({ date, event, readOnly, onClose }: {
     if (!event) return
     startTransition(async () => {
       await supabase.from('events').delete().eq('id', event.id)
+      logAudit({ action: 'event_deleted', resource_type: 'event', resource_id: event.id, resource_name: event.title })
       router.refresh()
       onClose()
     })

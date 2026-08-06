@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/actions/audit'
 import type { Tables } from '@/types/database'
 
 type Contact = Tables<'contacts'>
@@ -55,13 +56,16 @@ export function ContactForm({ contact }: { contact?: Contact }) {
     }
 
     startTransition(async () => {
+      const contactName = `${payload.first_name} ${payload.last_name ?? ''}`.trim()
       if (contact) {
         const { error } = await supabase.from('contacts').update(payload).eq('id', contact.id)
         if (error) { setError(error.message); return }
+        logAudit({ action: 'contact_updated', resource_type: 'contact', resource_id: contact.id, resource_name: contactName })
         router.push(`/contacts/${contact.id}`)
       } else {
         const { data, error } = await supabase.from('contacts').insert(payload).select('id').single()
         if (error) { setError(error.message); return }
+        logAudit({ action: 'contact_created', resource_type: 'contact', resource_id: data.id, resource_name: contactName })
         router.push(`/contacts/${data.id}`)
       }
       router.refresh()

@@ -1,0 +1,121 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
+import type { Role } from '@/lib/actions/team'
+
+export type AuditAction =
+  | 'contact_created' | 'contact_updated' | 'contact_deleted'
+  | 'event_created' | 'event_updated' | 'event_deleted'
+  | 'note_created'
+  | 'template_created' | 'template_updated' | 'template_deleted'
+  | 'login' | 'logout'
+  | 'invite_sent' | 'role_changed' | 'user_removed'
+
+export type ResourceType = 'contact' | 'event' | 'note' | 'template' | 'auth' | 'team'
+
+export type AuditLog = {
+  id: string
+  user_email: string
+  action: AuditAction
+  resource_type: ResourceType
+  resource_id: string | null
+  resource_name: string | null
+  details: Record<string, unknown> | null
+  created_at: string
+}
+
+// Fire-and-forget: called after a mutation succeeds. Never throws — a
+// logging failure should never break the user's actual action.
+export async function logAudit(params: {
+  action: AuditAction
+  resource_type: ResourceType
+  resource_id?: string
+  resource_name?: string
+  details?: Record<string, unknown>
+}) {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const tenant_id = await getTenantId(user.id, user.app_metadata)
+
+    await supabase.from('audit_logs').insert({
+      tenant_id,
+      user_id: user.id,
+      user_email: user.email ?? '',
+      action: params.action,
+      resource_type: params.resource_type,
+      resource_id: params.resource_id ?? null,
+      resource_name: params.resource_name ?? null,
+      details: params.details ?? null,
+    })
+  } catch {
+    // best-effort — swallow
+  }
+}
+
+async function requireAdmin() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  const tenant_id = await getTenantId(user.id, user.app_metadata)
+
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+  const role = (fresh?.app_metadata?.role ?? 'member') as Role
+  if (role !== 'owner') throw new Error('Only admins can view the audit trail')
+
+  return { tenant_id }
+}
+
+export async function getAuditLogs(filters: {
+  page?: number
+  pageSize?: number
+  userId?: string
+  action?: string
+  resourceType?: string
+  from?: string
+  to?: string
+  search?: string
+} = {}): Promise<{ logs: AuditLog[]; total: number }> {
+  const { tenant_id } = await requireAdmin()
+  const admin = createAdminClient()
+
+  const page = filters.page ?? 1
+  const pageSize = filters.pageSize ?? 25
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  let query = admin
+    .from('audit_logs')
+    .select('id, user_email, action, resource_type, resource_id, resource_name, details, created_at', { count: 'exact' })
+    .eq('tenant_id', tenant_id)
+    .order('created_at', { ascending: false })
+
+  if (filters.userId) query = query.eq('user_id', filters.userId)
+  if (filters.action) query = query.eq('action', filters.action)
+  if (filters.resourceType) query = query.eq('resource_type', filters.resourceType)
+  if (filters.from) query = query.gte('created_at', filters.from)
+  if (filters.to) query = query.lte('created_at', filters.to)
+  if (filters.search) query = query.or(`user_email.ilike.%${filters.search}%,resource_name.ilike.%${filters.search}%`)
+
+  const { data, count } = await query.range(from, to)
+  return { logs: (data ?? []) as AuditLog[], total: count ?? 0 }
+}
+
+export async function getRecentAuditLogs(limit = 5): Promise<AuditLog[]> {
+  try {
+    const { tenant_id } = await requireAdmin()
+    const admin = createAdminClient()
+    const { data } = await admin
+      .from('audit_logs')
+      .select('id, user_email, action, resource_type, resource_id, resource_name, details, created_at')
+      .eq('tenant_id', tenant_id)
+      .order('created_at', { ascending: false })
+      .limit(limit)
+    return (data ?? []) as AuditLog[]
+  } catch {
+    return []
+  }
+}

@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { logAudit } from '@/lib/actions/audit'
 
 const TYPES = ['note', 'call', 'email', 'visit'] as const
 type InteractionType = typeof TYPES[number]
@@ -19,6 +20,7 @@ export function AddInteractionForm({ contactId }: { contactId: string }) {
     if (!body.trim()) return
     startTransition(async () => {
       await supabase.from('interactions').insert({ contact_id: contactId, type, body: body.trim() })
+      logAudit({ action: 'note_created', resource_type: 'note', resource_id: contactId, details: { type } })
       setBody('')
       router.refresh()
     })
