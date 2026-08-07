@@ -31,6 +31,7 @@ const INTEGRATION_LOGOS = [
   { name: 'Cal.com', file: '/logos/calcom.png' },
   { name: 'Telnyx', file: '/logos/telnyx.svg' },
   { name: 'Resend', file: '/logos/resend.svg' },
+  { name: 'Supabase', file: '/logos/supabase.svg' },
   { name: 'Cloudflare', file: '/logos/cloudflare.svg' },
   { name: 'Vercel', file: '/logos/vercel.svg' },
   { name: 'GitHub', file: '/logos/github.svg' },
