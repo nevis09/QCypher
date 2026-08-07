@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { updateProfile, updateBusinessName } from '@/lib/actions/account'
 import { User, Phone, Mail, MapPin, Check, Pencil, Search, Building2, Loader2 } from 'lucide-react'
 
@@ -64,6 +65,8 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
   const [suggLoading, setSuggLoading] = useState(false)
   const debounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const wrapperRef   = useRef<HTMLDivElement>(null)
+  const inputBoxRef  = useRef<HTMLDivElement>(null)
+  const [dropdownRect, setDropdownRect] = useState<{ top: number; left: number; width: number } | null>(null)
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -72,6 +75,25 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  // The suggestion dropdown is portaled to <body> so it can escape the
+  // profile card's `overflow: hidden` (needed to clip the card's own
+  // rounded corners) — otherwise long results get visually cut off.
+  // Position is computed from the input's real screen location instead.
+  useEffect(() => {
+    if (!suggOpen) return
+    function updateRect() {
+      const box = inputBoxRef.current?.getBoundingClientRect()
+      if (box) setDropdownRect({ top: box.bottom + 4, left: box.left, width: box.width })
+    }
+    updateRect()
+    window.addEventListener('scroll', updateRect, true)
+    window.addEventListener('resize', updateRect)
+    return () => {
+      window.removeEventListener('scroll', updateRect, true)
+      window.removeEventListener('resize', updateRect)
+    }
+  }, [suggOpen, suggestions])
 
   const fetchSuggestions = useCallback((q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -296,7 +318,7 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
             <div style={{ paddingLeft: '46px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {/* Street with autocomplete */}
               <div ref={wrapperRef} style={{ position: 'relative' }}>
-                <div style={{ position: 'relative' }}>
+                <div ref={inputBoxRef} style={{ position: 'relative' }}>
                   <input
                     value={form.street}
                     onChange={e => { setForm(f => ({ ...f, street: e.target.value })); fetchSuggestions(e.target.value) }}
@@ -312,13 +334,16 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
                       : <Search style={{ width: '13px', height: '13px', color: 'hsl(var(--muted-foreground))' }} />}
                   </div>
                 </div>
-                {suggOpen && suggestions.length > 0 && (
-                  <div style={{
-                    position: 'absolute', left: 0, right: 0, top: '100%', marginTop: '4px',
-                    borderRadius: '12px', border: '1px solid hsl(var(--border))',
-                    background: 'hsl(var(--card))', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                    zIndex: 50, overflow: 'hidden',
-                  }}>
+                {suggOpen && suggestions.length > 0 && dropdownRect && typeof document !== 'undefined' && createPortal(
+                  <div
+                    onMouseDown={e => e.stopPropagation()}
+                    style={{
+                      position: 'fixed',
+                      top: dropdownRect.top, left: dropdownRect.left, width: dropdownRect.width,
+                      borderRadius: '12px', border: '1px solid hsl(var(--border))',
+                      background: 'hsl(var(--card))', boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                      zIndex: 1000, maxHeight: '280px', overflowY: 'auto',
+                    }}>
                     {suggestions.map((r, i) => (
                       <button key={i} type="button"
                         onMouseDown={e => { e.preventDefault(); pickSuggestion(r) }}
@@ -330,12 +355,13 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
                         <span style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', display: 'block' }}>
                           {[r.address.house_number, r.address.road].filter(Boolean).join(' ') || r.display_name.split(',')[0]}
                         </span>
-                        <span style={{ fontSize: '14px', color: 'hsl(var(--muted-foreground))', display: 'block', marginTop: '2px' }}>
+                        <span style={{ fontSize: '14px', color: 'hsl(var(--muted-foreground))', display: 'block', marginTop: '2px', lineHeight: 1.4 }}>
                           {r.display_name}
                         </span>
                       </button>
                     ))}
-                  </div>
+                  </div>,
+                  document.body,
                 )}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr', gap: '8px' }}>
