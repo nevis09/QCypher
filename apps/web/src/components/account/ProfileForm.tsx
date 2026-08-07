@@ -380,6 +380,21 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
                   />
                 ))}
               </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button onClick={handleSave} disabled={saving}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '7px 18px', borderRadius: '10px', border: 'none',
+                    background: 'linear-gradient(135deg,#2a52a0,#4a9db5)',
+                    cursor: saving ? 'wait' : 'pointer',
+                    fontSize: '14px', fontWeight: 700, color: '#fff',
+                    opacity: saving ? 0.7 : 1,
+                  }}>
+                  {saving
+                    ? <><Loader2 style={{ width: '13px', height: '13px', animation: 'spin 1s linear infinite' }} />Saving…</>
+                    : <><Check style={{ width: '13px', height: '13px' }} />Save</>}
+                </button>
+              </div>
             </div>
           )}
         </div>
