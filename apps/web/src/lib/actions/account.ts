@@ -33,10 +33,12 @@ export async function updateBusinessName(name: string): Promise<{ error?: string
 
     revalidatePath('/settings')
     revalidatePath('/orders')
-    // The (app) layout renders the top bar's business-initials avatar and
-    // isn't re-fetched by path-specific revalidation above — invalidate
-    // the whole app shell so the badge updates without a hard reload.
-    revalidatePath('/', 'layout')
+    // The top bar's business-initials avatar is rendered by the (app)
+    // route group's layout, not the root layout — '/' is the public
+    // marketing homepage and doesn't share that layout at all, so
+    // revalidating it does nothing here. Target a path that's actually
+    // inside the (app) group so its layout chain gets invalidated.
+    revalidatePath('/dashboard', 'layout')
     return {}
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
