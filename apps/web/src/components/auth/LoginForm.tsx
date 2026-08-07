@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -61,6 +61,13 @@ export function LoginForm() {
   const [error, setError]     = useState<string | null>(null)
   const supabase = createClient()
   const router   = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('error') === 'auth_failed') {
+      setError('That link is invalid or has expired. Please request a new one.')
+    }
+  }, [searchParams])
 
   async function handleGoogle() {
     setLoading(true); setError(null)
