@@ -33,6 +33,10 @@ export async function updateBusinessName(name: string): Promise<{ error?: string
 
     revalidatePath('/settings')
     revalidatePath('/orders')
+    // The (app) layout renders the top bar's business-initials avatar and
+    // isn't re-fetched by path-specific revalidation above — invalidate
+    // the whole app shell so the badge updates without a hard reload.
+    revalidatePath('/', 'layout')
     return {}
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) }
