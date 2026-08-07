@@ -190,8 +190,8 @@ export function TopBar({
             <Bell style={{ width: '16px', height: '16px', color: 'hsl(var(--muted-foreground))' }} />
           </button>
 
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black"
-            style={{ background: 'linear-gradient(135deg,#1a3070,#4a9db5)', fontSize: '15px' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#1a3070,#4a9db5)', fontSize: '12px', letterSpacing: '-0.02em' }}>
             {userInitial}
           </div>
 

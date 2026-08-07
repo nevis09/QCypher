@@ -8,19 +8,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: tenant } = await supabase.from('tenants').select('is_admin, settings').single()
+  const { data: tenant } = await supabase.from('tenants').select('is_admin, settings, name').single()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const settings: TenantSettings = { ...DEFAULT_SETTINGS, ...((tenant as any)?.settings ?? {}) }
 
-  const meta = user.user_metadata as { full_name?: string; name?: string } | undefined
-  const displayName = meta?.full_name ?? meta?.name ?? user.email ?? ''
-  const initial = displayName.charAt(0).toUpperCase() || 'U'
+  const businessName = (tenant as { name?: string } | null)?.name ?? ''
+  const words = businessName.trim().split(/\s+/).filter(Boolean)
+  const initials = words.length >= 2
+    ? (words[0][0] + words[1][0]).toUpperCase()
+    : (businessName.slice(0, 2).toUpperCase() || (user.email ?? 'U').slice(0, 2).toUpperCase())
 
   return (
     <AppShell
       isAdmin={(tenant as { is_admin?: boolean } | null)?.is_admin ?? false}
       settings={settings}
-      userInitial={initial}>
+      userInitial={initials}>
       {children}
     </AppShell>
   )
