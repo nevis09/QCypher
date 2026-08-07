@@ -2,13 +2,13 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Security — QCypher Technologies',
+  title: 'Security',
   description: 'Learn how QCypher protects your business data. Encryption, access control, monitoring, and transparent practices.',
-  alternates: { canonical: '/security' },
+  alternates: { canonical: 'https://www.qcyphertech.com/security' },
   openGraph: {
     title: 'Security by Design — QCypher Technologies',
     description: 'Encryption, role-based access control, and continuous monitoring — here’s exactly how QCypher protects your business data.',
-    url: '/security',
+    url: 'https://www.qcyphertech.com/security',
     type: 'website',
   },
 }
