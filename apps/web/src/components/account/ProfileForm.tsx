@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useRouter } from 'next/navigation'
 import { updateProfile, updateBusinessName } from '@/lib/actions/account'
 import { User, Phone, Mail, MapPin, Check, Pencil, Search, Building2, Loader2 } from 'lucide-react'
 
@@ -44,6 +45,7 @@ const inputStyle = {
 }
 
 export function ProfileForm({ initial, readOnly = false }: Props) {
+  const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [saving,  setSaving]  = useState(false)
   const [saved,   setSaved]   = useState(false)
@@ -142,6 +144,11 @@ export function ProfileForm({ initial, readOnly = false }: Props) {
       } else {
         setSaved(true); setEditing(false)
         setTimeout(() => setSaved(false), 2500)
+        // Force the (app) layout (top bar business-initials avatar) to
+        // re-render with fresh server data right now, rather than relying
+        // on revalidatePath tag matching or waiting for the next natural
+        // navigation to pick up the change.
+        router.refresh()
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save')
