@@ -43,6 +43,16 @@ export async function POST(request: NextRequest) {
 
   const admin = adminSupabase()
 
+  // Pre-check for an existing account before provisioning a whole tenant
+  const normalizedEmail = email.trim().toLowerCase()
+  const { data: { users: existingUsers } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  if (existingUsers.some(u => u.email?.toLowerCase() === normalizedEmail)) {
+    return NextResponse.json(
+      { error: 'That email already has an account. Ask them to sign in, or use a different email for this tenant.' },
+      { status: 409 },
+    )
+  }
+
   // 1. Create tenant row
   const { data: tenant, error: tenantErr } = await admin
     .from('tenants')
@@ -57,13 +67,19 @@ export async function POST(request: NextRequest) {
   // 2. Send invite — Supabase Auth sets a magic link; we stamp app_metadata after
   const appUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('.supabase.co', '') ?? 'http://localhost:3011'
   const { data: invite, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email.trim(), {
-    redirectTo: `${appUrl}/auth/callback`,
+    redirectTo: `${appUrl}/auth/confirm`,
     data: { tenant_id: tenant.id },
   })
 
   if (inviteErr) {
     // Roll back tenant creation
     await admin.from('tenants').delete().eq('id', tenant.id)
+    if (inviteErr.message.toLowerCase().includes('already')) {
+      return NextResponse.json(
+        { error: 'That email already has an account. Ask them to sign in, or use a different email for this tenant.' },
+        { status: 409 },
+      )
+    }
     return NextResponse.json({ error: inviteErr.message }, { status: 422 })
   }
 

@@ -1,6 +1,6 @@
 /**
  * /auth/invite
- * Supabase sends invite emails with a magic link that hits /auth/callback,
+ * Supabase sends invite emails with a magic link that hits /auth/confirm,
  * which exchanges the code and redirects here for a one-time password set step
  * (only needed if we ever switch from magic-link to password auth).
  * For now, the callback already lands the user in the app — this page is a

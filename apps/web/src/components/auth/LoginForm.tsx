@@ -66,7 +66,7 @@ export function LoginForm() {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { redirectTo: `${location.origin}/auth/confirm` },
     })
     if (error) { setError(error.message); setLoading(false) }
   }
@@ -86,7 +86,7 @@ export function LoginForm() {
     e.preventDefault(); setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
+      options: { emailRedirectTo: `${location.origin}/auth/confirm` },
     })
     if (error) { setError(error.message); setLoading(false) }
     else { setSent(true); setLoading(false) }

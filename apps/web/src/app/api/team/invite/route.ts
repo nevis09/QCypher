@@ -27,10 +27,23 @@ export async function POST(request: NextRequest) {
   if (!email?.trim()) return NextResponse.json({ error: 'Email is required' }, { status: 400 })
   if (!['owner', 'member', 'read_only'].includes(role)) return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
 
+  const normalizedEmail = email.trim().toLowerCase()
+
+  // Pre-check for an existing account — more reliable than string-matching
+  // inviteUserByEmail's error message, and avoids creating an orphaned
+  // invite_tokens row for an invite we already know will fail.
+  const { data: { users: existingUsers } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  if (existingUsers.some(u => u.email?.toLowerCase() === normalizedEmail)) {
+    return NextResponse.json(
+      { error: 'That email already has an account. Ask them to sign in instead.' },
+      { status: 409 },
+    )
+  }
+
   // Record the pending invite
   const { data: token, error: tokenErr } = await admin
     .from('invite_tokens')
-    .insert({ tenant_id, email: email.trim().toLowerCase() })
+    .insert({ tenant_id, email: normalizedEmail })
     .select('token')
     .single()
 
@@ -39,7 +52,7 @@ export async function POST(request: NextRequest) {
   // Send Supabase magic link — stamps tenant_id + role into app_metadata on accept
   const appUrl = process.env.APP_URL ?? 'https://www.qcyphertech.com'
   const { error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email.trim(), {
-    redirectTo: `${appUrl}/auth/callback`,
+    redirectTo: `${appUrl}/auth/confirm`,
     data: { tenant_id, role },
   })
 
@@ -47,10 +60,10 @@ export async function POST(request: NextRequest) {
     // Clean up the token if invite failed
     await admin.from('invite_tokens').delete().eq('token', token.token)
 
-    // If user already exists in Supabase, stamp their metadata directly
+    // Fallback in case the account was created between the pre-check and here
     if (inviteErr.message.toLowerCase().includes('already')) {
       return NextResponse.json(
-        { error: 'That email already has an account. Ask them to sign in.' },
+        { error: 'That email already has an account. Ask them to sign in instead.' },
         { status: 409 },
       )
     }

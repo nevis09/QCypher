@@ -40,7 +40,7 @@ export function SignupForm() {
     setLoading(true); setError(null)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { redirectTo: `${location.origin}/auth/confirm` },
     })
     if (error) { setError(error.message); setLoading(false) }
   }
@@ -50,12 +50,22 @@ export function SignupForm() {
     if (password !== confirm) { setError('Passwords do not match.'); return }
     if (password.length < 8)  { setError('Password must be at least 8 characters.'); return }
     setLoading(true); setError(null)
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email, password,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
+      options: { emailRedirectTo: `${location.origin}/auth/confirm` },
     })
-    if (error) { setError(error.message); setLoading(false) }
-    else setDone(true)
+    if (error) { setError(error.message); setLoading(false); return }
+
+    // Supabase returns no error for a duplicate signup (anti-enumeration) —
+    // it silently returns the existing user with an empty identities array
+    // instead of creating a new one. Detect that case explicitly.
+    if (data.user && data.user.identities?.length === 0) {
+      setError('An account with this email already exists. Try signing in instead.')
+      setLoading(false)
+      return
+    }
+
+    setDone(true)
   }
 
   const card: React.CSSProperties = {
