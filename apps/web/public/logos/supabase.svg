@@ -1,3 +1,9 @@
-<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M28 68L52 92L104 32" stroke="#3ECF8E" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
+<svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3ECF8E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#24B47E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M40 140L100 200L220 50" stroke="url(#grad)" strokeWidth="28" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
 </svg>
