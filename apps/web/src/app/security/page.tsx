@@ -325,9 +325,9 @@ export default function SecurityPage() {
           margin-top: 22px; margin-left: 70px; padding: 20px 22px;
           background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(23,201,232,0.06));
           border-left: 3px solid var(--violet);
-          border-radius: 8px; max-width: 680px;
+          border-radius: 8px;
         }
-        @media (max-width: 720px) { .honesty-box { margin-left: 0; max-width: 100%; } }
+        @media (max-width: 720px) { .honesty-box { margin-left: 0; } }
         .honesty-box p { font-size: 16px; color: var(--soft); line-height: 1.7; margin-bottom: 10px; }
         .honesty-box p:last-child { margin-bottom: 0; }
         .honesty-box strong { color: var(--ink); }
