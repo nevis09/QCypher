@@ -187,14 +187,14 @@ export default function PricingPage() {
         footer { border-top: 1px solid var(--border); padding: 44px 0 28px; background: #f0f3ff; }
         .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; margin-bottom: 28px; }
         @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; } }
-        .foot-brand p { font-size: 15px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
+        .foot-brand p { font-size: 13px; color: var(--soft); max-width: 240px; margin-top: 10px; line-height: 1.6; }
         .foot-col h5 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--soft); margin-bottom: 12px; font-weight: 700; }
-        .foot-col a { display: block; font-size: 15px; color: var(--soft); margin-bottom: 9px; font-weight: 500; }
+        .foot-col a { display: block; font-size: 13px; color: var(--soft); margin-bottom: 9px; font-weight: 500; }
         .foot-col a:hover { color: var(--indigo); }
         .foot-bottom {
           border-top: 1px solid var(--border); padding-top: 18px;
           display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-          font-size: 14px; color: var(--soft);
+          font-size: 13px; color: var(--soft);
         }
 
         @media (max-width: 480px) {

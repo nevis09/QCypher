@@ -254,14 +254,14 @@ export default function AboutPage() {
         footer .nav-logo { color: #fff; }
         .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 20px; margin-bottom: 12px; }
         @media (max-width: 680px) { .foot-grid { grid-template-columns: 1fr; gap: 14px; } }
-        .foot-brand p { font-size: 12px; color: rgba(255,255,255,0.55); max-width: 260px; margin-top: 4px; line-height: 1.45; }
+        .foot-brand p { font-size: 13px; color: rgba(255,255,255,0.55); max-width: 260px; margin-top: 4px; line-height: 1.45; }
         .foot-col h5 {
           font-size: 11px; text-transform: uppercase; letter-spacing: .12em;
           color: rgba(255,255,255,0.4); margin-bottom: 6px; font-weight: 700;
         }
         .foot-col a {
           display: flex; align-items: center; gap: 6px;
-          font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 500;
+          font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 3px; font-weight: 500;
           transition: color .15s, transform .15s; width: fit-content;
         }
         .foot-col a:hover { color: #fff; transform: translateX(3px); }
@@ -273,7 +273,7 @@ export default function AboutPage() {
         .foot-bottom {
           border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;
           display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-          font-size: 12px; color: rgba(255,255,255,0.4);
+          font-size: 13px; color: rgba(255,255,255,0.4);
         }
 
         /* INTEGRATIONS FOOTER — same as homepage */
