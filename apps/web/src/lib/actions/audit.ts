@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
-import { isSuperAdminEmail, SUPER_ADMIN_EMAILS } from '@/lib/auth/superadmin'
+import { isSuperAdminUser } from '@/lib/auth/superadmin'
 import type { Role } from '@/lib/actions/team'
 
 export type AuditAction =
@@ -61,17 +61,24 @@ async function requireAdmin() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  if (isSuperAdminEmail(user.email)) {
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+
+  if (isSuperAdminUser(fresh)) {
     return { tenant_id: null as string | null, isSuperAdmin: true }
   }
 
   const tenant_id = await getTenantId(user.id, user.app_metadata)
-  const admin = createAdminClient()
-  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
   const role = (fresh?.app_metadata?.role ?? 'member') as Role
   if (role !== 'owner') throw new Error('Only admins can view the audit trail')
 
   return { tenant_id, isSuperAdmin: false }
+}
+
+async function listSuperAdminEmails(): Promise<string[]> {
+  const admin = createAdminClient()
+  const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  return users.filter(isSuperAdminUser).map(u => u.email ?? '').filter(Boolean)
 }
 
 export async function getAuditLogs(filters: {
@@ -105,7 +112,8 @@ export async function getAuditLogs(filters: {
   } else {
     query = query.eq('tenant_id', tenant_id!)
     // Tenant admins never see super admin activity in their own audit trail
-    for (const email of SUPER_ADMIN_EMAILS) query = query.neq('user_email', email)
+    const superAdminEmails = await listSuperAdminEmails()
+    for (const email of superAdminEmails) query = query.neq('user_email', email)
   }
 
   if (filters.userId) query = query.eq('user_id', filters.userId)

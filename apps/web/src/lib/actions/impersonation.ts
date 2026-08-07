@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isSuperAdminEmail } from '@/lib/auth/superadmin'
+import { isSuperAdminUser } from '@/lib/auth/superadmin'
 
 // Scope decision: this is a read-only "view as tenant" for troubleshooting,
 // not a full auth session swap (impersonating the target tenant's actual
@@ -15,7 +15,12 @@ import { isSuperAdminEmail } from '@/lib/auth/superadmin'
 async function requireSuperAdmin() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !isSuperAdminEmail(user.email)) throw new Error('Super admin only')
+  if (!user) throw new Error('Not authenticated')
+
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+  if (!isSuperAdminUser(fresh)) throw new Error('Super admin only')
+
   return user
 }
 

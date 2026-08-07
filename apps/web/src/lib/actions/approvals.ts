@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
-import { isSuperAdminEmail, SUPER_ADMIN_EMAILS } from '@/lib/auth/superadmin'
+import { isSuperAdminUser } from '@/lib/auth/superadmin'
 import { renderBrandedEmail } from '@/lib/email/brand'
 import { sendEmail } from '@/lib/email/send'
 
@@ -28,8 +28,18 @@ async function getCallerContext() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
-  const isSuperAdmin = isSuperAdminEmail(user.email)
+
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+  const isSuperAdmin = isSuperAdminUser(fresh)
+
   return { user, isSuperAdmin, supabase }
+}
+
+async function listSuperAdminEmails(): Promise<string[]> {
+  const admin = createAdminClient()
+  const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  return users.filter(isSuperAdminUser).map(u => u.email ?? '').filter(Boolean)
 }
 
 const REQUEST_LABEL: Record<ApprovalRequestType, string> = {
@@ -63,8 +73,9 @@ export async function createApprovalRequest(
   if (error) throw new Error(error.message)
 
   const tenantName = (tenant as { name?: string } | null)?.name ?? 'A tenant'
+  const superAdminEmails = await listSuperAdminEmails()
   await sendEmail({
-    to: SUPER_ADMIN_EMAILS as unknown as string[],
+    to: superAdminEmails,
     subject: `Approval requested: ${REQUEST_LABEL[request_type]} — ${tenantName}`,
     html: renderBrandedEmail({
       bodyHtml: `

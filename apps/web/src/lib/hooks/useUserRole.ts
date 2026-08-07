@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { isSuperAdminEmail } from '@/lib/auth/superadmin'
+import { isSuperAdminUser } from '@/lib/auth/superadmin'
 import type { Role } from '@/lib/actions/team'
 
 // Phase 21 RBAC — client-side role check for conditional UI rendering.
@@ -24,7 +24,7 @@ export function useUserRole() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (cancelled) return
       setRole((user?.app_metadata?.role as Role | undefined) ?? 'member')
-      setIsSuperAdmin(isSuperAdminEmail(user?.email))
+      setIsSuperAdmin(isSuperAdminUser(user))
       setLoading(false)
     })
 

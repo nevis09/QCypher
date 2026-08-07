@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isSuperAdminEmail } from '@/lib/auth/superadmin'
+import { isSuperAdminUser } from '@/lib/auth/superadmin'
 
 export type TenantSummary = {
   id: string
@@ -15,7 +15,15 @@ export type TenantSummary = {
 async function requireSuperAdmin() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user || !isSuperAdminEmail(user.email)) throw new Error('Super admin only')
+  if (!user) throw new Error('Not authenticated')
+
+  // Re-fetch fresh app_metadata — same staleness reasoning as role checks
+  // elsewhere (lib/actions/team.ts): a flag change shouldn't require the
+  // caller to log out and back in before it takes effect.
+  const admin = createAdminClient()
+  const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
+  if (!isSuperAdminUser(fresh)) throw new Error('Super admin only')
+
   return user
 }
 
