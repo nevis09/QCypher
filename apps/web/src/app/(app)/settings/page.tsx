@@ -10,6 +10,7 @@ import { RequestActionsPanel } from '@/components/settings/RequestActionsPanel'
 import { AuditTrailPanel } from '@/components/settings/AuditTrailPanel'
 import { SettingsTabs, SettingsSection } from '@/components/settings/SettingsTabs'
 import { getTeamMembers, getPendingInvites } from '@/lib/actions/team'
+import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
 import { DEFAULT_SETTINGS, type TenantSettings } from '@/lib/types/settings'
 import { Sun } from 'lucide-react'
 import { redirect } from 'next/navigation'
@@ -27,8 +28,19 @@ export default async function SettingsPage() {
   const isAdmin = role === 'owner'
   const isReadOnly = role === 'read_only'
 
+  // The RLS-scoped tenant query below relies on the JWT's tenant_id
+  // claim, which can be stale (set via Admin API after initial sign-in) —
+  // fetch the real tenant_id first (with a DB fallback) and read the
+  // tenant row via the admin client so the page reflects the true saved
+  // state rather than a possibly-stale RLS view. A tenantless account
+  // (super admin) simply has no tenant row to show.
+  let tenantId: string | null = null
+  try { tenantId = await getTenantId(user.id, user.app_metadata) } catch { /* no tenant */ }
+
   const [{ data: tenant }, { data: profile }, members, pendingInvites] = await Promise.all([
-    supabase.from('tenants').select('name, slug, settings, telnyx_number').single(),
+    tenantId
+      ? createAdminClient().from('tenants').select('name, slug, settings, telnyx_number').eq('id', tenantId).single()
+      : Promise.resolve({ data: null }),
     supabase.from('users')
       .select('legal_name, nickname, phone, street, city, state, zip')
       .eq('id', user.id)
