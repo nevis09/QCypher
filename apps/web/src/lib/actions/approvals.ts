@@ -128,6 +128,36 @@ export async function listApprovalRequests(status?: ApprovalStatus): Promise<App
   }))
 }
 
+// Executes the actual effect of an approved request. Only delete_account
+// and change_plan are auto-executed — enable/disable_integration each need
+// per-integration provisioning logic (OAuth connections, phone number
+// purchase, etc.) that doesn't reduce to a generic field update, so those
+// stay "approved" without an automatic side effect for now.
+async function executeApproval(
+  admin: ReturnType<typeof createAdminClient>,
+  req: { tenant_id: string; request_type: ApprovalRequestType; details: Record<string, unknown> | null },
+) {
+  if (req.request_type === 'delete_account') {
+    await admin.from('tenants').update({ status: 'suspended', deleted_at: new Date().toISOString() }).eq('id', req.tenant_id)
+
+    // Lock out every member of the tenant — same mechanism as removing a
+    // single team member (lib/actions/team.ts), applied tenant-wide. Data
+    // stays in place (soft delete); nobody can access it through the app.
+    const { data: { users } } = await admin.auth.admin.listUsers({ perPage: 1000 })
+    const members = users.filter(u => u.app_metadata?.tenant_id === req.tenant_id)
+    await Promise.all(members.map(m =>
+      admin.auth.admin.updateUserById(m.id, { app_metadata: { ...m.app_metadata, tenant_id: null, role: null } }),
+    ))
+  }
+
+  if (req.request_type === 'change_plan') {
+    const newPlan = req.details?.new_plan
+    if (typeof newPlan === 'string' && newPlan.trim()) {
+      await admin.from('tenants').update({ plan: newPlan.trim() }).eq('id', req.tenant_id)
+    }
+  }
+}
+
 export async function decideApprovalRequest(id: string, status: 'approved' | 'denied', approval_reason?: string) {
   const { user, isSuperAdmin } = await getCallerContext()
   if (!isSuperAdmin) throw new Error('Only super admins can approve or deny requests')
@@ -137,10 +167,14 @@ export async function decideApprovalRequest(id: string, status: 'approved' | 'de
     .from('approval_requests')
     .update({ status, approved_by: user.id, approval_reason: approval_reason ?? null, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .select('id, tenant_id, requested_by, request_type')
+    .select('id, tenant_id, requested_by, request_type, details')
     .single()
 
   if (error) throw new Error(error.message)
+
+  if (status === 'approved') {
+    await executeApproval(admin, req)
+  }
 
   const { data: { user: requester } } = await admin.auth.admin.getUserById(req.requested_by)
   if (requester?.email) {
