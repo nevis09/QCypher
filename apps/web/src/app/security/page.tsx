@@ -237,28 +237,32 @@ export default function SecurityPage() {
         }
 
         /* SECTIONS */
-        .sec-block { padding: 56px 0; border-bottom: 1px solid var(--border); }
+        .sec-block { padding: 60px 0; border-bottom: 1px solid var(--border); }
         .sec-block:nth-child(odd) { background: #fff; }
-        .sec-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+        .sec-head { display: flex; align-items: center; gap: 18px; margin-bottom: 30px; }
         .sec-icon {
-          flex-shrink: 0; width: 48px; height: 48px; border-radius: 14px;
+          flex-shrink: 0; width: 52px; height: 52px; border-radius: 15px;
           display: flex; align-items: center; justify-content: center;
           font-size: 22px;
-          background: linear-gradient(135deg, rgba(43,95,168,0.12), rgba(23,201,232,0.12));
+          background: linear-gradient(135deg, rgba(43,95,168,0.10), rgba(23,201,232,0.10));
           border: 1px solid var(--border2);
+          box-shadow: 0 1px 2px rgba(11,22,64,0.03), inset 0 1px 0 rgba(255,255,255,0.6);
         }
         .sec-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--steel); margin-bottom: 4px; display: block; }
-        .sec-head h3 { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+        .sec-head h3 { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; }
 
-        .point-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; padding-left: 64px; }
+        .point-list { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; padding-left: 70px; }
         @media (max-width: 720px) { .point-list { grid-template-columns: 1fr; padding-left: 0; } }
         .point {
           display: flex; align-items: flex-start; gap: 10px;
           font-size: 16px; color: var(--soft); line-height: 1.55;
+          padding: 6px 8px; margin: -6px -8px; border-radius: 10px;
+          transition: background .15s;
         }
+        .point:hover { background: rgba(43,95,168,0.045); }
         .point .pt-icon { flex-shrink: 0; font-size: 16px; line-height: 1.5; }
         .sec-note {
-          margin-top: 20px; margin-left: 64px; padding: 14px 18px;
+          margin-top: 22px; margin-left: 70px; padding: 14px 18px;
           background: rgba(43,95,168,0.06); border-left: 3px solid var(--steel);
           border-radius: 8px; font-size: 15px; color: var(--soft); max-width: 640px;
         }
@@ -275,25 +279,50 @@ export default function SecurityPage() {
         .honesty-box strong { color: var(--ink); }
 
         /* CONTACT CTA */
-        .contact-cta {
-          padding: 64px 0;
-          background: linear-gradient(135deg, var(--navy), var(--indigo) 60%, var(--steel));
+        .contact-cta { padding: 64px 0 56px; background: #fff; }
+        .contact-cta-card {
+          position: relative;
+          max-width: 620px; margin: 0 auto;
           text-align: center;
+          background: var(--card);
+          border: 1px solid var(--border2);
+          border-radius: 24px;
+          padding: 48px 40px 36px;
+          box-shadow: 0 1px 2px rgba(11,22,64,0.04), 0 20px 48px -20px rgba(43,95,168,0.18);
+          overflow: hidden;
         }
-        .contact-cta h2 { font-size: 30px; font-weight: 900; color: #fff; margin-bottom: 12px; letter-spacing: -0.02em; }
-        .contact-cta p { font-size: 16px; color: rgba(255,255,255,0.75); max-width: 480px; margin: 0 auto 24px; line-height: 1.6; }
-        .contact-cta-links { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+        .contact-cta-card::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          background: linear-gradient(90deg, var(--steel), var(--teal), var(--violet));
+        }
+        .contact-cta-icon {
+          width: 52px; height: 52px; margin: 0 auto 18px;
+          border-radius: 16px;
+          display: flex; align-items: center; justify-content: center; font-size: 22px;
+          background: linear-gradient(135deg, rgba(43,95,168,0.12), rgba(23,201,232,0.12));
+          border: 1px solid var(--border2);
+        }
+        .contact-cta h2 { font-size: 28px; font-weight: 900; color: var(--ink); margin-bottom: 10px; letter-spacing: -0.02em; }
+        .contact-cta p { font-size: 16px; color: var(--soft); max-width: 420px; margin: 0 auto 26px; line-height: 1.65; }
+        .contact-cta-links { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
         .contact-cta-links a {
+          display: inline-flex; align-items: center; gap: 8px;
           font-size: 16px; font-weight: 700; color: #fff;
-          background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-          padding: 12px 22px; border-radius: 10px; transition: background .15s, transform .15s;
+          background: linear-gradient(135deg, var(--indigo-d), var(--cyan));
+          padding: 13px 26px; border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(74,157,181,0.28);
+          transition: transform .15s, box-shadow .15s;
         }
-        .contact-cta-links a:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
-        .contact-cta-meta { font-size: 13px; color: rgba(255,255,255,0.5); }
-        .contact-cta-docs { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; margin-top: 22px; }
-        .contact-cta-docs a { font-size: 14px; font-weight: 600; color: var(--teal); }
-        .contact-cta-docs a:hover { text-decoration: underline; }
-        .contact-cta-updated { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 22px; }
+        .contact-cta-links a:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,157,181,0.36); }
+        .contact-cta-meta { font-size: 13px; color: var(--soft); opacity: 0.8; }
+        .contact-cta-docs {
+          display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap;
+          margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border);
+        }
+        .contact-cta-docs a { font-size: 14px; font-weight: 600; color: var(--steel); }
+        .contact-cta-docs a:hover { color: var(--cyan); text-decoration: underline; }
+        .contact-cta-updated { font-size: 12px; color: var(--soft); opacity: 0.65; margin-top: 14px; }
 
         /* FOOTER — matches homepage/about */
         footer {
@@ -437,17 +466,20 @@ export default function SecurityPage() {
       {/* CONTACT CTA */}
       <div className="contact-cta">
         <div className="wrap">
-          <h2>Questions?</h2>
-          <p>We believe in transparency. If you have questions about our security practices, please reach out.</p>
-          <div className="contact-cta-links">
-            <a href="mailto:legal@qcyphertech.com">legal@qcyphertech.com</a>
+          <div className="contact-cta-card">
+            <div className="contact-cta-icon">💬</div>
+            <h2>Questions?</h2>
+            <p>We believe in transparency. If you have questions about our security practices, please reach out.</p>
+            <div className="contact-cta-links">
+              <a href="mailto:legal@qcyphertech.com">✉️ legal@qcyphertech.com</a>
+            </div>
+            <p className="contact-cta-meta">Response time: within 48 business hours</p>
+            <div className="contact-cta-docs">
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
+            </div>
+            <p className="contact-cta-updated">Last updated: August 7, 2026</p>
           </div>
-          <p className="contact-cta-meta">Response time: within 48 business hours</p>
-          <div className="contact-cta-docs">
-            <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
-          </div>
-          <p className="contact-cta-updated">Last updated: August 7, 2026</p>
         </div>
       </div>
 
