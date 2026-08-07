@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getTenantId } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { renderBrandedEmail } from '@/lib/email/brand'
 
@@ -11,10 +12,17 @@ export async function updateBusinessName(name: string): Promise<{ error?: string
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return { error: 'Not authenticated' }
 
-    const tenantId = (user.app_metadata as Record<string, string> | undefined)?.tenant_id
-    // Super admin accounts aren't attached to a tenant, so there's no
-    // business name to set — no-op instead of erroring.
-    if (!tenantId) return {}
+    // Reads app_metadata.tenant_id off the session JWT, which can be
+    // stale (e.g. set via Admin API after initial sign-in) — getTenantId
+    // re-fetches fresh from the DB when that happens. A genuine throw
+    // here means the account truly has no tenant (super admin) — no
+    // business name to set for those, so no-op rather than error.
+    let tenantId: string
+    try {
+      tenantId = await getTenantId(user.id, user.app_metadata)
+    } catch {
+      return {}
+    }
 
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     if (!serviceKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured' }
@@ -54,20 +62,24 @@ export async function updateProfile(data: {
       serviceKey,
     )
 
-    const { data: tenantRow } = await supabase.from('tenants').select('id').single()
-
-    // Super admin accounts aren't attached to a tenant, and the users
-    // table's tenant_id column is NOT NULL — there's no row to upsert
-    // into for them. Fields like legal name/phone/address are tenant
-    // profile details anyway, so just no-op rather than error.
-    if (!tenantRow?.id) return {}
+    // RLS-scoped lookup relies on the JWT's tenant_id claim, which can be
+    // stale — getTenantId() re-fetches fresh from the DB in that case. A
+    // genuine throw means the account truly has no tenant (super admin);
+    // the users table's tenant_id column is NOT NULL, so there's no row
+    // to upsert into for those accounts — no-op rather than error.
+    let tenantId: string
+    try {
+      tenantId = await getTenantId(user.id, user.app_metadata)
+    } catch {
+      return {}
+    }
 
     const { error } = await admin
       .from('users')
       .upsert(
         {
           id:        user.id,
-          tenant_id: tenantRow.id,
+          tenant_id: tenantId,
           ...data,
         },
         { onConflict: 'id' },
