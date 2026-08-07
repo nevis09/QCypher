@@ -272,8 +272,9 @@ export default function SecurityPage() {
         .honesty-box {
           background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(23,201,232,0.06));
           border: 1px solid var(--border2); border-radius: 16px;
-          padding: 28px 32px; margin: 8px 0 0;
+          padding: 28px 32px; margin: 8px 0 0 70px; max-width: 680px;
         }
+        @media (max-width: 720px) { .honesty-box { margin-left: 0; } }
         .honesty-box p { font-size: 16px; color: var(--soft); line-height: 1.7; margin-bottom: 10px; }
         .honesty-box p:last-child { margin-bottom: 0; }
         .honesty-box strong { color: var(--ink); }
@@ -455,7 +456,7 @@ export default function SecurityPage() {
               <h3>Transparency Over Perfection</h3>
             </div>
           </div>
-          <div className="honesty-box" style={{ marginLeft: '64px', maxWidth: '680px' }}>
+          <div className="honesty-box">
             <p>We&apos;re a small team, not a 500-person security department — and we&apos;d rather tell you that than pretend otherwise.</p>
             <p>What we can tell you is that <strong>our architecture is designed for enterprise-grade security</strong> from day one: encryption everywhere, strict tenant isolation, and an audit trail for every action that matters.</p>
             <p>And when something does go wrong, you get a real incident response process — not just a promise that &quot;we handle everything.&quot;</p>
