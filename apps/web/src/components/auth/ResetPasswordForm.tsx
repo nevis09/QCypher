@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { PasswordInput } from '@/components/auth/PasswordInput'
 
 const BTN_BG = 'linear-gradient(135deg, #1a3070 0%, #2a52a0 60%, #4a9db5 100%)'
 const BORDER = 'rgba(74,157,181,0.22)'
@@ -14,16 +15,6 @@ const CARD: React.CSSProperties = {
   borderRadius: '20px',
   padding: '32px',
   boxShadow: '0 8px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
-}
-const INPUT: React.CSSProperties = {
-  width: '100%',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(74,157,181,0.28)',
-  borderRadius: '12px',
-  padding: '11px 14px',
-  fontSize: '15px',
-  color: '#e8f0fa',
-  outline: 'none',
 }
 const LABEL: React.CSSProperties = {
   display: 'block',
@@ -61,13 +52,13 @@ export function ResetPasswordForm() {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
         <div>
           <label htmlFor="password" style={LABEL}>New password</label>
-          <input id="password" type="password" required value={password}
-            onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" style={INPUT} />
+          <PasswordInput id="password" required value={password}
+            onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" />
         </div>
         <div>
           <label htmlFor="confirm" style={LABEL}>Confirm new password</label>
-          <input id="confirm" type="password" required value={confirm}
-            onChange={e => setConfirm(e.target.value)} placeholder="••••••••" style={INPUT} />
+          <PasswordInput id="confirm" required value={confirm}
+            onChange={e => setConfirm(e.target.value)} placeholder="••••••••" />
         </div>
         {error && (
           <p style={{ fontSize: '14px', color: '#f87171', background: 'rgba(248,113,113,0.1)', borderRadius: '10px', padding: '10px 14px' }}>

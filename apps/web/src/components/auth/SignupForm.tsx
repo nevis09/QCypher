@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { PasswordInput } from '@/components/auth/PasswordInput'
 
 const TEAL   = '#4a9db5'
 const BTN_BG = 'linear-gradient(135deg, #1a3070 0%, #2a52a0 60%, #4a9db5 100%)'
@@ -131,13 +132,13 @@ export function SignupForm() {
         </div>
         <div>
           <label htmlFor="password" style={LABEL}>Password</label>
-          <input id="password" type="password" required value={password}
-            onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" style={INPUT} />
+          <PasswordInput id="password" required value={password}
+            onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" />
         </div>
         <div>
           <label htmlFor="confirm" style={LABEL}>Confirm password</label>
-          <input id="confirm" type="password" required value={confirm}
-            onChange={e => setConfirm(e.target.value)} placeholder="••••••••" style={INPUT} />
+          <PasswordInput id="confirm" required value={confirm}
+            onChange={e => setConfirm(e.target.value)} placeholder="••••••••" />
         </div>
         {error && (
           <p style={{ fontSize: '14px', color: '#f87171', background: 'rgba(248,113,113,0.1)', borderRadius: '10px', padding: '10px 14px' }}>
