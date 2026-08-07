@@ -133,6 +133,7 @@ const SECTIONS: Section[] = [
       { icon: 'search', label: 'Every incident gets a post-incident review, with lessons learned documented' },
       { icon: 'xcircle', label: 'No data brokers or third parties are given access to customer data' },
     ],
+    note: 'Public disclosure policy: we only publish a public incident report when required by law or explicitly requested by an affected customer — not as a matter of course. Any public report omits customer names and specific technical vulnerabilities.',
   },
   {
     id: 'data-handling',
