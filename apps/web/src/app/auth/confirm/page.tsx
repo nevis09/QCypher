@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -10,8 +10,16 @@ import { createClient } from '@/lib/supabase/client'
 //   3. Query code — PKCE OAuth / magic-link (fallback from server callback)
 export default function ConfirmPage() {
   const router = useRouter()
+  const ranRef = useRef(false)
 
   useEffect(() => {
+    // OAuth/OTP codes are single-use — React can invoke effects twice
+    // (StrictMode, fast back-forward navigation), and a second exchange
+    // attempt with the same code fails even though the first succeeded,
+    // producing a false "invalid or expired" error after a real login.
+    if (ranRef.current) return
+    ranRef.current = true
+
     const supabase = createClient()
 
     async function handle() {
