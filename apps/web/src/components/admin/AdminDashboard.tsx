@@ -2,13 +2,23 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Building2, Plus, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
+import { Building2, Plus, CheckCircle2, AlertCircle, Clock, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ApprovalRequestsPanel } from '@/components/admin/ApprovalRequestsPanel'
+import { AdminAuditTrailPanel } from '@/components/admin/AdminAuditTrailPanel'
+import { TenantSnapshotModal } from '@/components/admin/TenantSnapshotModal'
 
 type Tenant = {
   id: string; name: string; slug: string; plan: string
   status: 'active' | 'suspended' | 'trial'; is_admin: boolean; created_at: string
 }
+
+const TABS = [
+  { id: 'clients', label: 'Clients' },
+  { id: 'approvals', label: 'Approval Requests' },
+  { id: 'audit', label: 'Audit Trail' },
+] as const
+type TabId = typeof TABS[number]['id']
 
 const STATUS_STYLE: Record<Tenant['status'], string> = {
   active:    'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
@@ -20,10 +30,12 @@ const STATUS_ICON: Record<Tenant['status'], React.ElementType> = {
   active: CheckCircle2, trial: Clock, suspended: AlertCircle,
 }
 
-export function AdminDashboard({ tenants }: { tenants: Tenant[] }) {
+export function AdminDashboard({ tenants, isSuperAdmin = false }: { tenants: Tenant[]; isSuperAdmin?: boolean }) {
   const [showInvite, setShowInvite] = useState(false)
+  const [tab, setTab] = useState<TabId>('clients')
 
   const clients = tenants.filter(t => !t.is_admin)
+  const visibleTabs = isSuperAdmin ? TABS : TABS.filter(t => t.id === 'clients')
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -32,33 +44,57 @@ export function AdminDashboard({ tenants }: { tenants: Tenant[] }) {
           <h1 className="text-xl font-semibold">QCypher Admin</h1>
           <p className="text-[15px] text-[hsl(var(--muted-foreground))] mt-0.5">{clients.length} client workspace{clients.length !== 1 ? 's' : ''}</p>
         </div>
-        <button
-          onClick={() => setShowInvite(true)}
-          className="flex items-center gap-2 bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Invite client
-        </button>
+        {tab === 'clients' && (
+          <button
+            onClick={() => setShowInvite(true)}
+            className="flex items-center gap-2 bg-accent text-white text-[15px] font-medium px-4 py-2 rounded-xl hover:bg-accent-hover transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Invite client
+          </button>
+        )}
       </div>
 
-      {/* Tenant table */}
-      <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden divide-y divide-[hsl(var(--border))]">
-        {clients.length === 0 && (
-          <div className="p-12 text-center">
-            <p className="text-[15px] text-[hsl(var(--muted-foreground))]">No client tenants yet. Invite your first client.</p>
-          </div>
-        )}
-        {clients.map(t => <TenantRow key={t.id} tenant={t} />)}
-      </div>
+      {visibleTabs.length > 1 && (
+        <div className="flex gap-1 border-b border-[hsl(var(--border))]">
+          {visibleTabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={cn(
+                'text-[15px] px-4 py-2.5 font-medium border-b-2 -mb-px transition-colors',
+                tab === t.id ? 'border-accent text-[hsl(var(--foreground))]' : 'border-transparent text-[hsl(var(--muted-foreground))]',
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {tab === 'clients' && (
+        <div className="bg-[hsl(var(--card))] rounded-2xl border border-[hsl(var(--border))] shadow-soft overflow-hidden divide-y divide-[hsl(var(--border))]">
+          {clients.length === 0 && (
+            <div className="p-12 text-center">
+              <p className="text-[15px] text-[hsl(var(--muted-foreground))]">No client tenants yet. Invite your first client.</p>
+            </div>
+          )}
+          {clients.map(t => <TenantRow key={t.id} tenant={t} isSuperAdmin={isSuperAdmin} />)}
+        </div>
+      )}
+
+      {tab === 'approvals' && isSuperAdmin && <ApprovalRequestsPanel />}
+      {tab === 'audit' && isSuperAdmin && <AdminAuditTrailPanel tenants={clients} />}
 
       {showInvite && <InviteModal onClose={() => setShowInvite(false)} />}
     </div>
   )
 }
 
-function TenantRow({ tenant }: { tenant: Tenant }) {
+function TenantRow({ tenant, isSuperAdmin }: { tenant: Tenant; isSuperAdmin: boolean }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [showSnapshot, setShowSnapshot] = useState(false)
   const StatusIcon = STATUS_ICON[tenant.status]
 
   function setStatus(status: Tenant['status']) {
@@ -88,6 +124,15 @@ function TenantRow({ tenant }: { tenant: Tenant }) {
         <StatusIcon className="w-3 h-3" />
         {tenant.status}
       </span>
+      {isSuperAdmin && (
+        <button
+          onClick={() => setShowSnapshot(true)}
+          title="View snapshot (logged as impersonation)"
+          className="flex items-center gap-1 text-[15px] text-accent px-2 py-1 rounded-lg hover:bg-accent/10"
+        >
+          <Eye className="w-3.5 h-3.5" /> View
+        </button>
+      )}
       <select
         disabled={isPending}
         value={tenant.status}
@@ -98,6 +143,9 @@ function TenantRow({ tenant }: { tenant: Tenant }) {
         <option value="trial">Trial</option>
         <option value="suspended">Suspend</option>
       </select>
+      {showSnapshot && (
+        <TenantSnapshotModal tenantId={tenant.id} tenantName={tenant.name} onClose={() => setShowSnapshot(false)} />
+      )}
     </div>
   )
 }

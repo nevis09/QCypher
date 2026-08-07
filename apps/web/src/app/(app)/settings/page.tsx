@@ -6,6 +6,7 @@ import { MissedCallSetup } from '@/components/settings/MissedCallSetup'
 import { ProfileForm } from '@/components/account/ProfileForm'
 import { SecurityPanel } from '@/components/account/SecurityPanel'
 import { TeamPanel } from '@/components/settings/TeamPanel'
+import { RequestActionsPanel } from '@/components/settings/RequestActionsPanel'
 import { AuditTrailPanel } from '@/components/settings/AuditTrailPanel'
 import { SettingsTabs, SettingsSection } from '@/components/settings/SettingsTabs'
 import { getTeamMembers, getPendingInvites } from '@/lib/actions/team'
@@ -77,6 +78,9 @@ export default async function SettingsPage() {
     <div style={{ maxWidth: '640px' }}>
       <SettingsSection label="Team" hint="Invite colleagues to your workspace. They'll see the same contacts, orders, and inventory.">
         <TeamPanel members={members} pending={pendingInvites} currentUserId={user.id} />
+      </SettingsSection>
+      <SettingsSection label="Account & Billing" hint="Plan changes and account deletion require QCypher's approval.">
+        <RequestActionsPanel />
       </SettingsSection>
     </div>
   )

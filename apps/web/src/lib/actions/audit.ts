@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient, getTenantId } from '@/lib/supabase/admin'
+import { isSuperAdminEmail, SUPER_ADMIN_EMAILS } from '@/lib/auth/superadmin'
 import type { Role } from '@/lib/actions/team'
 
 export type AuditAction =
@@ -59,14 +60,18 @@ async function requireAdmin() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
-  const tenant_id = await getTenantId(user.id, user.app_metadata)
 
+  if (isSuperAdminEmail(user.email)) {
+    return { tenant_id: null as string | null, isSuperAdmin: true }
+  }
+
+  const tenant_id = await getTenantId(user.id, user.app_metadata)
   const admin = createAdminClient()
   const { data: { user: fresh } } = await admin.auth.admin.getUserById(user.id)
   const role = (fresh?.app_metadata?.role ?? 'member') as Role
   if (role !== 'owner') throw new Error('Only admins can view the audit trail')
 
-  return { tenant_id }
+  return { tenant_id, isSuperAdmin: false }
 }
 
 export async function getAuditLogs(filters: {
@@ -78,8 +83,10 @@ export async function getAuditLogs(filters: {
   from?: string
   to?: string
   search?: string
+  // Super admin only — view a specific tenant's log, or omit for all tenants
+  tenantId?: string
 } = {}): Promise<{ logs: AuditLog[]; total: number }> {
-  const { tenant_id } = await requireAdmin()
+  const { tenant_id, isSuperAdmin } = await requireAdmin()
   const admin = createAdminClient()
 
   const page = filters.page ?? 1
@@ -90,8 +97,16 @@ export async function getAuditLogs(filters: {
   let query = admin
     .from('audit_logs')
     .select('id, user_email, action, resource_type, resource_id, resource_name, details, created_at', { count: 'exact' })
-    .eq('tenant_id', tenant_id)
     .order('created_at', { ascending: false })
+
+  if (isSuperAdmin) {
+    if (filters.tenantId) query = query.eq('tenant_id', filters.tenantId)
+    // else: no tenant filter — super admin sees across all tenants
+  } else {
+    query = query.eq('tenant_id', tenant_id!)
+    // Tenant admins never see super admin activity in their own audit trail
+    for (const email of SUPER_ADMIN_EMAILS) query = query.neq('user_email', email)
+  }
 
   if (filters.userId) query = query.eq('user_id', filters.userId)
   if (filters.action) query = query.eq('action', filters.action)
@@ -106,7 +121,8 @@ export async function getAuditLogs(filters: {
 
 export async function getRecentAuditLogs(limit = 5): Promise<AuditLog[]> {
   try {
-    const { tenant_id } = await requireAdmin()
+    const { tenant_id, isSuperAdmin } = await requireAdmin()
+    if (isSuperAdmin || !tenant_id) return []
     const admin = createAdminClient()
     const { data } = await admin
       .from('audit_logs')
