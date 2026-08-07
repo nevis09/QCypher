@@ -12,7 +12,9 @@ export async function updateBusinessName(name: string): Promise<{ error?: string
     if (!user) return { error: 'Not authenticated' }
 
     const tenantId = (user.app_metadata as Record<string, string> | undefined)?.tenant_id
-    if (!tenantId) return { error: 'No tenant_id in session — please sign out and back in' }
+    // Super admin accounts aren't attached to a tenant, so there's no
+    // business name to set — no-op instead of erroring.
+    if (!tenantId) return {}
 
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     if (!serviceKey) return { error: 'SUPABASE_SERVICE_ROLE_KEY is not configured' }
@@ -54,12 +56,18 @@ export async function updateProfile(data: {
 
     const { data: tenantRow } = await supabase.from('tenants').select('id').single()
 
+    // Super admin accounts aren't attached to a tenant, and the users
+    // table's tenant_id column is NOT NULL — there's no row to upsert
+    // into for them. Fields like legal name/phone/address are tenant
+    // profile details anyway, so just no-op rather than error.
+    if (!tenantRow?.id) return {}
+
     const { error } = await admin
       .from('users')
       .upsert(
         {
           id:        user.id,
-          tenant_id: tenantRow?.id ?? null,
+          tenant_id: tenantRow.id,
           ...data,
         },
         { onConflict: 'id' },
