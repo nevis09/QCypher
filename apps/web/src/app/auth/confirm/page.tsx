@@ -23,6 +23,18 @@ export default function ConfirmPage() {
     const supabase = createClient()
 
     async function handle() {
+      // A second load of this page (Safari's background tab-preview reload,
+      // a duplicate redirect, etc.) arrives with the SAME single-use code —
+      // the first exchange already consumed it and established a session,
+      // so a retry fails even though the user is already logged in. Treat
+      // an existing session as success rather than re-running the exchange.
+      const { data: { session: existingSession } } = await supabase.auth.getSession()
+      if (existingSession) {
+        const recoveryHint = window.location.hash.includes('type=recovery') || window.location.search.includes('type=recovery')
+        router.replace(recoveryHint ? '/auth/reset-password' : '/dashboard')
+        return
+      }
+
       // Parse both hash fragment and query string
       const hash   = window.location.hash.substring(1)
       const hashParams  = new URLSearchParams(hash)
