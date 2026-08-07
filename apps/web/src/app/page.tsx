@@ -1380,6 +1380,7 @@ export default function HomePage() {
               <Link href="/pricing">Packages</Link>
               <a href="#crm">Customer Management</a>
               <Link href="/about">About Us</Link>
+              <Link href="/security">Security</Link>
               <Link href="/auth/login">Client Login</Link>
             </div>
           </div>

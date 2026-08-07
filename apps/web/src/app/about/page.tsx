@@ -545,6 +545,7 @@ export default function AboutPage() {
               <Link href="/#packages">Packages</Link>
               <Link href="/#crm">Customer Management</Link>
               <Link href="/about">About Us</Link>
+              <Link href="/security">Security</Link>
               <Link href="/auth/login">Client Login</Link>
             </div>
           </div>

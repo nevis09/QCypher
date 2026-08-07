@@ -558,6 +558,7 @@ export default function PricingPage() {
               <h5>Quick Links</h5>
               <Link href="/">Home</Link>
               <Link href="/about">About Us</Link>
+              <Link href="/security">Security</Link>
               <Link href="/auth/login">Client Login</Link>
             </div>
           </div>

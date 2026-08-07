@@ -37,6 +37,9 @@ export async function middleware(request: NextRequest) {
     pathname === '/' ||
     pathname === '/about' ||
     pathname === '/pricing' ||
+    pathname === '/security' ||
+    pathname === '/privacy' ||
+    pathname === '/terms' ||
     pathname.startsWith('/api/telnyx/') ||
     pathname.startsWith('/api/portal/') ||
     pathname.startsWith('/api/contact') ||
