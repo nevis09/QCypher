@@ -7,15 +7,21 @@ reading this during a real incident, start at **Phase 1** and work down.
 
 **The 24-hour and 48-hour clocks both start at T+0 = detection, not discovery.**
 
-- "Detection" = the moment the `incidents` row is created — either by the hourly
+- "Detection" = the moment the `incidents` row is created — either by the daily
   cron (`detected_at` timestamp), or the moment you click "Report incident
   manually" if you found it yourself.
 - "Discovery" (you personally noticing/understanding it's a real incident) almost
   always happens *after* detection, sometimes hours after. The clock does not
-  wait for you to notice. If the cron detects something at 3am and you don't see
-  the alert until 9am, you have already used 6 of your 24 hours.
+  wait for you to notice. If the cron detects something at 6:30am and you don't
+  see the alert until noon, you have already used part of your 24 hours.
 - Practical implication: check incident alerts (email + SMS) promptly. The system
   is built to page you, not to be checked once a day.
+- **Detection lag**: the automated cron runs once daily (06:30 UTC) — Vercel's
+  free Hobby plan rejects any deployment with a cron running more than once a
+  day, so a genuinely hourly check would require upgrading to Vercel Pro. On the
+  free tier, a bulk-delete pattern that starts right after a run could go up to
+  ~24 hours before the next check catches it. Manual reporting doesn't have this
+  lag — use it the moment you notice something, don't wait for the cron.
 
 | Deadline | Action | Where |
 |---|---|---|
@@ -26,12 +32,12 @@ reading this during a real incident, start at **Phase 1** and work down.
 
 ## Phase 1 — Detection → Alert (automatic)
 
-Nothing for you to do here except **check your email/phone**. The hourly cron
-(`/api/cron/check-incidents`) creates the incident row and emails + texts both
-super admins immediately when it detects:
+Nothing for you to do here except **check your email/phone**. The daily cron
+(`/api/cron/check-incidents`, 06:30 UTC) creates the incident row and emails +
+texts both super admins immediately when it detects:
 
 - **Bulk data exposure**: one user deleting >20 contacts/templates/events within
-  an hour
+  the last 24 hours
 - **Self role escalation**: a user's role changed to their own action (should be
   impossible — the app blocks this in code; if you see this alert, something
   bypassed that guard and needs immediate attention)

@@ -6,7 +6,14 @@ import { sendEmail } from '@/lib/email/send'
 import { sendSms } from '@/lib/telnyx'
 
 /**
- * Hourly automated incident detection (Phase 24).
+ * Daily automated incident detection (Phase 24).
+ *
+ * Runs once/day (06:30 UTC) rather than the spec's hourly cadence — Vercel's
+ * Hobby plan rejects the entire deployment outright if any cron in
+ * vercel.json runs more than once per day (confirmed by a failed deploy:
+ * "Hobby accounts are limited to daily cron jobs"). Upgrading to Pro would
+ * unlock hourly; staying free means a detection lag of up to ~24h. Flagged
+ * to the user — this is a real tradeoff, not a silent limitation.
  *
  * Scope decision: the spec's Trigger 1 (RLS rejections) and Trigger 2
  * (failed login attempts / brute force) aren't detectable with what this
@@ -20,8 +27,8 @@ import { sendSms } from '@/lib/telnyx'
  * two triggers that ARE grounded in real data:
  *
  *   - Trigger 3a: bulk delete of contacts/templates/events by one user
- *     in the last hour (spec's ">50 records in 5 min" adapted to this
- *     cron's hourly cadence — see BULK_DELETE_THRESHOLD below)
+ *     in the lookback window (spec's ">50 records in 5 min" adapted to
+ *     this cron's daily cadence — see BULK_DELETE_THRESHOLD below)
  *   - Trigger 3b: a role_changed audit entry where the actor changed
  *     their OWN role. The app already blocks this in code
  *     (updateMemberRole throws on self-demotion) — this is a
@@ -78,7 +85,7 @@ export async function GET(request: NextRequest) {
   }
 
   const admin = createAdminClient()
-  const since = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
   const created: string[] = []
 
   const { data: recentLogs } = await admin
@@ -118,7 +125,7 @@ export async function GET(request: NextRequest) {
       .limit(1)
     if (existing?.length) continue
 
-    const description = `${user_email} deleted ${count} records in the last hour (threshold: ${BULK_DELETE_THRESHOLD}).`
+    const description = `${user_email} deleted ${count} records in the last 24 hours (threshold: ${BULK_DELETE_THRESHOLD}).`
     const { data: incident } = await admin
       .from('incidents')
       .insert({
