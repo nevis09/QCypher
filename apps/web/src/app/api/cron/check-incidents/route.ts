@@ -126,11 +126,17 @@ export async function GET(request: NextRequest) {
     if (existing?.length) continue
 
     const description = `${user_email} deleted ${count} records in the last 24 hours (threshold: ${BULK_DELETE_THRESHOLD}).`
+    // Auto-drafted from what the cron actually observed — this is a starting
+    // point for the super admin to confirm or correct during investigation,
+    // not a verified root cause. "Why" it happened (legitimate cleanup vs.
+    // a compromised account) needs human judgment the system can't supply.
+    const root_cause = `[DRAFT — confirm before sending to customer] ${user_email} deleted ${count} contact/template/event records within a 24-hour window, exceeding the automated bulk-delete threshold of ${BULK_DELETE_THRESHOLD}. Detected by the incident-response cron scanning audit_logs. Whether this was an authorized bulk cleanup or unauthorized/compromised access has not yet been confirmed.`
+    const remediation = `[DRAFT — confirm before sending to customer] Verify with ${user_email} (or the tenant owner) whether this deletion was intentional. If unauthorized: revoke the user's access immediately, review the deleted records for restoration from the daily backup, and rotate any credentials that may have been compromised.`
     const { data: incident } = await admin
       .from('incidents')
       .insert({
         tenant_id, incident_type: 'data_exposure', severity: 'high',
-        detected_by: 'automated_cron', description,
+        detected_by: 'automated_cron', description, root_cause, remediation,
         timeline: { detected_at: new Date().toISOString() },
       })
       .select('id')
@@ -150,11 +156,13 @@ export async function GET(request: NextRequest) {
     if (log.action !== 'role_changed' || log.resource_id !== log.user_id) continue
 
     const description = `${log.user_email} appears to have changed their own role — this should be blocked by application code. Investigate immediately.`
+    const root_cause = `[DRAFT — confirm before sending to customer] ${log.user_email} successfully changed their own team role, which application code (updateMemberRole in lib/actions/team.ts) is designed to block. Detected by the incident-response cron scanning audit_logs for role_changed entries where the actor and target are the same user. This indicates either a bypass of that guard or a bug in how the action was logged — the guard itself needs to be re-verified as part of investigation.`
+    const remediation = `[DRAFT — confirm before sending to customer] Immediately verify the affected user's current role is correct and revert if not. Re-test the self-demotion guard in lib/actions/team.ts (updateMemberRole) to confirm it still throws as expected. Review recent deployments for anything that could have altered that code path.`
     const { data: incident } = await admin
       .from('incidents')
       .insert({
         tenant_id: log.tenant_id, incident_type: 'unauthorized_access', severity: 'critical',
-        detected_by: 'automated_cron', description,
+        detected_by: 'automated_cron', description, root_cause, remediation,
         timeline: { detected_at: new Date().toISOString() },
       })
       .select('id')

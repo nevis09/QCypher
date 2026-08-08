@@ -165,6 +165,9 @@ export async function sendRootCauseSummary(incidentId: string) {
   if (error || !incident) throw new Error(error?.message ?? 'Incident not found')
   if (!incident.tenant_id) throw new Error('This incident has no tenant to notify — it is system-wide')
   if (!incident.root_cause) throw new Error('Fill in the root cause before sending the summary')
+  if (incident.root_cause.startsWith('[DRAFT')) {
+    throw new Error('Root cause is still an auto-drafted placeholder — review and edit it before sending to a customer')
+  }
 
   const emails = await getTenantAdminEmails(admin, incident.tenant_id)
   if (!emails.length) throw new Error('No admin emails found for this tenant')

@@ -207,12 +207,17 @@ function IncidentCard({ incident, expanded, onToggle, isPending, onRefresh, star
 
           {/* Root cause / remediation */}
           <div className="space-y-2">
+            {rootCause.startsWith('[DRAFT') && (
+              <p className="text-[13px] font-medium text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" /> Auto-drafted from detection data — review and edit before sending to a customer
+              </p>
+            )}
             <label className="text-[13px] font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wide">Root cause</label>
-            <textarea value={rootCause} onChange={e => setRootCause(e.target.value)} rows={2}
+            <textarea value={rootCause} onChange={e => setRootCause(e.target.value)} rows={3}
               placeholder="What happened and why (plain English)"
               className="w-full text-[15px] rounded-lg border border-[hsl(var(--border))] px-3 py-2 bg-transparent outline-none" />
             <label className="text-[13px] font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wide">Remediation</label>
-            <textarea value={remediation} onChange={e => setRemediation(e.target.value)} rows={2}
+            <textarea value={remediation} onChange={e => setRemediation(e.target.value)} rows={3}
               placeholder="What we fixed / how we're preventing it"
               className="w-full text-[15px] rounded-lg border border-[hsl(var(--border))] px-3 py-2 bg-transparent outline-none" />
             <button disabled={isPending} onClick={() => advance(incident.status)} className="text-[15px] font-medium text-accent px-2 py-1 rounded-lg hover:bg-accent/10">
@@ -239,9 +244,19 @@ function IncidentCard({ incident, expanded, onToggle, isPending, onRefresh, star
               )}
 
               {incident.customers_notified && !incident.summary_sent_at && (
-                <button disabled={isPending || !rootCause} onClick={summary} className="flex items-center gap-1.5 text-[15px] font-medium bg-accent text-white px-3.5 py-1.5 rounded-lg hover:bg-accent-hover disabled:opacity-40">
-                  <Send className="w-3.5 h-3.5" /> Send root cause summary
-                </button>
+                <>
+                  <button
+                    disabled={isPending || !rootCause || rootCause.startsWith('[DRAFT')}
+                    onClick={summary}
+                    title={rootCause.startsWith('[DRAFT') ? 'Edit the auto-drafted root cause before sending' : undefined}
+                    className="flex items-center gap-1.5 text-[15px] font-medium bg-accent text-white px-3.5 py-1.5 rounded-lg hover:bg-accent-hover disabled:opacity-40"
+                  >
+                    <Send className="w-3.5 h-3.5" /> Send root cause summary
+                  </button>
+                  {rootCause.startsWith('[DRAFT') && (
+                    <p className="text-[13px] text-[hsl(var(--muted-foreground))]">Save an edited root cause (with the [DRAFT] marker removed) to enable sending.</p>
+                  )}
+                </>
               )}
               {incident.summary_sent_at && (
                 <p className="text-[15px] flex items-center gap-1.5 text-emerald-600"><CheckCircle2 className="w-4 h-4" /> Summary sent {fmt(incident.summary_sent_at)}</p>

@@ -95,8 +95,26 @@ a subset of affected tenants per pass.
 
 ## Phase 4 — Root Cause Analysis (T+24h to T+48h)
 
-Answer these five questions in the incident's **Root cause** and **Remediation**
-fields:
+**For cron-detected incidents, the Root cause and Remediation fields are
+auto-populated** with a factual draft the moment the incident is created —
+built from the actual detection data (who, what, how many, threshold
+exceeded), prefixed with `[DRAFT — confirm before sending to customer]`.
+You don't start from a blank field. What the system can't determine for you
+is *why* it happened (legitimate cleanup vs. compromised account, etc.) —
+that still needs your judgment.
+
+**The "Send root cause summary" button is disabled while that `[DRAFT]`
+prefix is still present** — both in the UI and enforced server-side in
+`sendRootCauseSummary()`. This is deliberate: it stops a factual-but-unverified
+draft from going out to a customer as if it were a confirmed finding. To
+unlock sending, edit the field (removing the `[DRAFT...]` prefix at minimum)
+and click "Save root cause / remediation."
+
+Manually-reported incidents get no auto-draft (there's no structured
+detection data to build one from) — those fields start blank as before.
+
+Work through these five questions when editing the draft (or writing from
+scratch for a manual report):
 
 1. **What happened?** — one or two sentences, factual.
 2. **Why did it happen?** — the actual root cause. Examples:
